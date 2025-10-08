@@ -1,0 +1,310 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+* {
+    font-family: 'Inter';
+    box-sizing: border-box;
+}
+
+.sidebar {
+    height: 100vh;
+    width: 288px;
+    max-width: 288px;
+    min-width: 288px;
+    background-color: #FAFAFA;
+    border-right: 2px solid #EFEFEF;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 16px;
+}
+
+.logo-title {
+    font-size: 20px;
+    font-weight: 600; /* Semi Bold */
+    letter-spacing: -0.03em; /* ist -3% */
+    color: #1F1F1F;
+}
+
+.recipe-lounge-logo {
+    height: 28px;
+}
+
+.topbar {
+    height: 32px;
+    align-items: center;
+    display: flex;
+    gap: 6px;
+    margin-bottom: 24px;
+}
+
+/* Recipe Folder Btn */
+.create-recipe-folder-btn {
+    padding: 10px 12px;
+    width: 100%;
+    background-color: white;
+    border: none;
+    box-shadow: 
+    0 0 0 1.5px rgba(31,31,31,0.08),  /* 1) x:0 y:0 blur:0 spread:1.5 */
+    0 1px 1px 0 rgba(31,31,31,0.04),  /* 2) x:0 y:1 blur:1 spread:0   */
+    0 3px 3px 0 rgba(31,31,31,0.03),  /* 3) x:0 y:3 blur:3 spread:0   */
+    0 3px 4px 0 rgba(31,31,31,0.02);  /* 4) x:0 y:3 blur:4 spread:0   */
+    border-radius: 100px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600; /* Semi Bold */
+    letter-spacing: -0.02em; /* ist -2% */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #1F1F1F;
+    margin-bottom: 24px;
+}
+
+.create-recipe-folder-btn:hover {
+    background-color: #FDFDFD;
+}
+
+.create-recipe-folder-btn img {
+    height: 16px;
+}
+
+
+/* Recipe Folder Divs - States */
+.recipe-folder-container {
+    display: flex;
+    width: 100%;
+    gap: 8px;
+    margin-top: 8px;
+    height: 40px;
+    border-radius: 10px;
+}
+
+.recipe-folder-div-closed {
+    gap: 12px;
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0px 8px;
+    cursor: pointer;
+    margin-bottom: 8px;
+    border-radius: 10px;
+}
+
+.recipe-folder-div-closed:hover {
+    background-color: #f0f0f0;
+}
+
+.recipe-folder-div-opened {
+    gap: 12px;
+    height: 100%;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    padding: 0px 8px;
+    margin-bottom: 8px;
+    border-radius: 10px;
+    background-color: white;
+    border: none;
+    box-shadow:
+    0 0 0 1.5px rgba(31,31,31,0.08),  /* 1) x:0 y:0 blur:0 spread:1.5 */
+    0 1px 1px 0 rgba(31,31,31,0.04),  /* 2) x:0 y:1 blur:1 spread:0   */
+    0 3px 3px 0 rgba(31,31,31,0.03),  /* 3) x:0 y:3 blur:3 spread:0   */
+    0 3px 4px 0 rgba(31,31,31,0.02);  /* 4) x:0 y:3 blur:4 spread:0   */
+    cursor: pointer;
+}
+
+.recipe-folder-title {
+    color: #757575;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    font-size: 16px;
+    width: 100%;
+    border: none;
+    background-color: transparent;
+    outline: none;
+    box-shadow: none;
+    height: 44px;
+}
+
+.recipe-folder-div-closed .noedit,
+.recipe-folder-div-opened .noedit {
+    user-select: none;
+    pointer-events: none;
+}
+
+/* Subfolder */
+.sub-folder-margin-0 {
+    padding-left: 0px;
+}
+
+.sub-folder-margin-1 {
+    padding-left: 22px;
+}
+
+.sub-folder-margin-2 {
+    padding-left: 54px;
+}
+
+.sub-folder-margin-3 {
+    padding-left: 84px;
+}
+
+.sub-folder-line {
+    display: block;
+    width: 2px;
+    height: 40px;
+    background-color: #D9D9D9;
+    border-radius: 9999px;
+}
+
+/*.sub-folder-line-for-2 {
+    display: block;
+    width: 2px;
+    height: 88px; /* 40 + 40 + 8
+    background-color: #D9D9D9;
+    border-radius: 9999px;
+}
+
+.sub-folder-line-for-3 {
+    display: block;
+    width: 2px;
+    height: 136px;
+    background-color: #D9D9D9;
+    border-radius: 9999px;
+}*/
+
+
+
+/* Ordner öffnen und schließen */
+.chevron {
+    transition: transform 0.2s ease, filter 0.2s ease;
+    transform-origin: center; /* Drehpunkt */
+    content: url('../../assets/chevron-right.svg');
+}
+.chevron-opened {
+    filter: invert(8%) brightness(12%);
+    transform: rotate(90deg);
+}
+.recipe-folder-div-closed .folderIcon {
+    content: url('../../assets/folder-closed-icon.svg');
+}
+.recipe-folder-div-opened .folderIcon {
+    content: url('../../assets/folder-opened-icon.svg');
+}
+.recipe-folder-div-opened input,
+.recipe-folder-div-opened input::placeholder {
+    color: #1F1F1F;
+}
+
+
+/* Dropdown */
+.dropdown_container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 28px;
+    border-radius: 6px;
+}
+
+.dropdown_container:hover {
+    background-color: #dddddd;
+}
+
+
+
+
+/* Text soll nicht markiert werden,
+Tooltips from Browser sollen unterdrückt werden
+beim schnellen Klicken */
+.sidebar {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+/* -> wichtig, auf Parent-Element */
+
+
+/* Dragged-State */
+.recipe-folder.folder-dragged {
+    background-color: #FF782F;
+    border: none;
+    border-radius: 12px;
+    background-image: none;
+    box-shadow: none;
+}
+
+.chosen-folder {
+    background-color: #ff782f2a;
+    border-radius: 12px;
+}
+
+.chosen-folder input::placeholder {
+    color: #FF782F;
+}
+
+.recipe-folder.folder-dragged .chevron,
+.recipe-folder.folder-dragged .folderIcon {
+  filter: brightness(0) invert(1);
+}
+
+/*.recipe-folder.drag-over {
+  border: 2px solid #00aaff;
+}*/
+
+.folder-dragged input {
+  color: white !important;
+}
+
+.folder-dragged input::placeholder {
+    color: white !important;
+}
+
+.not-displayed {
+    display: none;
+}
+
+.hamburger-closed {
+    margin-top: 16px;
+    margin-left: 16px;
+    transition: transform 0.125s ease-in-out, filter 0.125s ease-in-out;
+    cursor: pointer;
+}
+
+.hamburger-closed:hover {
+    transform: scale(1.1);
+    filter: invert(77%) sepia(57%) saturate(5902%) hue-rotate(338deg) brightness(101%) contrast(104%);
+}
+
+
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.2s ease-in-out;
+    }
+
+    .sidebar.open {
+        transform: translateX(0%);
+    }
+
+    .hamburger-opened {
+        display: flex;
+        margin-left: auto;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 36px;   
+        height: 36px;
+        cursor: pointer;
+        transition: transform 0.125s ease-in-out;
+    }
+
+    .hamburger-opened:hover {
+        transform: scale(1.1); /* statt nur scale, transform verwenden */
+        filter: invert(77%) sepia(57%) saturate(5902%) hue-rotate(338deg) brightness(101%) contrast(104%);
+    }
+
+}
