@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useState } from 'react'
 import './sidebar.css'
 import FolderItem from './FolderItem';
 import type { FolderData } from "../../types/FolderData";
@@ -8,8 +8,7 @@ function RecipeSidebar() {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [folders, setFolders] = useState<FolderData[]>([]);
     const [draggedFolder, setDraggedFolder] = useState<FolderData | null>(null);
-    const [dragTarget, setDragTarget] = useState<string | null>(null);
-
+    const [targetFolderId, setTargetFolderId] = useState<string | null>(null);
 
     const createFolder = () => {
       const folder: FolderData = {
@@ -17,7 +16,9 @@ function RecipeSidebar() {
         title: "",
         folderLevel: 1,
         subfolders: [],
+        amountOfAllSubfolders: 0,
         isSubfolder: false,
+        isLastSubfolder: false,
         isOpen: false,
         isEditing: true,
         isSelected: false
@@ -33,8 +34,110 @@ function RecipeSidebar() {
       );
     };
 
+    // function, when hovering over a folder: toggles CSS-class for user-feedback
+    const onSidebarDragOver = (e: React.DragEvent) => {
+      e.preventDefault();
+      const target = (e.target as HTMLElement).closest('.recipe-folder-container') as HTMLDivElement;
+      const targetId = target?.dataset.id;
+
+      if(target && draggedFolder && targetId && targetId !== draggedFolder.id){
+        setTargetFolderId(targetId);
+      }
+    };
+    
+    // function, when dropping a folder: creates new subfolder and updates the folders-array
+    const updateDragEnd = () => {
+      if(!draggedFolder || !targetFolderId) return;
+
+      setFolders(() => {
+
+        // make all subfolders to isLastSubfolder: false
+        let updated = folders.map((f) => {
+          if(targetFolderId === f.id){
+            return {
+              ...f,
+              subfolders: f.subfolders.map(sf => {
+                    return {
+                      ...sf,
+                      isLastSubfolder: false,
+                    }
+                })
+            }
+          } else {
+            return { ...f }
+          }
+
+        })
+
+        // copy dragged folder as subfolder with all properties including title
+        // now this subfolder is always the last one
+        const newSubfolder: FolderData = {
+          ...structuredClone(draggedFolder),
+          isSubfolder: true,
+          isLastSubfolder: true
+        };
+
+        // delete old dragged folder
+        updated = deleteFolderRecursive(updated, draggedFolder.id);
+
+        // update folders-data
+        updated = updated.map(f => {
+          if (f.id === targetFolderId) {
+            return {
+              ...f,
+              amountOfAllSubfolders: f.amountOfAllSubfolders + 1,
+              subfolders: [
+                ...f.subfolders,
+                newSubfolder
+              ],
+              // hier könnte man ggf. ein Sortieralgorithmus implementieren
+              // so, dass die Titel bzw. Folder im Alphabet geordnet sind
+            };
+          }
+          return f;
+        });
+
+        console.clear();
+        console.log(
+          "%c📁 Folder moved:",
+          "color: limegreen; font-weight: bold;",
+          JSON.stringify(updated, null, 2)
+        );
+
+        return updated;
+      });
+
+      setDraggedFolder(null);
+      setTargetFolderId(null);
+    };
+
+    const deleteFolderRecursive = (folders: FolderData[], id: string): FolderData[] => {
+      return folders
+        .filter(f => f.id !== id)
+        .map(f => ({
+          ...f,
+          subfolders: deleteFolderRecursive(f.subfolders, id)
+        }));
+    };
+
+    const updateDraggedFolder = (folder: FolderData) => {
+      setDraggedFolder(folder);
+    };
+
     const updateData = (id: string, updates: Partial<FolderData>) => {
-      const updated = folders.map(f => f.id === id ? { ...f, ...updates } : f);
+      const updateRecursive = (folders: FolderData[]): FolderData[] => {
+        return folders.map(f => {
+          if (f.id === id) {
+            return { ...f, ...updates };
+          }
+          if (f.subfolders.length > 0) {
+            return { ...f, subfolders: updateRecursive(f.subfolders) };
+          }
+          return f;
+        });
+      };
+
+      const updated = updateRecursive(folders);
       setFolders(updated);
 
       console.clear();
@@ -43,10 +146,20 @@ function RecipeSidebar() {
         "color: limegreen; font-weight: bold;",
         JSON.stringify(updated, null, 2)
       );
-    }
+    };
 
     const updateSelect = (id: string, selected:boolean) => {
-      const updated = folders.map(f => f.id === id ? { ...f, isSelected: selected } : { ...f, isSelected: false });
+      const updateRecursive = (folders: FolderData[]): FolderData[] => {
+        return folders.map(f => {
+          const updatedFolder = f.id === id ? { ...f, isSelected: selected } : { ...f, isSelected: false };
+          if (updatedFolder.subfolders.length > 0) {
+            return { ...updatedFolder, subfolders: updateRecursive(updatedFolder.subfolders) };
+          }
+          return updatedFolder;
+        });
+      };
+
+      const updated = updateRecursive(folders);
       setFolders(updated);
 
       console.clear();
@@ -55,7 +168,7 @@ function RecipeSidebar() {
         "color: limegreen; font-weight: bold;",
         JSON.stringify(updated, null, 2)
       );
-    }
+    };
 
     return (
       <div className="app-container">
@@ -68,7 +181,9 @@ function RecipeSidebar() {
           />
         )}
 
-        <nav className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
+        <nav 
+          className={`sidebar ${sidebarOpen ? 'open' : ''}`}
+          onDragOver={onSidebarDragOver}>
           <div className="topbar">
             <img 
               className="recipe-lounge-logo"
@@ -78,7 +193,7 @@ function RecipeSidebar() {
             <h3 className="logo-title">RecipeLounge</h3>
             <img 
               src="src/assets/x-close.svg"
-              className={`hamburger-opened ${sidebarOpen ? 'not-displayed' : ''}`}
+              className={`hamburger-opened ${!sidebarOpen ? 'not-displayed' : ''}`}
               onClick={() => setSidebarOpen(false)}
               alt="close"
             />
@@ -86,7 +201,7 @@ function RecipeSidebar() {
 
           <button className="create-recipe-folder-btn" onClick={createFolder}>
             <img 
-              src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='12' y1='5' x2='12' y2='19'%3E%3C/line%3E%3Cline x1='5' y1='12' x2='19' y2='12'%3E%3C/line%3E%3C/svg%3E"
+              src="src/assets/plus-icon.svg"
               alt="plus"
             />
             New Recipe Folder
@@ -97,6 +212,9 @@ function RecipeSidebar() {
             folderData={f} 
             onUpdateData={updateData} 
             onUpdateSelect={updateSelect}
+            onUpdateDraggedFolder={updateDraggedFolder}
+            onUpdateDragEnd={updateDragEnd}
+            targetFolderId={targetFolderId}
             />
           ))}
         </nav>

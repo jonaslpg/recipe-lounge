@@ -6,20 +6,40 @@ function FolderItem(
 {
     folderData, 
     onUpdateData,
-    onUpdateSelect
+    onUpdateSelect,
+    onUpdateDraggedFolder,
+    targetFolderId,
+    onUpdateDragEnd
 }: 
     { 
         folderData: FolderData, 
         onUpdateData: (id: string, updates: Partial<FolderData>) => void,
-        onUpdateSelect: (id: string, selected: boolean) => void
+        onUpdateSelect: (id: string, selected: boolean) => void,
+        onUpdateDraggedFolder: (folderData: FolderData) => void,
+        targetFolderId: string | null,
+        onUpdateDragEnd: () => void
     }
 ) {
-    const folderContainerRef = useRef<HTMLDivElement>(null);
+    const folderRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
+    const subfolderRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         inputRef.current?.focus();
     })
+
+    const onFolderDragStart = (e: React.DragEvent) => {
+        if(folderData.isEditing) return;
+        e.stopPropagation();
+        folderRef.current?.classList.add("folder-dragged");
+        onUpdateDraggedFolder(folderData);
+    }
+
+    const onFolderDragEnd = (e: React.DragEvent) => {
+        e.stopPropagation();
+        folderRef.current?.classList.remove("folder-dragged");
+        onUpdateDragEnd();
+    }
 
     const onDropdownClick = (e: React.MouseEvent<HTMLDivElement>) => {
         e.stopPropagation();
@@ -75,40 +95,74 @@ function FolderItem(
     }, [folderData.isEditing, folderData.id, onUpdateData]);
 
 
+    const visibleSubfoldersCount = folderData.amountOfAllSubfolders;
+    //const lineHeight = visibleSubfoldersCount > 0 ? (40 * visibleSubfoldersCount) + (8 * (visibleSubfoldersCount - 1)) : 40;
+
+    const hasSubfolders = folderData.subfolders.length > 0;
 
     return (
-        <div ref={folderContainerRef} className="recipe-folder-container">
-
-            <div 
-            className={
-                `recipe-folder 
-                ${folderData.isSelected ? 'recipe-folder-div-opened' : 'recipe-folder-div-closed'}
-                `} 
-            draggable={true}
-            onClick={onFolderClick}
-            >
-
+        <>
+        <div 
+        className={
+        `recipe-folder-container 
+        ${folderData.isSubfolder ? `sub-folder-margin-${folderData.folderLevel}` : ''}
+        `}
+        data-id={folderData.id}
+        >
+            {folderData.isSubfolder && (
+            <span 
+                className="sub-folder-line"
+                style={{ height: `${folderData.isLastSubfolder ? 40 : 48}px` }}
+            ></span>
+            )}
                 <div 
-                className="dropdown_container"
-                onClick={onDropdownClick}
-                >
-                    <img className={`chevron ${folderData.isOpen ? 'chevron-opened' : ''}`} alt="chevron" />
-                </div>
-
-                <img className="folderIcon" alt="folder" />
-                <input
-                ref={inputRef}
                 className={
-                    `recipe-folder-title
-                    ${folderData.isEditing ? '' : 'noedit'}
+                    `recipe-folder 
+                    ${folderData.isSelected ? 'recipe-folder-div-opened' : 'recipe-folder-div-closed'}
+                    ${targetFolderId === folderData.id ? 'chosen-folder' : ''}
+                    
                     `}
-                onKeyDown={onInputEnter}
-                placeholder="Untitled"
-                readOnly={!folderData.isEditing}
-                />
+                ref={folderRef}
+                draggable={true}
+                onDragStart={onFolderDragStart}
+                onDragEnd={onFolderDragEnd}
+                onClick={onFolderClick}
+                >
+                    <div 
+                    className="dropdown_container"
+                    onClick={onDropdownClick}
+                    >
+                        <img className={`chevron ${folderData.isOpen ? 'chevron-opened' : ''}`} alt="chevron" />
+                    </div>
 
-            </div>
+                    <img className="folderIcon" alt="folder" />
+                    <input
+                    ref={inputRef}
+                    className={
+                        `recipe-folder-title
+                        ${folderData.isEditing ? '' : 'noedit'}
+                        `}
+                    value={folderData.isEditing ? undefined : folderData.title}
+                    onKeyDown={onInputEnter}
+                    placeholder="Untitled"
+                    readOnly={!folderData.isEditing}
+                    />
+
+                </div>
         </div>
+
+        {folderData.subfolders.map((subfolder) => (
+            <FolderItem
+                key={subfolder.id}
+                folderData={subfolder}
+                onUpdateData={onUpdateData}
+                onUpdateSelect={onUpdateSelect}
+                onUpdateDraggedFolder={onUpdateDraggedFolder}
+                onUpdateDragEnd={onUpdateDragEnd}
+                targetFolderId={targetFolderId}
+            />
+        ))}
+        </>
     );
 }
 

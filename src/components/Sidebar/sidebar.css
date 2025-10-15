@@ -249,12 +249,9 @@ beim schnellen Klicken */
 
 .recipe-folder.folder-dragged .chevron,
 .recipe-folder.folder-dragged .folderIcon {
-  filter: brightness(0) invert(1);
+    transition: none !important;
+    filter: brightness(0) invert(1);
 }
-
-/*.recipe-folder.drag-over {
-  border: 2px solid #00aaff;
-}*/
 
 .folder-dragged input {
   color: white !important;
