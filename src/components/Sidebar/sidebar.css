@@ -145,11 +145,15 @@
 }
 
 .sub-folder-margin-2 {
-    padding-left: 54px;
+    padding-left: 53px;
 }
 
 .sub-folder-margin-3 {
-    padding-left: 84px;
+    padding-left: 83px;
+}
+
+.sub-folder-margin-4 {
+    padding-left: 111px;
 }
 
 .sub-folder-line {

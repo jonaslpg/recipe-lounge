@@ -22,7 +22,6 @@ function FolderItem(
 ) {
     const folderRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
-    const subfolderRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         inputRef.current?.focus();
@@ -94,12 +93,6 @@ function FolderItem(
         };
     }, [folderData.isEditing, folderData.id, onUpdateData]);
 
-
-    const visibleSubfoldersCount = folderData.amountOfAllSubfolders;
-    //const lineHeight = visibleSubfoldersCount > 0 ? (40 * visibleSubfoldersCount) + (8 * (visibleSubfoldersCount - 1)) : 40;
-
-    const hasSubfolders = folderData.subfolders.length > 0;
-
     return (
         <>
         <div 
@@ -120,7 +113,6 @@ function FolderItem(
                     `recipe-folder 
                     ${folderData.isSelected ? 'recipe-folder-div-opened' : 'recipe-folder-div-closed'}
                     ${targetFolderId === folderData.id ? 'chosen-folder' : ''}
-                    
                     `}
                 ref={folderRef}
                 draggable={true}
