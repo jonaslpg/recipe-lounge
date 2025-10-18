@@ -22,6 +22,13 @@ function FolderItem(
 ) {
     const folderRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
+    const regexLength = /^.{0,12}$/;
+    const regexAlphaNumericOnly = /^[A-Za-zÄÖÜäöüß0-9]+$/;
+
+    let counterSubfolderAmounts = 0;
+    folderData.subfolders.forEach((f) => {
+	    counterSubfolderAmounts += f.subfolders.length
+    })
 
     useEffect(() => {
         inputRef.current?.focus();
@@ -55,48 +62,59 @@ function FolderItem(
     const onInputEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter") {
             e.stopPropagation();
-            if(inputRef.current){
-                if(!inputRef.current.value) inputRef.current.value = "Untitled";
-                onUpdateData(folderData.id, 
+            saveInput();
+        }
+    };
+
+    const saveInput = () => {
+        if (inputRef.current /*&& !inputRef.current.contains(e.target as Node)*/) {
+            if(inputRef.current){ // if it is not empty
+                if(!inputRef.current.value) {
+                    inputRef.current.value = "Untitled";
+                }
+
+                if (!regexLength.test(inputRef.current.value)) {
+                    alert("Your Recipe title must be under 12 letters.");
+                    onUpdateData(folderData.id,
                     { 
-                        title: inputRef.current.value,
+                        title: 'Untitled',
                         isEditing: false
                     });
+                    // TODO: add a toast notification for this
+                    return;
+                } else if (!regexAlphaNumericOnly.test(inputRef.current.value)) {
+                    alert("Your Recipe title can only have letters and numbers.");
+                    onUpdateData(folderData.id,
+                    { 
+                        title: 'Untitled',
+                        isEditing: false
+                    });
+                    // TODO: add a toast notification for this
+                    return;
+                } else {
+                    onUpdateData(folderData.id,
+                    { 
+                        title: inputRef.current?.value || 'Untitled',
+                        isEditing: false
+                    });
+                }
             }
         }
     };
 
+    // when the user clicks anywhere inside or outside the document the folder is
+    // created but with an untitled title
     useEffect(() => {
         if (!folderData.isEditing) return;
 
-        const saveInput = () => {
-                onUpdateData(folderData.id, {
-                title: inputRef.current?.value || 'Untitled',
-                isEditing: false,
-            });
-        };
-
-        const handleClickOutside = (e: MouseEvent) => {
-            if (inputRef.current && !inputRef.current.contains(e.target as Node)) {
-                saveInput();
-            }
-        };
-
-        const handleWindowBlur = () => saveInput();
-
-        document.addEventListener("mousedown", handleClickOutside);
-        window.addEventListener("blur", handleWindowBlur);
+        document.addEventListener("mousedown", saveInput);
+        window.addEventListener("blur", saveInput);
 
         return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-            window.removeEventListener("blur", handleWindowBlur);
+            document.removeEventListener("mousedown", saveInput);
+            window.removeEventListener("blur", saveInput);
         };
     }, [folderData.isEditing, folderData.id, onUpdateData]);
-
-    let counterSubfolderAmounts = 0;
-    folderData.subfolders.forEach((f) => {
-	    counterSubfolderAmounts += f.subfolders.length
-    })
 
     return (
         <>
@@ -143,7 +161,12 @@ function FolderItem(
                         `recipe-folder-title
                         ${folderData.isEditing ? '' : 'noedit'}
                         `}
-                    value={folderData.isEditing ? undefined : folderData.title}
+                    value={folderData.title}
+                    onChange={(e) => {
+                        if(folderData.isEditing){
+                            onUpdateData(folderData.id, { title: e.target.value });
+                        }
+                    }}
                     onKeyDown={onInputEnter}
                     placeholder="Untitled"
                     readOnly={!folderData.isEditing}
@@ -168,4 +191,3 @@ function FolderItem(
 }
 
 export default FolderItem;
-

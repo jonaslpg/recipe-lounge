@@ -9,7 +9,6 @@ function RecipeSidebar() {
     const [folders, setFolders] = useState<FolderData[]>([]);
     const [draggedFolder, setDraggedFolder] = useState<FolderData | null>(null);
     const [targetFolderId, setTargetFolderId] = useState<string | null>(null);
-    const [targetFolder, setTargetFolder] = useState<FolderData | null>(null);
 
     const createFolder = () => {
       const folder: FolderData = {
@@ -125,7 +124,6 @@ function RecipeSidebar() {
 
       setDraggedFolder(null);
       setTargetFolderId(null);
-      setTargetFolder(null);
     };
 
     const addSubfolderRecursive = ((givenFolders: FolderData[], newSubfolder: FolderData): FolderData[] => {    
@@ -134,7 +132,6 @@ function RecipeSidebar() {
       } else {
         return givenFolders.map((f) => {
           if (f.id === targetFolderId) {
-            setTargetFolder(f);
             return {
               ...f,
               //amountOfAllSubfolders: f.amountOfAllSubfolders + 1,
