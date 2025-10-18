@@ -269,6 +269,11 @@ beim schnellen Klicken */
     display: none;
 }
 
+/* By default we want that the closed-icon isn't visible, only when resizing to 768px */
+.hamburger-opened {
+    display: none;
+}
+
 .hamburger-closed {
     margin-top: 16px;
     margin-left: 16px;

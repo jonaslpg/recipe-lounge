@@ -9,6 +9,7 @@ function RecipeSidebar() {
     const [folders, setFolders] = useState<FolderData[]>([]);
     const [draggedFolder, setDraggedFolder] = useState<FolderData | null>(null);
     const [targetFolderId, setTargetFolderId] = useState<string | null>(null);
+    const [targetFolder, setTargetFolder] = useState<FolderData | null>(null);
 
     const createFolder = () => {
       const folder: FolderData = {
@@ -16,7 +17,7 @@ function RecipeSidebar() {
         title: "",
         folderLevel: 0,
         subfolders: [],
-        amountOfAllSubfolders: 0,
+        //amountOfAllSubfolders: 0,
         isSubfolder: false,
         isLastSubfolder: false,
         isOpen: false,
@@ -52,38 +53,47 @@ function RecipeSidebar() {
       if(!draggedFolder || !targetFolderId) return;
 
       setFolders(() => {
-        // make all subfolders of targetFolder to isLastSubfolder: false
-        let updated = folders.map((f) => {
-          if(targetFolderId === f.id){
-            return {
-              ...f,
-              subfolders: f.subfolders.map(sf => {
-                    return {
-                      ...sf,
-                      isLastSubfolder: false,
-                    }
-                })
-            }
-          } else {
-            return { ...f }
-          }
+        console.clear();
 
-        })
+        // make all subfolders of targetFolder to isLastSubfolder: false
+        let updated = makeLastSubfolderFalseRecursive(folders);
 
         // calculate the new folderLevel
-        let newFolderLevel = 0;
-        let findFolderLevelRecursive = (givenFolders: FolderData[]) => {
-          if(givenFolders.length === 0) return;
-          for(const f of givenFolders) {
-            if (f.id === targetFolderId) {
-              newFolderLevel = f.folderLevel + 1;
+        let newFolderLevel = findFolderLevelRecursive(updated);
+
+
+        // checking that the user can't have more than 4 subfolders (for readibility-purposes)
+        let noAllowMoveSubfolderL2 = false;
+        for (const sf of draggedFolder.subfolders) {
+          if (sf.subfolders.length > 0) {
+            noAllowMoveSubfolderL2 = true;
+            break;
+          }
+        }
+
+        let noAllowMoveSubfolderL1 = false;
+        for (const sf of draggedFolder.subfolders) {
+          for(const sf2 of sf.subfolders){
+            if (sf2.subfolders.length > 0) {
+              noAllowMoveSubfolderL1 = true;
               break;
-            } else {
-              findFolderLevelRecursive(f.subfolders);
             }
           }
         }
-        findFolderLevelRecursive(folders);
+
+        if(newFolderLevel > 3 ||
+          (newFolderLevel == 3 && draggedFolder.subfolders.length > 0) ||
+          (newFolderLevel == 2 && noAllowMoveSubfolderL2) ||
+          (newFolderLevel == 1 && noAllowMoveSubfolderL1)
+        ){
+          alert("Warning: A folder can't hold more than 3 subfolders.");
+          console.log(
+            "%c📁 Folder didn't move:",
+            "color: limegreen; font-weight: bold;",
+            JSON.stringify(folders, null, 2)
+          );
+          return folders;
+        }
 
         // copy dragged folder as subfolder with all properties including title
         // now this subfolder is always the last one
@@ -91,8 +101,12 @@ function RecipeSidebar() {
           ...structuredClone(draggedFolder),
           isSubfolder: true,
           isLastSubfolder: true,
-          folderLevel: newFolderLevel
+          folderLevel: newFolderLevel,
         };
+
+        newSubfolder.subfolders.forEach((sf) => {
+          sf.folderLevel = newFolderLevel+1;
+        })
 
         // delete old dragged folder
         updated = deleteFolderRecursive(updated, draggedFolder.id);
@@ -100,7 +114,6 @@ function RecipeSidebar() {
         // add new subfolder in the FolderData-array
         updated = addSubfolderRecursive(updated, newSubfolder);
 
-        console.clear();
         console.log(
           "%c📁 Folder moved:",
           "color: limegreen; font-weight: bold;",
@@ -112,17 +125,19 @@ function RecipeSidebar() {
 
       setDraggedFolder(null);
       setTargetFolderId(null);
+      setTargetFolder(null);
     };
 
-    let addSubfolderRecursive = ((givenFolders: FolderData[], newSubfolder: FolderData): FolderData[] => {
+    const addSubfolderRecursive = ((givenFolders: FolderData[], newSubfolder: FolderData): FolderData[] => {    
       if(givenFolders.length === 0) {
         return [];
       } else {
         return givenFolders.map((f) => {
           if (f.id === targetFolderId) {
+            setTargetFolder(f);
             return {
               ...f,
-              amountOfAllSubfolders: f.amountOfAllSubfolders + 1,
+              //amountOfAllSubfolders: f.amountOfAllSubfolders + 1,
               subfolders: [
                 ...f.subfolders,
                 newSubfolder
@@ -137,6 +152,45 @@ function RecipeSidebar() {
         })
       }
     })
+    
+    const makeLastSubfolderFalseRecursive = (givenFolders: FolderData[]): FolderData[] => {
+      return givenFolders.map((f) => {
+        if(targetFolderId === f.id){
+          return {
+            ...f,
+            subfolders: f.subfolders.map(sf => {
+                  return {
+                    ...sf,
+                    isLastSubfolder: false,
+                  }
+              })
+          }
+        } else {
+          return {
+            ...f,
+            subfolders: makeLastSubfolderFalseRecursive(f.subfolders)
+          }
+        }
+      })
+    }
+
+    const findFolderLevelRecursive = (givenFolders: FolderData[]): number => {
+      if (givenFolders.length === 0) return 0;
+
+      for (const f of givenFolders) {
+        if (f.id === targetFolderId) {
+          return f.folderLevel + 1;
+        }
+
+        const subResult = findFolderLevelRecursive(f.subfolders);
+
+        if (subResult > 0) {
+          return subResult;
+        }
+      }
+
+      return 0;
+    };
 
     const deleteFolderRecursive = (folders: FolderData[], id: string): FolderData[] => {
       return folders

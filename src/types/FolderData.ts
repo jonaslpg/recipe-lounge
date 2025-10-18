@@ -3,7 +3,7 @@ export interface FolderData {
   title: string;
   folderLevel: number;
   subfolders: FolderData[];
-  amountOfAllSubfolders: number;
+  //amountOfAllSubfolders: number;
   isSubfolder: boolean;
   isLastSubfolder: boolean;
   isOpen: boolean;

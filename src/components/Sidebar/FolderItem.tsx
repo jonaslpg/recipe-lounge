@@ -93,9 +93,14 @@ function FolderItem(
         };
     }, [folderData.isEditing, folderData.id, onUpdateData]);
 
+    let counterSubfolderAmounts = 0;
+    folderData.subfolders.forEach((f) => {
+	    counterSubfolderAmounts += f.subfolders.length
+    })
+
     return (
         <>
-        <div 
+        <div
         className={
         `recipe-folder-container 
         ${folderData.isSubfolder ? `sub-folder-margin-${folderData.folderLevel}` : ''}
@@ -105,7 +110,11 @@ function FolderItem(
             {folderData.isSubfolder && (
             <span 
                 className="sub-folder-line"
-                style={{ height: `${folderData.isLastSubfolder ? 40 : 48}px` }}
+                style={{ height: `${folderData.isLastSubfolder 
+                    ? 
+                    40 + (48 * (folderData.subfolders.length + counterSubfolderAmounts))
+                    : 
+                    48 + (48 * (folderData.subfolders.length + counterSubfolderAmounts))}px` }}
             ></span>
             )}
                 <div 
