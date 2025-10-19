@@ -16,7 +16,6 @@ function RecipeSidebar() {
         title: "",
         folderLevel: 0,
         subfolders: [],
-        //amountOfAllSubfolders: 0,
         isSubfolder: false,
         isLastSubfolder: false,
         isOpen: false,

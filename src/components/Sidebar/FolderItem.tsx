@@ -27,12 +27,19 @@ function FolderItem(
 
     let counterSubfolderAmounts = 0;
     folderData.subfolders.forEach((f) => {
-	    counterSubfolderAmounts += f.subfolders.length
+	    counterSubfolderAmounts += f.subfolders.length;
     })
 
+    /* NOTE for myself:
+    it's important that we only let the input be in focused-state when isEditing is true
+    and when isEditing has changed
+    -> without useEffect it runs for every render
+    */
     useEffect(() => {
-        inputRef.current?.focus();
-    })
+        if (folderData.isEditing) {
+            inputRef.current?.focus();
+        }
+    }, [folderData.isEditing]);
 
     const onFolderDragStart = (e: React.DragEvent) => {
         if(folderData.isEditing) return;
@@ -68,7 +75,7 @@ function FolderItem(
 
     const saveInput = () => {
         if (inputRef.current /*&& !inputRef.current.contains(e.target as Node)*/) {
-            if(inputRef.current){ // if it is not empty
+            if(inputRef.current){ // if input isn't
                 if(!inputRef.current.value) {
                     inputRef.current.value = "Untitled";
                 }
@@ -171,7 +178,6 @@ function FolderItem(
                     placeholder="Untitled"
                     readOnly={!folderData.isEditing}
                     />
-
                 </div>
         </div>
 
