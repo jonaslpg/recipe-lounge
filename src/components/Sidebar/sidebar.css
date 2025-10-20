@@ -171,17 +171,17 @@
 /* Close and open folder */
 .chevron {
     transition: transform 0.2s ease, filter 0.2s ease;
-    transform-origin: center; /* Drehpunkt */
+    transform-origin: center; /* Rotating point */
     content: url('../../assets/chevron-right.svg');
 }
 .chevron-opened {
-    filter: invert(8%) brightness(12%);
+    /*filter: invert(8%) brightness(12%);*/
     transform: rotate(90deg);
 }
-.recipe-folder-div-closed .folderIcon {
+.folder-icon-closed {
     content: url('../../assets/folder-closed-icon.svg');
 }
-.recipe-folder-div-opened .folderIcon {
+.folder-icon-opened {
     content: url('../../assets/folder-opened-icon.svg');
 }
 .recipe-folder-div-opened input,
@@ -237,7 +237,8 @@ when clicking quickly */
 }
 
 .recipe-folder.folder-dragged .chevron,
-.recipe-folder.folder-dragged .folderIcon {
+.recipe-folder.folder-dragged .folder-icon-closed,
+.recipe-folder.folder-dragged .folder-icon-opened {
     transition: none !important;
     filter: brightness(0) invert(1);
 }

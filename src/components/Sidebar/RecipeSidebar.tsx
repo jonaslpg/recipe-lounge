@@ -149,6 +149,8 @@ function RecipeSidebar() {
       }
     })
     
+    // TODO: watch out for this method, something seems buggy here
+    // -> change isLastSubfolder from the draggedFolder-Parent
     const makeLastSubfolderFalseRecursive = (givenFolders: FolderData[]): FolderData[] => {
       return givenFolders.map((f) => {
         if(targetFolderId === f.id){

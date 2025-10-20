@@ -23,12 +23,22 @@ function FolderItem(
     const folderRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
     const regexLength = /^.{0,12}$/;
-    const regexAlphaNumericOnly = /^[A-Za-zÄÖÜäöüß0-9]+$/;
+    const regexAlphaNumericOnly = /^[A-Za-zÄÖÜäöüß0-9 ]+$/;
+    let amountOfActiveSubfolders: number = 0; // gets recalculated, every time the FolderItem is being rendered
 
-    let counterSubfolderAmounts = 0;
+    // Calculating how many subfolders are active for this FolderItem
     folderData.subfolders.forEach((f) => {
-	    counterSubfolderAmounts += f.subfolders.length;
+        // If a folder has subfolders and they are opened, add their subfolders.length
+        if(f.isOpen){
+            amountOfActiveSubfolders += f.subfolders.length;
+        }
     })
+
+    if(!folderData.isOpen){
+        amountOfActiveSubfolders = 0; // If folder is closed no subfolder is active (visible)
+    } else {
+        amountOfActiveSubfolders += folderData.subfolders.length;
+    }
 
     /* NOTE for myself:
     it's important that we only let the input be in focused-state when isEditing is true
@@ -137,9 +147,9 @@ function FolderItem(
                 className="sub-folder-line"
                 style={{ height: `${folderData.isLastSubfolder 
                     ? 
-                    40 + (48 * (folderData.subfolders.length + counterSubfolderAmounts))
+                    40 + (48 * (amountOfActiveSubfolders))
                     : 
-                    48 + (48 * (folderData.subfolders.length + counterSubfolderAmounts))}px` }}
+                    48 + (48 * (amountOfActiveSubfolders))}px` }}
             ></span>
             )}
                 <div 
@@ -154,14 +164,15 @@ function FolderItem(
                 onDragEnd={onFolderDragEnd}
                 onClick={onFolderClick}
                 >
-                    <div 
-                    className="dropdown_container"
-                    onClick={onDropdownClick}
-                    >
-                        <img className={`chevron ${folderData.isOpen ? 'chevron-opened' : ''}`} alt="chevron" />
-                    </div>
-
-                    <img className="folderIcon" alt="folder" />
+                    {folderData.folderLevel !== 3 ?
+                        <div 
+                        className="dropdown_container"
+                        onClick={onDropdownClick}
+                        >
+                            <img className={`chevron ${folderData.isOpen ? 'chevron-opened' : ''}`} alt="chevron" />
+                        </div>
+                    : ''}
+                    {folderData.folderLevel !== 3 ? (folderData.isOpen ? <img className="folder-icon-opened" alt="folder" /> : <img className="folder-icon-closed" alt="folder" />) : ''}
                     <input
                     ref={inputRef}
                     className={
@@ -181,7 +192,7 @@ function FolderItem(
                 </div>
         </div>
 
-        {folderData.subfolders.map((subfolder) => (
+        {folderData.isOpen && folderData.subfolders.map((subfolder) => (
             <FolderItem
                 key={subfolder.id}
                 folderData={subfolder}
