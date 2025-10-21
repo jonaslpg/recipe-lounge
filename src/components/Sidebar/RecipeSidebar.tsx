@@ -50,15 +50,17 @@ function RecipeSidebar() {
     const updateDragEnd = () => {
       if(!draggedFolder || !targetFolderId) return;
 
-      setFolders(() => {
+      let folderWarning: boolean = false; // = ONLY FOR DEV MODE: to prevent double render from strict-mode =
+      
+      /* This part gets executed 2 times, why ? */
+      setFolders(prevFolders => {
         console.clear();
 
         // make all subfolders of targetFolder to isLastSubfolder: false
-        let updated = makeLastSubfolderFalseRecursive(folders);
+        let updated = makeLastSubfolderFalseRecursive(prevFolders);
 
         // calculate the new folderLevel
         let newFolderLevel = findFolderLevelRecursive(updated);
-
 
         // checking that the user can't have more than 4 subfolders (for readibility-purposes)
         let noAllowMoveSubfolderL2 = false;
@@ -84,13 +86,14 @@ function RecipeSidebar() {
           (newFolderLevel == 2 && noAllowMoveSubfolderL2) ||
           (newFolderLevel == 1 && noAllowMoveSubfolderL1)
         ){
-          alert("Warning: A folder can't hold more than 3 subfolders.");
+          folderWarning = true; // = ONLY FOR DEV MODE: to prevent double render from strict-mode =
+          console.clear();
           console.log(
             "%c📁 Folder didn't move:",
             "color: limegreen; font-weight: bold;",
-            JSON.stringify(folders, null, 2)
+            JSON.stringify(prevFolders, null, 2)
           );
-          return folders;
+          return prevFolders;
         }
 
         // copy dragged folder as subfolder with all properties including title
@@ -115,6 +118,7 @@ function RecipeSidebar() {
         // add new subfolder in the FolderData-array
         updated = addSubfolderRecursive(updated, newSubfolder);
 
+        console.clear();
         console.log(
           "%c📁 Folder moved:",
           "color: limegreen; font-weight: bold;",
@@ -123,6 +127,8 @@ function RecipeSidebar() {
 
         return updated;
       });
+
+      if(folderWarning) alert("Warning: A folder can't hold more than 3 subfolders."); // TODO: Change to UI warning
 
       setDraggedFolder(null);
       setTargetFolderId(null);
@@ -136,7 +142,6 @@ function RecipeSidebar() {
           if (f.id === targetFolderId) {
             return {
               ...f,
-              //amountOfAllSubfolders: f.amountOfAllSubfolders + 1,
               subfolders: [
                 ...f.subfolders,
                 newSubfolder

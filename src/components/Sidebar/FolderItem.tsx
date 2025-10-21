@@ -62,6 +62,7 @@ function FolderItem(
     const onFolderDragEnd = (e: React.DragEvent) => {
         e.stopPropagation();
         folderRef.current?.classList.remove("folder-dragged");
+        //console.log("test");
         onUpdateDragEnd();
     }
 
@@ -166,7 +167,7 @@ function FolderItem(
                     }
                 `}
                 ref={folderRef}
-                draggable={true}
+                draggable={ folderData.isEditing ? false : true}
                 onDragStart={onFolderDragStart}
                 onDragEnd={onFolderDragEnd}
                 onClick={onFolderClick}
@@ -200,6 +201,7 @@ function FolderItem(
                     readOnly={!folderData.isEditing}
                     style={folderData.isEditing ? { color: "#1F1F1F" } : {}}
                     spellCheck={false}
+                    onDragStart={(e) => e.preventDefault()}
                     />
                 </div>
         </div>
