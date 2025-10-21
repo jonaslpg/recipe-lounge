@@ -38,29 +38,6 @@
 }
 
 /* Recipe Folder Btn */
-/*.sidebar-item {
-    padding: 10px 12px;
-    width: 100%;
-    background-color: white;
-    border: none;
-    box-shadow: 
-    0 0 0 1.5px rgba(31,31,31,0.08), 
-    0 1px 1px 0 rgba(31,31,31,0.04),  
-    0 3px 3px 0 rgba(31,31,31,0.03), 
-    0 3px 4px 0 rgba(31,31,31,0.02); 
-    border-radius: 100px;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: 600; 
-    letter-spacing: -0.02em; 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    color: #1F1F1F;
-    margin-bottom: 24px;
-}*/
-
 .sidebar-item {
     padding: 10px 12px;
     width: 100%;
@@ -145,25 +122,6 @@
     font-size: 12px;
 }
 
-/*.recipe-folder-div-opened {
-    gap: 6px;
-    height: 100%;
-    display: flex;
-    width: 100%;
-    align-items: center;
-    padding: 0px 8px;
-    margin-bottom: 8px;
-    border-radius: 10px;
-    background-color: white;
-    border: none;
-    box-shadow:
-    0 0 0 1.5px rgba(31,31,31,0.08),  
-    0 1px 1px 0 rgba(31,31,31,0.04), 
-    0 3px 3px 0 rgba(31,31,31,0.03), 
-    0 3px 4px 0 rgba(31,31,31,0.02); 
-    cursor: pointer;
-}*/
-
 .recipe-folder-title {
     color: #757575;
     font-weight: 500;
@@ -184,6 +142,12 @@
 .recipe-folder-div-opened .noedit {
     user-select: none;
     pointer-events: none;
+}
+
+/* Highlight text for the input-element - coloring */
+input::selection {
+    background-color: #ff782f33;
+    color: #1F1F1F;
 }
 
 /* Subfolder */

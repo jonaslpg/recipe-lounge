@@ -13,7 +13,7 @@ function RecipeSidebar() {
     const createFolder = () => {
       const folder: FolderData = {
         id: crypto.randomUUID(),
-        title: "",
+        title: "Untitled",
         folderLevel: 0,
         subfolders: [],
         isSubfolder: false,

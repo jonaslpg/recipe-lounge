@@ -48,6 +48,7 @@ function FolderItem(
     useEffect(() => {
         if (folderData.isEditing) {
             inputRef.current?.focus();
+            inputRef.current?.select();
         }
     }, [folderData.isEditing]);
 
@@ -85,36 +86,33 @@ function FolderItem(
 
     const saveInput = () => {
         if (inputRef.current /*&& !inputRef.current.contains(e.target as Node)*/) {
-            if(inputRef.current){ // if input isn't
-                if(!inputRef.current.value) {
-                    inputRef.current.value = "Untitled";
-                }
+            
+            inputRef.current.setSelectionRange(0, 0); // reverse .select()-command
 
-                if (!regexLength.test(inputRef.current.value)) {
-                    alert("Your Recipe title must be under 12 letters.");
-                    onUpdateData(folderData.id,
-                    { 
-                        title: 'Untitled',
-                        isEditing: false
-                    });
-                    // TODO: add a toast notification for this
-                    return;
-                } else if (!regexAlphaNumericOnly.test(inputRef.current.value)) {
-                    alert("Your Recipe title can only have letters and numbers.");
-                    onUpdateData(folderData.id,
-                    { 
-                        title: 'Untitled',
-                        isEditing: false
-                    });
-                    // TODO: add a toast notification for this
-                    return;
-                } else {
-                    onUpdateData(folderData.id,
-                    { 
-                        title: inputRef.current?.value || 'Untitled',
-                        isEditing: false
-                    });
-                }
+            if (!regexLength.test(inputRef.current.value)) {
+                alert("Your Recipe title must be under 12 letters.");
+                onUpdateData(folderData.id,
+                { 
+                    title: 'Untitled',
+                    isEditing: false
+                });
+                // TODO: add a toast notification for this
+                return;
+            } else if (!regexAlphaNumericOnly.test(inputRef.current.value)) {
+                alert("Your Recipe title can only have letters and numbers.");
+                onUpdateData(folderData.id,
+                { 
+                    title: 'Untitled',
+                    isEditing: false
+                });
+                // TODO: add a toast notification for this
+                return;
+            } else {
+                onUpdateData(folderData.id,
+                { 
+                    title: inputRef.current?.value || 'Untitled',
+                    isEditing: false
+                });
             }
         }
     };
@@ -124,11 +122,17 @@ function FolderItem(
     useEffect(() => {
         if (!folderData.isEditing) return;
 
-        document.addEventListener("mousedown", saveInput);
+        const handleClickOutside = (e: MouseEvent) => {
+            if (inputRef.current && !inputRef.current.contains(e.target as Node)) {
+                saveInput();
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
         window.addEventListener("blur", saveInput);
 
         return () => {
-            document.removeEventListener("mousedown", saveInput);
+            document.removeEventListener("mousedown", handleClickOutside);
             window.removeEventListener("blur", saveInput);
         };
     }, [folderData.isEditing, folderData.id, onUpdateData]);
@@ -160,7 +164,7 @@ function FolderItem(
                     ${targetFolderId === folderData.id ? 'chosen-folder' : ''}
                     ${folderData.isEditing ? 'folder-div-editing' : ''}
                     }
-                    `}
+                `}
                 ref={folderRef}
                 draggable={true}
                 onDragStart={onFolderDragStart}
@@ -175,18 +179,17 @@ function FolderItem(
                             <img className={`chevron ${folderData.isOpen ? 'chevron-opened' : ''}`} alt="chevron" />
                         </div>
                     : ''}
-                    {/*folderData.folderLevel !== 3
-                        ?*/ (folderData.isOpen 
-                            ? <img className="folder-icon-opened" alt="folder" /> 
-                            : <img className="folder-icon-closed" alt="folder" />) 
-                        /*: ''*/
+                    {
+                        (folderData.isOpen 
+                        ? <img className="folder-icon-opened" alt="folder" /> 
+                        : <img className="folder-icon-closed" alt="folder" />) 
                     }
                     <input
                     ref={inputRef}
                     className={
                         `recipe-folder-title
                         ${folderData.isEditing ? '' : 'noedit'}
-                        `}
+                    `}
                     value={folderData.title}
                     onChange={(e) => {
                         if(folderData.isEditing){
@@ -194,8 +197,9 @@ function FolderItem(
                         }
                     }}
                     onKeyDown={onInputEnter}
-                    placeholder="Untitled"
                     readOnly={!folderData.isEditing}
+                    style={folderData.isEditing ? { color: "#1F1F1F" } : {}}
+                    spellCheck={false}
                     />
                 </div>
         </div>
