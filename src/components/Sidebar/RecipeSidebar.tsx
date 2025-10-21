@@ -106,6 +106,9 @@ function RecipeSidebar() {
           sf.folderLevel = newFolderLevel+1;
         })
 
+        // for the case, that an open empty folder is put as last possible subfolder
+        if(newSubfolder.folderLevel === 3) newSubfolder.isOpen = false;
+
         // delete old dragged folder
         updated = deleteFolderRecursive(updated, draggedFolder.id);
 
@@ -278,13 +281,29 @@ function RecipeSidebar() {
             />
           </div>
 
-          <button className="create-recipe-folder-btn" onClick={createFolder}>
+          <button className="sidebar-item">
+            <img 
+              src="src/assets/home-icon.svg"
+              alt="home"
+            />
+            Home
+          </button>
+          <button className="sidebar-item">
+            <img 
+              src="src/assets/search-icon.svg"
+              alt="search"
+            />
+            Search
+          </button>
+          <button className="sidebar-item" onClick={createFolder} style={{ marginBottom: "24px" }}>
             <img 
               src="src/assets/plus-icon.svg"
               alt="plus"
             />
             New Recipe Folder
           </button>
+
+          <p className="sidebar-subtitle">FOLDERS</p>
           {folders.map((f) => (
             <FolderItem 
             key={f.id} 
@@ -296,6 +315,14 @@ function RecipeSidebar() {
             targetFolderId={targetFolderId}
             />
           ))}
+
+          <button className="sidebar-item" style={{ marginTop: "4px" }}>
+            <img 
+              src="src/assets/settings-icon.svg"
+              alt="settings"
+            />
+            Settings
+          </button>
         </nav>
       </div>
     )

@@ -136,27 +136,30 @@ function FolderItem(
     return (
         <>
         <div
-        className={
-        `recipe-folder-container 
+        className={"recipe-folder-container"}
+        /*`recipe-folder-container 
         ${folderData.isSubfolder ? `sub-folder-margin-${folderData.folderLevel}` : ''}
-        `}
+        `}*/
         data-id={folderData.id}
         >
             {folderData.isSubfolder && (
             <span 
-                className="sub-folder-line"
+                className={`sub-folder-line ${folderData.isSubfolder ? `sub-folder-margin-${folderData.folderLevel}` : ''}`}
                 style={{ height: `${folderData.isLastSubfolder 
                     ? 
-                    40 + (48 * (amountOfActiveSubfolders))
+                    38 + (44 * (amountOfActiveSubfolders))
                     : 
-                    48 + (48 * (amountOfActiveSubfolders))}px` }}
+                    44 + (44 * (amountOfActiveSubfolders))}px`,
+                }}
             ></span>
             )}
                 <div 
                 className={
-                    `recipe-folder 
+                    `recipe-folder ${folderData.isSubfolder ? `sub-folder-padding-${folderData.folderLevel}` : ''}
                     ${folderData.isSelected ? 'recipe-folder-div-opened' : 'recipe-folder-div-closed'}
                     ${targetFolderId === folderData.id ? 'chosen-folder' : ''}
+                    ${folderData.isEditing ? 'folder-div-editing' : ''}
+                    }
                     `}
                 ref={folderRef}
                 draggable={true}
@@ -172,7 +175,12 @@ function FolderItem(
                             <img className={`chevron ${folderData.isOpen ? 'chevron-opened' : ''}`} alt="chevron" />
                         </div>
                     : ''}
-                    {folderData.folderLevel !== 3 ? (folderData.isOpen ? <img className="folder-icon-opened" alt="folder" /> : <img className="folder-icon-closed" alt="folder" />) : ''}
+                    {/*folderData.folderLevel !== 3
+                        ?*/ (folderData.isOpen 
+                            ? <img className="folder-icon-opened" alt="folder" /> 
+                            : <img className="folder-icon-closed" alt="folder" />) 
+                        /*: ''*/
+                    }
                     <input
                     ref={inputRef}
                     className={
