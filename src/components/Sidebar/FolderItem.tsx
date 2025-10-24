@@ -25,20 +25,31 @@ function FolderItem(
     const regexLength = /^.{0,12}$/;
     const regexAlphaNumericOnly = /^[A-Za-zÄÖÜäöüß0-9 ]+$/;
     let amountOfActiveSubfolders: number = 0; // gets recalculated, every time the FolderItem is being rendered
+    let amountOfAllSubfolders: number = 0;
 
     // Calculating how many subfolders are active for this FolderItem
     folderData.subfolders.forEach((f) => {
         // If a folder has subfolders and they are opened, add their subfolders.length
         if(f.isOpen){
             amountOfActiveSubfolders += f.subfolders.length;
+            amountOfAllSubfolders += f.subfolders.length;
         }
+
+        f.subfolders.forEach((sf) => {
+            if(sf.isOpen){
+                amountOfAllSubfolders += sf.subfolders.length;
+            }
+        });
     })
 
     if(!folderData.isOpen){
         amountOfActiveSubfolders = 0; // If folder is closed no subfolder is active (visible)
+        amountOfAllSubfolders = 0;
     } else {
         amountOfActiveSubfolders += folderData.subfolders.length;
+        amountOfAllSubfolders += folderData.subfolders.length;
     }
+
 
     /* NOTE for myself:
     it's important that we only let the input be in focused-state when isEditing is true
@@ -140,14 +151,30 @@ function FolderItem(
 
     return (
         <>
+        {folderData.isSubfolder && (
+        <span 
+            className={`sub-folder-line ${folderData.isSubfolder ? `sub-folder-margin-${folderData.folderLevel}` : ''}`}
+            style={{ height: `${folderData.isLastFolder 
+                ? 
+                38 + (44 * (amountOfActiveSubfolders))
+                : 
+                44 + (44 * (amountOfActiveSubfolders))}px`,
+            }}
+        ></span>
+        )}
         <div
         className={"recipe-folder-container"}
         /*`recipe-folder-container 
         ${folderData.isSubfolder ? `sub-folder-margin-${folderData.folderLevel}` : ''}
         `}*/
         data-id={folderData.id}
+        onClick={onFolderClick}
+                        //draggable={folderData.isEditing ? false : true}
+                onDragStart={onFolderDragStart}
+                onDragEnd={onFolderDragEnd}
+                ref={folderRef}
         >
-            {folderData.isSubfolder && (
+            {/* {folderData.isSubfolder && (
             <span 
                 className={`sub-folder-line ${folderData.isSubfolder ? `sub-folder-margin-${folderData.folderLevel}` : ''}`}
                 style={{ height: `${folderData.isLastFolder 
@@ -157,21 +184,29 @@ function FolderItem(
                     44 + (44 * (amountOfActiveSubfolders))}px`,
                 }}
             ></span>
-            )}
+            )} */}
                 <div 
                 className={
                     `recipe-folder ${folderData.isSubfolder ? `sub-folder-padding-${folderData.folderLevel}` : ''}
                     ${folderData.isSelected ? 'recipe-folder-div-opened' : 'recipe-folder-div-closed'}
-                    ${targetFolderId === folderData.id ? 'chosen-folder' : ''}
                     ${folderData.isEditing ? 'folder-div-editing' : ''}
-                    }
                 `}
-                ref={folderRef}
-                draggable={ folderData.isEditing ? false : true}
-                onDragStart={onFolderDragStart}
-                onDragEnd={onFolderDragEnd}
-                onClick={onFolderClick}
+                                    // ${targetFolderId === folderData.id ? 'chosen-folder' : ''}
+                draggable={folderData.isEditing ? false : true}
                 >
+                    {folderData.id === targetFolderId && (
+                        <div 
+                        style={
+                        folderData.isOpen 
+                            ? { "--targeted-folders-height": `${38 + amountOfAllSubfolders * 44}px` } as React.CSSProperties
+                            : {}
+                        }
+                        className={`
+                            target-all-folders
+                            ${folderData.isSubfolder ? `sub-folder-padding-${folderData.folderLevel}` : ''}
+                            `}></div>
+                    )}
+
                     {folderData.folderLevel !== 3 ?
                         <div 
                         className="dropdown_container"

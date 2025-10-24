@@ -2,6 +2,7 @@ import { useState } from 'react'
 import './sidebar.css'
 import FolderItem from './FolderItem';
 import type { FolderData } from "../../types/FolderData";
+import { v4 as uuidv4 } from 'uuid';
 
 
 function RecipeSidebar() {
@@ -12,7 +13,7 @@ function RecipeSidebar() {
 
     const createFolder = () => {
       const folder: FolderData = {
-        id: crypto.randomUUID(),
+        id: uuidv4(),
         title: "Untitled",
         folderLevel: 0,
         subfolders: [],
@@ -20,7 +21,7 @@ function RecipeSidebar() {
         isLastFolder: false,
         isOpen: false,
         isEditing: true,
-        isSelected: false
+        isSelected: false,
       };
       let updated = [...folders, folder];
       updated = updateLastFolderPropRecursive(updated);
