@@ -17,12 +17,13 @@ function RecipeSidebar() {
         folderLevel: 0,
         subfolders: [],
         isSubfolder: false,
-        isLastSubfolder: false,
+        isLastFolder: false,
         isOpen: false,
         isEditing: true,
         isSelected: false
       };
-      const updated = [...folders, folder];
+      let updated = [...folders, folder];
+      updated = updateLastFolderPropRecursive(updated);
       setFolders(updated);
 
       console.clear();
@@ -52,15 +53,11 @@ function RecipeSidebar() {
 
       let folderWarning: boolean = false; // = ONLY FOR DEV MODE: to prevent double render from strict-mode =
       
-      /* This part gets executed 2 times, why ? */
       setFolders(prevFolders => {
         console.clear();
 
-        // make all subfolders of targetFolder to isLastSubfolder: false
-        let updated = makeLastSubfolderFalseRecursive(prevFolders);
-
         // calculate the new folderLevel
-        let newFolderLevel = findFolderLevelRecursive(updated);
+        let newFolderLevel = findFolderLevelRecursive(prevFolders);
 
         // checking that the user can't have more than 4 subfolders (for readibility-purposes)
         let noAllowMoveSubfolderL2 = false;
@@ -101,7 +98,7 @@ function RecipeSidebar() {
         const newSubfolder: FolderData = {
           ...structuredClone(draggedFolder),
           isSubfolder: true,
-          isLastSubfolder: true,
+          isLastFolder: true,
           folderLevel: newFolderLevel,
         };
 
@@ -113,19 +110,21 @@ function RecipeSidebar() {
         if(newSubfolder.folderLevel === 3) newSubfolder.isOpen = false;
 
         // delete old dragged folder
-        updated = deleteFolderRecursive(updated, draggedFolder.id);
+        prevFolders = deleteFolderRecursive(prevFolders, draggedFolder.id);
 
         // add new subfolder in the FolderData-array
-        updated = addSubfolderRecursive(updated, newSubfolder);
+        prevFolders = addSubfolderRecursive(prevFolders, newSubfolder);
+
+        prevFolders = updateLastFolderPropRecursive(prevFolders);
 
         console.clear();
         console.log(
           "%c📁 Folder moved:",
           "color: limegreen; font-weight: bold;",
-          JSON.stringify(updated, null, 2)
+          JSON.stringify(prevFolders, null, 2)
         );
 
-        return updated;
+        return prevFolders;
       });
 
       if(folderWarning) alert("Warning: A folder can't hold more than 3 subfolders."); // TODO: Change to UI warning
@@ -157,27 +156,15 @@ function RecipeSidebar() {
       }
     })
     
-    // TODO: watch out for this method, something seems buggy here
-    // -> change isLastSubfolder from the draggedFolder-Parent
-    const makeLastSubfolderFalseRecursive = (givenFolders: FolderData[]): FolderData[] => {
-      return givenFolders.map((f) => {
-        if(targetFolderId === f.id){
-          return {
-            ...f,
-            subfolders: f.subfolders.map(sf => {
-                  return {
-                    ...sf,
-                    isLastSubfolder: false,
-                  }
-              })
-          }
-        } else {
-          return {
-            ...f,
-            subfolders: makeLastSubfolderFalseRecursive(f.subfolders)
-          }
-        }
-      })
+    // makes the property "isLastFolder" false for every last folder/subfolder
+    const updateLastFolderPropRecursive = (givenFolders: FolderData[]): FolderData[] => {
+        return givenFolders.map((f, index) => {
+            return {
+                      ...f,
+                      isLastFolder: index === givenFolders.length-1 ? true : false,
+                      subfolders: updateLastFolderPropRecursive(f.subfolders)
+            }
+        })
     }
 
     const findFolderLevelRecursive = (givenFolders: FolderData[]): number => {

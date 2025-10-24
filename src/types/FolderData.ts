@@ -4,7 +4,7 @@ export interface FolderData {
   folderLevel: number;
   subfolders: FolderData[];
   isSubfolder: boolean;
-  isLastSubfolder: boolean;
+  isLastFolder: boolean;
   isOpen: boolean;
   isEditing: boolean;
   isSelected: boolean;

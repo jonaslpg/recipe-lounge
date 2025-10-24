@@ -150,7 +150,7 @@ function FolderItem(
             {folderData.isSubfolder && (
             <span 
                 className={`sub-folder-line ${folderData.isSubfolder ? `sub-folder-margin-${folderData.folderLevel}` : ''}`}
-                style={{ height: `${folderData.isLastSubfolder 
+                style={{ height: `${folderData.isLastFolder 
                     ? 
                     38 + (44 * (amountOfActiveSubfolders))
                     : 
