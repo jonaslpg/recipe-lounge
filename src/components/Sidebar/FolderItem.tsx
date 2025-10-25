@@ -73,7 +73,6 @@ function FolderItem(
     const onFolderDragEnd = (e: React.DragEvent) => {
         e.stopPropagation();
         folderRef.current?.classList.remove("folder-dragged");
-        //console.log("test");
         onUpdateDragEnd();
     }
 
@@ -152,80 +151,67 @@ function FolderItem(
     return (
         <>
         {folderData.isSubfolder && (
-        <span 
-            className={`sub-folder-line ${folderData.isSubfolder ? `sub-folder-margin-${folderData.folderLevel}` : ''}`}
-            style={{ height: `${folderData.isLastFolder 
-                ? 
-                38 + (44 * (amountOfActiveSubfolders))
-                : 
-                44 + (44 * (amountOfActiveSubfolders))}px`,
-            }}
-        ></span>
-        )}
-        <div
-        className={"recipe-folder-container"}
-        /*`recipe-folder-container 
-        ${folderData.isSubfolder ? `sub-folder-margin-${folderData.folderLevel}` : ''}
-        `}*/
-        data-id={folderData.id}
-        onClick={onFolderClick}
-                        //draggable={folderData.isEditing ? false : true}
-                onDragStart={onFolderDragStart}
-                onDragEnd={onFolderDragEnd}
-                ref={folderRef}
-        >
-            {/* {folderData.isSubfolder && (
             <span 
-                className={`sub-folder-line ${folderData.isSubfolder ? `sub-folder-margin-${folderData.folderLevel}` : ''}`}
-                style={{ height: `${folderData.isLastFolder 
-                    ? 
-                    38 + (44 * (amountOfActiveSubfolders))
-                    : 
-                    44 + (44 * (amountOfActiveSubfolders))}px`,
+                className={`sub-folder-line ${
+                    folderData.isSubfolder ? `sub-folder-line-spacing-${folderData.folderLevel}` : ''
+                }`}
+                style={{ 
+                    height: `${
+                        folderData.isLastFolder 
+                            ? 38 + (44 * amountOfActiveSubfolders)
+                            : 44 + (44 * amountOfActiveSubfolders)
+                    }px`,
                 }}
             ></span>
-            )} */}
-                <div 
-                className={
-                    `recipe-folder ${folderData.isSubfolder ? `sub-folder-padding-${folderData.folderLevel}` : ''}
-                    ${folderData.isSelected ? 'recipe-folder-div-opened' : 'recipe-folder-div-closed'}
+        )}
+
+        <div
+            className="recipe-folder-container"
+            data-id={folderData.id}
+            onClick={onFolderClick}
+            onDragStart={onFolderDragStart}
+            onDragEnd={onFolderDragEnd}
+            ref={folderRef}
+        >
+
+            <div 
+                className={`recipe-folder-div
+                    ${folderData.isSubfolder ? `sub-folder-spacing-${folderData.folderLevel}` : ''}
+                    ${folderData.isSelected ? 'recipe-folder-div-selected' : ''}
                     ${folderData.isEditing ? 'folder-div-editing' : ''}
                 `}
-                                    // ${targetFolderId === folderData.id ? 'chosen-folder' : ''}
                 draggable={folderData.isEditing ? false : true}
-                >
-                    {folderData.id === targetFolderId && (
-                        <div 
+            >
+                {folderData.id === targetFolderId && (
+                    <div 
                         style={
-                        folderData.isOpen 
-                            ? { "--targeted-folders-height": `${38 + amountOfAllSubfolders * 44}px` } as React.CSSProperties
-                            : {}
+                            folderData.isOpen 
+                                ? { "--targeted-folders-height": `${38 + amountOfAllSubfolders * 44}px` } as React.CSSProperties
+                                : {}
                         }
-                        className={`
-                            target-all-folders
-                            ${folderData.isSubfolder ? `sub-folder-padding-${folderData.folderLevel}` : ''}
-                            `}></div>
-                    )}
+                        className={`target-all-folders
+                            ${folderData.isSubfolder ? `sub-folder-spacing-${folderData.folderLevel}` : ''
+                        }`}
+                    ></div>
+                )}
 
-                    {folderData.folderLevel !== 3 ?
-                        <div 
-                        className="dropdown_container"
-                        onClick={onDropdownClick}
-                        >
-                            <img className={`chevron ${folderData.isOpen ? 'chevron-opened' : ''}`} alt="chevron" />
-                        </div>
-                    : ''}
-                    {
-                        (folderData.isOpen 
-                        ? <img className="folder-icon-opened" alt="folder" /> 
-                        : <img className="folder-icon-closed" alt="folder" />) 
-                    }
-                    <input
+                {folderData.folderLevel !== 3 && (
+                    <div className="dropdown_container" onClick={onDropdownClick}>
+                        <img 
+                            className={`chevron ${folderData.isOpen ? 'chevron-opened' : ''}`} 
+                            alt="chevron" 
+                        />
+                    </div>
+                )}
+                {folderData.isOpen ? (
+                    <img className="folder-icon-opened" alt="folder" /> 
+                ) : ( 
+                    <img className="folder-icon-closed" alt="folder" />
+                )}
+
+                <input
                     ref={inputRef}
-                    className={
-                        `recipe-folder-title
-                        ${folderData.isEditing ? '' : 'noedit'}
-                    `}
+                    className={`recipe-folder-title ${folderData.isEditing ? '' : 'noedit'}`}
                     value={folderData.title}
                     onChange={(e) => {
                         if(folderData.isEditing){
@@ -237,21 +223,22 @@ function FolderItem(
                     style={folderData.isEditing ? { color: "#1F1F1F" } : {}}
                     spellCheck={false}
                     onDragStart={(e) => e.preventDefault()}
-                    />
-                </div>
+                />
+            </div>
         </div>
 
-        {folderData.isOpen && folderData.subfolders.map((subfolder) => (
-            <FolderItem
-                key={subfolder.id}
-                folderData={subfolder}
-                onUpdateData={onUpdateData}
-                onUpdateSelect={onUpdateSelect}
-                onUpdateDraggedFolder={onUpdateDraggedFolder}
-                onUpdateDragEnd={onUpdateDragEnd}
-                targetFolderId={targetFolderId}
-            />
-        ))}
+        {folderData.isOpen && 
+            folderData.subfolders.map((subfolder) => (
+                <FolderItem
+                    key={subfolder.id}
+                    folderData={subfolder}
+                    onUpdateData={onUpdateData}
+                    onUpdateSelect={onUpdateSelect}
+                    onUpdateDraggedFolder={onUpdateDraggedFolder}
+                    onUpdateDragEnd={onUpdateDragEnd}
+                    targetFolderId={targetFolderId}
+                />
+            ))}
         </>
     );
 }

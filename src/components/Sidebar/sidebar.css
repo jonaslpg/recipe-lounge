@@ -1,3 +1,7 @@
+/* ============================================
+   BASE STYLES & FONTS
+   ============================================ */
+
 @import url('https://fonts.googleapis.com/css2?family=Inter+Display:wght@400;500;600;700&display=swap');
 
 * {
@@ -5,6 +9,10 @@
     box-sizing: border-box;
 }
 
+
+/* ============================================
+   SIDEBAR LAYOUT
+   ============================================ */
 
 .sidebar {
     height: 100vh;
@@ -18,6 +26,11 @@
     left: 0;
     padding: 16px;
 }
+
+
+/* ============================================
+   TOP BAR & LOGO
+   ============================================ */
 
 .logo-title {
     font-size: 20px;
@@ -37,7 +50,11 @@
     margin-bottom: 24px;
 }
 
-/* Recipe Folder Btn */
+
+/* ============================================
+   SIDEBAR ITEMS (THE BUTTONS)
+   ============================================ */
+
 .sidebar-item {
     padding: 10px 12px;
     width: 100%;
@@ -47,7 +64,6 @@
     cursor: pointer;
     font-size: 16px;
     font-weight: 500; /* Medium */
-    /* letter-spacing: -0.02em; ist -2% */
     display: flex;
     align-items: center;
     gap: 6px;
@@ -64,7 +80,12 @@
 }
 
 
-/* Recipe Folder Divs - States */
+/* ============================================
+   RECIPE FOLDER SYSTEM
+   ============================================ */
+
+/* ---------- Container & Base States ---------- */
+
 .recipe-folder-container {
     position: relative;
     display: flex;
@@ -75,7 +96,16 @@
     border-radius: 10px;
 }
 
-.recipe-folder-div-closed {
+.recipe-folder-container:hover {
+    background-color: #f0f0f0;
+}
+
+/* Keep hover effect when folder is opened */
+.recipe-folder-container:has(.recipe-folder-div-selected) {
+  background-color: #f0f0f0;
+}
+
+.recipe-folder-div {
     gap: 6px;
     flex: 1;
     width: 100%;
@@ -89,39 +119,13 @@
     border: 2px solid transparent;
 }
 
-.recipe-folder-container:hover {
-    background-color: #f0f0f0;
-}
-.recipe-folder-container:has(.recipe-folder-div-opened) {
-  background-color: #f0f0f0;
-}
-
-/*.recipe-folder-div-closed:hover {
-    background-color: #f0f0f0;
-}*/
-
-.recipe-folder-div-opened {
-    gap: 6px;
-    height: 100%;
-    display: flex;
-    width: 100%;
-    align-items: center;
-    padding: 0px 8px;
-    margin-bottom: 8px;
-    border-radius: 10px;
-    border: none;
-    cursor: pointer;
-    border: 2px solid transparent;
-}
-
-.recipe-folder-div-opened .folder-icon-opened,
-.recipe-folder-div-opened .folder-icon-closed {
+.recipe-folder-div-selected .folder-icon-opened,
+.recipe-folder-div-selected .folder-icon-closed {
     filter: invert(8%) brightness(12%);
 }
 
-/*.recipe-folder-div-opened:hover {
-    background-color: #f0f0f0;
-}*/
+
+/* ---------- Folder Styling & Input in Folder ---------- */
 
 .sidebar-subtitle {
     color: #757575;
@@ -130,10 +134,10 @@
     font-size: 12px;
 }
 
+/* Folder title input field */
 .recipe-folder-title {
     color: #757575;
     font-weight: 500;
-    /* letter-spacing: -0.02em; */
     font-size: 16px;
     width: 100%;
     border: none;
@@ -142,63 +146,102 @@
     box-shadow: none;
     height: 44px;
     text-overflow: ellipsis;
-    white-space: nowrap; /* . */
-    overflow: hidden; /* . */
+    white-space: nowrap; /* Prevent line breaks */
+    overflow: hidden; /* Hide overflow text */
 }
 
-.recipe-folder-div-closed .noedit,
-.recipe-folder-div-opened .noedit {
+/* Disable interaction when not in edit mode */
+.recipe-folder-div .noedit {
     user-select: none;
     pointer-events: none;
 }
 
-
-/* Highlight text for the input-element - coloring */
+/* Highlight color for selected text in input */
 input::selection {
     background-color: #ff782f33;
     color: #1F1F1F;
 }
 
-/* To move the subfolder-line */
-.sub-folder-margin-0 {
+/* Change text color when folder is selected */
+.recipe-folder-div-selected input,
+.recipe-folder-div-selected input::placeholder {
+    color: #1F1F1F;
+}
+
+/* Border when folder is in editing mode */
+.folder-div-editing {
+    border: 2px solid #FF782F;
+}
+
+
+/* ---------- Icons in Folder ---------- */
+
+/* Chevron icon for expand/collapse */
+.chevron {
+    transition: transform 0.2s ease;
+    transform-origin: center; /* Rotating point */
+    content: url('../../assets/chevron-right.svg');
+}
+
+/* Rotate chevron when folder is opened */
+.chevron-opened {
+    /* filter: invert(8%) brightness(12%); */
+    transform: rotate(90deg);
+}
+
+/* Folder icons for closed/opened states */
+.folder-icon-closed {
+    content: url('../../assets/folder-closed-icon.svg');
+}
+
+.folder-icon-opened {
+    content: url('../../assets/folder-opened-icon.svg');
+}
+
+
+/* ============================================
+   SUBFOLDER(LINE) SYSTEM
+   ============================================ */
+
+/* ---------- Subfolder Spacing ---------- */
+
+/* For subfolder-line positioning - Level 0-3 */
+.sub-folder-line-spacing-0 {
     margin-left: 0px;
 }
 
-.sub-folder-margin-1 {
-    margin-left: 22px;
+.sub-folder-line-spacing-1 {
+    margin-left: 24px;
 }
 
-.sub-folder-margin-2 {
+.sub-folder-line-spacing-2 {
     margin-left: 53px;
 }
 
-.sub-folder-margin-3 {
+.sub-folder-line-spacing-3 {
     margin-left: 83px;
 }
 
-/* To move the Folder to the correct subfolder-line position */
-.sub-folder-padding-0 {
-    padding-left: 0px;
+/* For folder positioning - Level 0-3 */
+.sub-folder-spacing-0 {
+    margin-left: 0px;
 }
 
-.sub-folder-padding-1 {
-    /*padding-left: 40px;*/
+.sub-folder-spacing-1 {
     margin-left: 30px;
 }
 
-.sub-folder-padding-2 {
-    /* padding-left: 72px; */
+.sub-folder-spacing-2 {
     margin-left: 60px;
 }
 
-.sub-folder-padding-3 {
-    /* padding-left: 104px; */
+.sub-folder-spacing-3 {
     margin-left: 95px;
 }
 
+
 .sub-folder-line {
     position: absolute;
-    /* display: block; */
     margin-top: 6px;
     width: 2px;
     height: 40px;
@@ -208,29 +251,6 @@ input::selection {
 }
 
 
-/* Close and open folder */
-.chevron {
-    transition: transform 0.2s ease;
-    transform-origin: center; /* Rotating point */
-    content: url('../../assets/chevron-right.svg');
-}
-.chevron-opened {
-    /*filter: invert(8%) brightness(12%);*/
-    transform: rotate(90deg);
-}
-.folder-icon-closed {
-    content: url('../../assets/folder-closed-icon.svg');
-}
-.folder-icon-opened {
-    content: url('../../assets/folder-opened-icon.svg');
-}
-.recipe-folder-div-opened input,
-.recipe-folder-div-opened input::placeholder {
-    color: #1F1F1F;
-}
-
-
-/* Dropdown */
 .dropdown_container {
     display: flex;
     align-items: center;
@@ -245,10 +265,13 @@ input::selection {
 }
 
 
+/* ============================================
+   INTERACTIONS & EFFECTS
+   ============================================ */
 
-/* Text should not be highlighted,
-Browser tooltips should be suppressed
-when clicking quickly */
+/* ---------- User Selection ---------- */
+
+/* Prevent text highlighting and browser tooltips when clicking quickly */
 .sidebar {
     user-select: none;
     -webkit-user-select: none;
@@ -258,25 +281,13 @@ when clicking quickly */
 /* -> important, on parent-element */
 
 
-/* Dragged-State */
+/* ---------- Drag & Drop States ---------- */
+
+/* State when folder is being dragged */
 .recipe-folder-container.folder-dragged {
     position: relative;
     background-color: #FF782F;
-    z-index: 1115;
-}
-
-
-/* .chosen-folder {
-    background-color: #ff782f2a;
-    border-radius: 12px;
-} */
-
-.target-all-folders ~ input {
-    color: #FF782F !important;
-}
-
-.folder-div-editing {
-    border: 2px solid #FF782F;
+    z-index: 100;
 }
 
 .recipe-folder-container.folder-dragged .chevron,
@@ -294,11 +305,39 @@ when clicking quickly */
     color: white !important;
 }
 
+
+/* ---------- Target Area Highlighting ---------- */
+
+.target-all-folders {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    background-color: #ff782f2a;
+    border-radius: 12px;
+    pointer-events: none; /* Allow clicks to pass through */
+    z-index: 10;
+    width: auto;
+    height: var(--targeted-folders-height);
+}
+
+.target-all-folders ~ input {
+    color: #FF782F !important;
+}
+
+
+/* ---------- Utility Classes ---------- */
+
 .not-displayed {
     display: none;
 }
 
-/* By default we want that the closed-icon isn't visible, only when resizing to 768px */
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
 .hamburger-opened {
     display: none;
 }
@@ -315,26 +354,14 @@ when clicking quickly */
     filter: invert(77%) sepia(57%) saturate(5902%) hue-rotate(338deg) brightness(101%) contrast(104%);
 }
 
-.target-all-folders {
-    position: absolute;
-    top: 0;
-    right: 0;
-    left: 0;
-    bottom: 0;
-    background-color: #ff782f2a;
-    border-radius: 12px;
-    pointer-events: none;
-    z-index: 10;
-    width: auto;
-    height: var(--targeted-folders-height);
-}
-
 @media (max-width: 768px) {
+    /* Hide sidebar by default on mobile */
     .sidebar {
         transform: translateX(-100%);
         transition: transform 0.2s ease-in-out;
     }
 
+    /* Show sidebar when open class is applied */
     .sidebar.open {
         transform: translateX(0%);
     }
@@ -354,5 +381,4 @@ when clicking quickly */
         transform: scale(1.1); /* NOTE for myself: instead of only scale, use transform */
         filter: invert(77%) sepia(57%) saturate(5902%) hue-rotate(338deg) brightness(101%) contrast(104%);
     }
-
 }
