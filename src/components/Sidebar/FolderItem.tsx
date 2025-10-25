@@ -1,6 +1,6 @@
 import './sidebar.css';
 import type { FolderData } from '../../types/FolderData';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 function FolderItem(
 {
@@ -26,6 +26,12 @@ function FolderItem(
     const regexAlphaNumericOnly = /^[A-Za-zÄÖÜäöüß0-9 ]+$/;
     let amountOfActiveSubfolders: number = 0; // gets recalculated, every time the FolderItem is being rendered
     let amountOfAllSubfolders: number = 0;
+    let [fallbackTitle, setFallbackTitle] = useState<string>("Untitled");
+
+    useEffect(() => {
+        setFallbackTitle(folderData.title);
+    }, [folderData.isEditing])
+
 
     // Calculating how many subfolders are active for this FolderItem
     folderData.subfolders.forEach((f) => {
@@ -68,25 +74,37 @@ function FolderItem(
         e.stopPropagation();
         folderRef.current?.classList.add("folder-dragged");
         onUpdateDraggedFolder(folderData);
-    }
+    };
 
     const onFolderDragEnd = (e: React.DragEvent) => {
         e.stopPropagation();
         folderRef.current?.classList.remove("folder-dragged");
         onUpdateDragEnd();
-    }
+    };
 
     const onDropdownClick = (e: React.MouseEvent<HTMLDivElement>) => {
-        e.stopPropagation();
+        e.stopPropagation(); // prevents to execute onFolderClick - event bubbling
         if(folderData.isEditing) return;
+
         onUpdateData(folderData.id, { isOpen: !folderData.isOpen });
     };
 
     const onFolderClick = (e: React.MouseEvent<HTMLDivElement>) => {
         e.stopPropagation();
-        if(folderData.isEditing) return;
+        if (folderData.isEditing) return;
         onUpdateSelect(folderData.id, !folderData.isSelected);
-    }
+    };
+
+    // TODO: if user is on mobile version, prevent double-click -> inspiration: ChatGPT
+    const onFolderDoubleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+        e.stopPropagation();
+        if(folderData.isEditing) return;
+        if ((e.target as HTMLElement).closest(".dropdown_container")) return;
+
+        onUpdateData(folderData.id, { isEditing: true });
+        inputRef.current?.focus();
+        inputRef.current?.select();
+    };
 
     const onInputEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter") {
@@ -98,13 +116,13 @@ function FolderItem(
     const saveInput = () => {
         if (inputRef.current /*&& !inputRef.current.contains(e.target as Node)*/) {
             
-            inputRef.current.setSelectionRange(0, 0); // reverse .select()-command
+            inputRef.current.setSelectionRange(0, 0); // reverse .select()-commands
 
             if (!regexLength.test(inputRef.current.value)) {
                 alert("Your Recipe title must be under 12 letters.");
                 onUpdateData(folderData.id,
-                { 
-                    title: 'Untitled',
+                {
+                    title: fallbackTitle,
                     isEditing: false
                 });
                 // TODO: add a toast notification for this
@@ -112,16 +130,16 @@ function FolderItem(
             } else if (!regexAlphaNumericOnly.test(inputRef.current.value)) {
                 alert("Your Recipe title can only have letters and numbers.");
                 onUpdateData(folderData.id,
-                { 
-                    title: 'Untitled',
+                {
+                    title: fallbackTitle,
                     isEditing: false
                 });
                 // TODO: add a toast notification for this
                 return;
             } else {
                 onUpdateData(folderData.id,
-                { 
-                    title: inputRef.current?.value || 'Untitled',
+                {
+                    title: inputRef.current.value || 'Untitled',
                     isEditing: false
                 });
             }
@@ -166,9 +184,12 @@ function FolderItem(
         )}
 
         <div
-            className="recipe-folder-container"
+            className={`recipe-folder-container
+            ${folderData.isEditing ? 'folder-div-editing' : ''}
+                `}
             data-id={folderData.id}
             onClick={onFolderClick}
+            onDoubleClick={onFolderDoubleClick}
             onDragStart={onFolderDragStart}
             onDragEnd={onFolderDragEnd}
             ref={folderRef}
@@ -178,7 +199,6 @@ function FolderItem(
                 className={`recipe-folder-div
                     ${folderData.isSubfolder ? `sub-folder-spacing-${folderData.folderLevel}` : ''}
                     ${folderData.isSelected ? 'recipe-folder-div-selected' : ''}
-                    ${folderData.isEditing ? 'folder-div-editing' : ''}
                 `}
                 draggable={folderData.isEditing ? false : true}
             >

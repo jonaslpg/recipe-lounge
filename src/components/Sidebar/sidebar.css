@@ -170,7 +170,8 @@ input::selection {
 
 /* Border when folder is in editing mode */
 .folder-div-editing {
-    border: 2px solid #FF782F;
+    /* use outline here instead of border to prevent elements unnecessary moving */
+    outline: 2px solid #FF782F;
 }
 
 
