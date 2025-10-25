@@ -22,7 +22,7 @@ function FolderItem(
 ) {
     const folderRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
-    const regexLength = /^.{0,12}$/;
+    const regexLength = /^.{0,15}$/;
     const regexAlphaNumericOnly = /^[A-Za-zÄÖÜäöüß0-9 ]+$/;
     let amountOfActiveSubfolders: number = 0; // gets recalculated, every time the FolderItem is being rendered
     let amountOfAllSubfolders: number = 0;
@@ -101,7 +101,7 @@ function FolderItem(
         if(folderData.isEditing) return;
         if ((e.target as HTMLElement).closest(".dropdown_container")) return;
 
-        onUpdateData(folderData.id, { isEditing: true });
+        onUpdateData(folderData.id, { isEditing: true, isSelected: true });
         inputRef.current?.focus();
         inputRef.current?.select();
     };
@@ -119,7 +119,7 @@ function FolderItem(
             inputRef.current.setSelectionRange(0, 0); // reverse .select()-commands
 
             if (!regexLength.test(inputRef.current.value)) {
-                alert("Your Recipe title must be under 12 letters.");
+                alert("Your Recipe title must be under 16 letters.");
                 onUpdateData(folderData.id,
                 {
                     title: fallbackTitle,

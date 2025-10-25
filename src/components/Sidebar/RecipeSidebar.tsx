@@ -47,14 +47,22 @@ function RecipeSidebar() {
         setTargetFolderId(null);
       }
     };
-    
+
     // function, when dropping a folder: creates new subfolder and updates the folders-array
     const updateDragEnd = () => {
       if(!draggedFolder || !targetFolderId) return;
 
+      if(cannotDragToSubfolder(draggedFolder)) return;
+
       let folderWarning: boolean = false; // = ONLY FOR DEV MODE: to prevent double render from strict-mode =
       
       setFolders(prevFolders => {
+      
+        // // prevents to drag parentFolder to their subfolders
+        // for (const s of draggedFolder.subfolders) { // needs to be for instead of forEach
+        //   if (s.id === targetFolderId) return prevFolders;
+        // }
+
         console.clear();
 
         // calculate the new folderLevel
@@ -243,6 +251,25 @@ function RecipeSidebar() {
         "color: limegreen; font-weight: bold;",
         JSON.stringify(updated, null, 2)
       );
+    };
+
+    // prevents to drag parentFolder to their subfolders
+    const cannotDragToSubfolder = (tmpFolder: FolderData): boolean => {
+      if (!tmpFolder) return false;
+
+      for (const s of tmpFolder.subfolders) {
+        if (s.id === targetFolderId) {
+          setDraggedFolder(null);
+          setTargetFolderId(null);
+          return true;
+        }
+
+        if (cannotDragToSubfolder(s)) {
+          return true;
+        }
+      }
+
+      return false;
     };
 
     return (
