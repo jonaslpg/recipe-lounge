@@ -64,10 +64,10 @@
     cursor: pointer;
     font-size: 16px;
     font-weight: 500; /* Medium */
+    color: #757575;
     display: flex;
     align-items: center;
     gap: 6px;
-    color: #757575;
     margin-bottom: 4px;
 }
 
@@ -102,7 +102,7 @@
 
 /* Keep hover effect when folder is opened */
 .recipe-folder-container:has(.recipe-folder-div-selected) {
-  background-color: #f0f0f0;
+    background-color: #f0f0f0;
 }
 
 .recipe-folder-div {
@@ -176,7 +176,6 @@ input::selection {
 
 
 /* ---------- Icons in Folder ---------- */
-
 /* Chevron icon for expand/collapse */
 .chevron {
     transition: transform 0.2s ease;
@@ -199,6 +198,45 @@ input::selection {
     content: url('../../assets/folder-opened-icon.svg');
 }
 
+.dropdown_container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 26px;
+    min-height: 26px;
+    border-radius: 6px;
+}
+
+.dropdown_container:hover {
+    background-color: #dddddd;
+}
+
+.settings_container {
+    position: relative;
+    visibility: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0px;
+    min-height: 0px;
+    border-radius: 6px;
+}
+.settings_container:hover {
+    background-color: #dddddd;
+}
+.item-settings {
+    content: url('../../assets/dots-horizontal.svg');
+}
+.recipe-folder-container:hover .settings_container {
+    visibility: visible;
+    min-width: 24px;
+    min-height: 24px;
+}
+.settings_container-visibile {
+    visibility: visible;
+    min-width: 24px;
+    min-height: 24px;
+}
 
 /* ============================================
    SUBFOLDER(LINE) SYSTEM
@@ -249,20 +287,6 @@ input::selection {
     background-color: #0000001e;
     border-radius: 9999px;
     z-index: 1;
-}
-
-
-.dropdown_container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 28px;
-    border-radius: 6px;
-}
-
-.dropdown_container:hover {
-    background-color: #dddddd;
 }
 
 
@@ -333,6 +357,55 @@ input::selection {
 .not-displayed {
     display: none;
 }
+
+
+/* ============================================
+   FOLDERITEMSETTINGSMENU STYLING
+   ============================================ */
+.settings-menu_container {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    padding: 6px;
+    /* min-height: 100px;
+    max-height: 100px; */
+    max-width: 180px;
+    min-width: 180px;
+    /* background-color: #00000096; */
+    background-color: #EFEFEF;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #1F1F1F;
+    border: 2px solid #d6d6d6;
+    cursor: pointer;
+    /* background-color: #00000096; */
+    /* color: white; */
+}
+
+.settings-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px;
+    height: 38px;
+    border-radius: 8px;
+}
+.settings-menu-item:hover {
+    background-color: #1f1f1f15;
+    /* background-color: rgba(255, 255, 255, 0.123); */
+}
+/* .settings-menu-item img {
+    filter: brightness(0) invert(0.8);
+} */
+
+.menu-item-delete {
+    color: rgb(255, 62, 37);
+}
+
+
 
 
 /* ============================================

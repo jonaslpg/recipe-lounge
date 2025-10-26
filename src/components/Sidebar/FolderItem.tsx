@@ -9,15 +9,19 @@ function FolderItem(
     onUpdateSelect,
     onUpdateDraggedFolder,
     targetFolderId,
-    onUpdateDragEnd
+    activeFolderId,
+    onUpdateDragEnd,
+    onFolderSettingsClickGlobal,
 }: 
     { 
         folderData: FolderData, 
-        onUpdateData: (id: string, updates: Partial<FolderData>) => void,
-        onUpdateSelect: (id: string, selected: boolean) => void,
+        onUpdateData: (id: string, updates: Partial<FolderData>, e?: React.MouseEvent<HTMLDivElement>) => void,
+        onUpdateSelect: (id: string, selected: boolean, e: React.MouseEvent<HTMLDivElement>) => void,
         onUpdateDraggedFolder: (folderData: FolderData) => void,
         targetFolderId: string | null,
-        onUpdateDragEnd: () => void
+        activeFolderId: string | null,
+        onUpdateDragEnd: () => void,
+        onFolderSettingsClickGlobal: (cursor: React.MouseEvent<HTMLDivElement>) => void
     }
 ) {
     const folderRef = useRef<HTMLDivElement>(null);
@@ -26,7 +30,10 @@ function FolderItem(
     const regexAlphaNumericOnly = /^[A-Za-zÄÖÜäöüß0-9 ]+$/;
     let amountOfActiveSubfolders: number = 0; // gets recalculated, every time the FolderItem is being rendered
     let amountOfAllSubfolders: number = 0;
-    let [fallbackTitle, setFallbackTitle] = useState<string>("Untitled");
+    const [fallbackTitle, setFallbackTitle] = useState<string>("Untitled");
+
+    const [isSettingsIconActive, setIsSettingsIconActive] = useState<boolean>(false);
+    const [isDragging, setIsDragging] = useState<boolean>(false);
 
     useEffect(() => {
         setFallbackTitle(folderData.title);
@@ -72,12 +79,14 @@ function FolderItem(
     const onFolderDragStart = (e: React.DragEvent) => {
         if(folderData.isEditing) return;
         e.stopPropagation();
+        setIsDragging(true);
         folderRef.current?.classList.add("folder-dragged");
         onUpdateDraggedFolder(folderData);
     };
 
     const onFolderDragEnd = (e: React.DragEvent) => {
         e.stopPropagation();
+        setIsDragging(false);
         folderRef.current?.classList.remove("folder-dragged");
         onUpdateDragEnd();
     };
@@ -85,25 +94,46 @@ function FolderItem(
     const onDropdownClick = (e: React.MouseEvent<HTMLDivElement>) => {
         e.stopPropagation(); // prevents to execute onFolderClick - event bubbling
         if(folderData.isEditing) return;
-
-        onUpdateData(folderData.id, { isOpen: !folderData.isOpen });
+        onUpdateData(folderData.id, { isOpen: !folderData.isOpen }, e);
+        setIsSettingsIconActive(false);
     };
+
+    const onFolderSettingsClick = (e: React.MouseEvent<HTMLDivElement>) => {
+        if(folderData.isEditing) return;
+        onFolderSettingsClickGlobal(e);
+        setIsSettingsIconActive(!isSettingsIconActive);
+    };
+
+    useEffect(() => {
+        if (activeFolderId) {
+            if(folderData.id !== activeFolderId) setIsSettingsIconActive(false);
+        }
+        window.addEventListener("click", () => setIsSettingsIconActive(false));
+        window.addEventListener("blur", () => setIsSettingsIconActive(false));
+
+        return () => {
+            window.removeEventListener("click", () => setIsSettingsIconActive(false));
+            window.removeEventListener("blur", () => setIsSettingsIconActive(false));
+        }
+    }, [activeFolderId]);
+
 
     const onFolderClick = (e: React.MouseEvent<HTMLDivElement>) => {
         e.stopPropagation();
+        setIsSettingsIconActive(false);
         if (folderData.isEditing) return;
-        onUpdateSelect(folderData.id, !folderData.isSelected);
+        onUpdateSelect(folderData.id, !folderData.isSelected, e);
+        console.log("active: " + activeFolderId);
     };
 
     // TODO: if user is on mobile version, prevent double-click -> inspiration: ChatGPT
     const onFolderDoubleClick = (e: React.MouseEvent<HTMLDivElement>) => {
         e.stopPropagation();
         if(folderData.isEditing) return;
-        if ((e.target as HTMLElement).closest(".dropdown_container")) return;
+        if ((e.target as HTMLElement).closest(".dropdown_container")) return; // prevent dbclick
+        if ((e.target as HTMLElement).closest(".settings_container")) return; // prevent dbclick
 
         onUpdateData(folderData.id, { isEditing: true, isSelected: true });
-        inputRef.current?.focus();
-        inputRef.current?.select();
     };
 
     const onInputEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -244,6 +274,13 @@ function FolderItem(
                     spellCheck={false}
                     onDragStart={(e) => e.preventDefault()}
                 />
+
+                {!folderData.isEditing && !isDragging && <div
+                    className={`settings_container ${isSettingsIconActive ? "settings_container-visibile" : ''}`} 
+                    onClick={onFolderSettingsClick}
+                >
+                    <img className='item-settings' alt="item-settings" />
+                </div>}
             </div>
         </div>
 
@@ -256,7 +293,9 @@ function FolderItem(
                     onUpdateSelect={onUpdateSelect}
                     onUpdateDraggedFolder={onUpdateDraggedFolder}
                     onUpdateDragEnd={onUpdateDragEnd}
+                    onFolderSettingsClickGlobal={onFolderSettingsClickGlobal}
                     targetFolderId={targetFolderId}
+                    activeFolderId={activeFolderId}
                 />
             ))}
         </>

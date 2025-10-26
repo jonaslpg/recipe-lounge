@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './sidebar.css'
 import FolderItem from './FolderItem';
+import FolderItemSettingsMenu from './FolderItemSettingsMenu';
 import type { FolderData } from "../../types/FolderData";
 import { v4 as uuidv4 } from 'uuid';
 
@@ -10,6 +11,10 @@ function RecipeSidebar() {
     const [folders, setFolders] = useState<FolderData[]>([]);
     const [draggedFolder, setDraggedFolder] = useState<FolderData | null>(null);
     const [targetFolderId, setTargetFolderId] = useState<string | null>(null);
+
+    const [settingsMenuOpened, setSettingsMenuOpened] = useState<boolean>(false);
+    const [contextMenu, setContextMenu] = useState<{x: number, y: number} | null>(null);
+    const [activeFolderId, setActiveFolderId] = useState<string | null>(null);
 
     const createFolder = () => {
       const folder: FolderData = {
@@ -34,6 +39,46 @@ function RecipeSidebar() {
         JSON.stringify(updated, null, 2)
       );
     };
+
+    const folderSettingsClick = (e: React.MouseEvent<HTMLDivElement>) => {
+      e.stopPropagation();
+      e.preventDefault();
+
+      const folderElement = (e.target as HTMLElement).closest('.recipe-folder-container');
+      const id = folderElement?.getAttribute('data-id');
+      if (!id) return;
+
+      // Menü schon offen und derselbe Folder → schließen
+      if (settingsMenuOpened && activeFolderId === id) {
+        setSettingsMenuOpened(false);
+        setActiveFolderId(null);
+        setContextMenu(null);
+        return;
+      }
+
+      // Menü für anderen Folder oder erstmals öffnen
+      setSettingsMenuOpened(true);
+      setActiveFolderId(id);
+      setContextMenu({ x: e.pageX, y: e.pageY });
+      
+    };
+
+    useEffect(() => {
+      const handleClick = () => {
+        setContextMenu(null);
+        setActiveFolderId(null);
+        setSettingsMenuOpened(false);
+      }
+
+      window.addEventListener("click", handleClick);
+      window.addEventListener("blur", handleClick);
+      return () => { 
+        window.removeEventListener("click", handleClick)
+        window.removeEventListener("blur", handleClick);
+      };
+    }, []);
+
+
 
     // function, when hovering over a folder: toggles CSS-class for user-feedback
     const onSidebarDragOver = (e: React.DragEvent) => {
@@ -207,7 +252,14 @@ function RecipeSidebar() {
       setDraggedFolder(folder);
     };
 
-    const updateData = (id: string, updates: Partial<FolderData>) => {
+    const updateData = (id: string, updates: Partial<FolderData>, e?: React.MouseEvent<HTMLDivElement>) => {
+      if(activeFolderId && e) {
+        const folderElement = (e.target as HTMLElement).closest('.recipe-folder-container');
+        const id = folderElement?.getAttribute('data-id');
+        setContextMenu(null);
+        setSettingsMenuOpened(false);
+        if(id) setActiveFolderId(id);
+      }
       const updateRecursive = (folders: FolderData[]): FolderData[] => {
         return folders.map(f => {
           if (f.id === id) {
@@ -231,7 +283,17 @@ function RecipeSidebar() {
       );
     };
 
-    const updateSelect = (id: string, selected:boolean) => {
+
+
+    const updateSelect = (id: string, selected:boolean, e: React.MouseEvent<HTMLDivElement>) => {
+      if(activeFolderId) {
+        const folderElement = (e.target as HTMLElement).closest('.recipe-folder-container');
+        const id = folderElement?.getAttribute('data-id');
+        setContextMenu(null);
+        setSettingsMenuOpened(false);
+        if(id) setActiveFolderId(id);
+      }
+
       const updateRecursive = (folders: FolderData[]): FolderData[] => {
         return folders.map(f => {
           const updatedFolder = f.id === id ? { ...f, isSelected: selected } : { ...f, isSelected: false };
@@ -332,7 +394,9 @@ function RecipeSidebar() {
             onUpdateSelect={updateSelect}
             onUpdateDraggedFolder={updateDraggedFolder}
             onUpdateDragEnd={updateDragEnd}
+            onFolderSettingsClickGlobal={folderSettingsClick}
             targetFolderId={targetFolderId}
+            activeFolderId={activeFolderId}
             />
           ))}
 
@@ -344,6 +408,16 @@ function RecipeSidebar() {
             Settings
           </button>
         </nav>
+
+        {settingsMenuOpened && contextMenu ? (
+          <div style={{ top: contextMenu.y+20, left: contextMenu.x-20, position: "absolute" }}>
+            <FolderItemSettingsMenu 
+            onUpdateData={updateData}
+            activeFolderId={activeFolderId}
+            />
+          </div>
+        ) : null}
+
       </div>
     )
 }
