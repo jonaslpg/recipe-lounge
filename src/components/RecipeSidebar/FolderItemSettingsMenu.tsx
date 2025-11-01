@@ -3,16 +3,16 @@ import type { FolderData } from '../../types/FolderData';
 
 function FolderItemSettingsMenu( 
 {
-    onUpdateData,
+    onUpdateFolderData: handleUpdateFolderData,
     activeFolderId
 }:
     {
-        onUpdateData: (id: string, updates: Partial<FolderData>, e?: React.MouseEvent<HTMLDivElement>) => void,
+        onUpdateFolderData: (id: string, updates: Partial<FolderData>, e?: React.MouseEvent<HTMLDivElement>) => void,
         activeFolderId: string | null
     }
 ) {
     const onRenameFolderTitle = () => {
-        if(activeFolderId) onUpdateData(activeFolderId, { isEditing: true })
+        if(activeFolderId) handleUpdateFolderData(activeFolderId, { isEditing: true })
     }
 
     return (

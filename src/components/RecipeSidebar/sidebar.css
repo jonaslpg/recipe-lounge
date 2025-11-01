@@ -405,6 +405,17 @@ input::selection {
     color: rgb(255, 62, 37);
 }
 
+.settings-menu {
+  opacity: 0;
+  transform: scale(0.7);
+  transition: all 0.15s ease-out;
+}
+
+.settings-menu.show {
+  opacity: 1;
+  transform: scale(1);
+}
+
 
 
 
