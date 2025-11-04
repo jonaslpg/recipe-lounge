@@ -1,11 +1,11 @@
 export interface FolderData {
   id: string;
   title: string;
-  folderLevel: number;
+  folderLevel: number; // -> nicht für DB relevant?
   subfolders: FolderData[];
-  isSubfolder: boolean;
-  isLastFolder: boolean;
+  isSubfolder: boolean; // -> nicht für DB relevant?
+  isLastFolder: boolean; // -> nicht für DB relevant?
   isOpen: boolean;
-  isEditing: boolean;
+  isEditing: boolean; // -> nicht für DB relevant?
   isSelected: boolean;
 }

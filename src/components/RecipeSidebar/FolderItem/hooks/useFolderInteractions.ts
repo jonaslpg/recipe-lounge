@@ -67,7 +67,7 @@ export function useFolderInteractions({
             document.removeEventListener("mousedown", handleClickOutside);
             window.removeEventListener("blur", saveInput);
         };
-    }, [folderData.isEditing, folderData.id, handleUpdateFolderData]);
+    }, [folderData.isEditing]);
 
     function saveInput() {
         if (inputRef.current) {
@@ -157,7 +157,7 @@ export function useFolderInteractions({
     };
 
     // create folder if user clicks outside of document
-    useEffect(() => {
+    /*useEffect(() => {
         if (!folderData.isEditing) return;
         const handleClickOutside = (e: MouseEvent) => {
         if (inputRef.current && !inputRef.current.contains(e.target as Node)) saveInput();
@@ -170,7 +170,7 @@ export function useFolderInteractions({
         document.removeEventListener("mousedown", handleClickOutside);
         window.removeEventListener("blur", saveInput);
         };
-    }, [folderData.isEditing]);
+    }, [folderData.isEditing]);*/
 
     return {
         folderRef,

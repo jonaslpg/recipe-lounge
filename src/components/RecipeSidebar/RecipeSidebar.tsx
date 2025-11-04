@@ -54,6 +54,7 @@ function RecipeSidebar() {
 
     window.addEventListener("click", handleClick);
     window.addEventListener("blur", handleClick);
+    
     return () => { 
       window.removeEventListener("click", handleClick)
       window.removeEventListener("blur", handleClick);

@@ -27,7 +27,6 @@ export function useDragAndDrop({
       let folderWarning: boolean = false; // = ONLY FOR DEV MODE: to prevent double render from strict-mode =
       
       setFolders(prevFolders => {
-      
         // // prevents to drag parentFolder to their subfolders
         // for (const s of draggedFolder.subfolders) { // needs to be for instead of forEach
         //   if (s.id === targetFolderId) return prevFolders;
@@ -63,7 +62,6 @@ export function useDragAndDrop({
           (newFolderLevel == 1 && noAllowMoveSubfolderL1)
         ){
           folderWarning = true; // = ONLY FOR DEV MODE: to prevent double render from strict-mode =
-          console.clear();
           console.log(
             "%c📁 Folder didn't move:",
             "color: limegreen; font-weight: bold;",
@@ -100,7 +98,6 @@ export function useDragAndDrop({
 
         prevFolders = updateLastFolderPropRecursive(prevFolders);
 
-        console.clear();
         console.log(
           "%c📁 Folder moved:",
           "color: limegreen; font-weight: bold;",
