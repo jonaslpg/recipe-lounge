@@ -9,18 +9,20 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useFolderActions } from "./hooks/useFolderActions";
 import { useDragAndDrop } from "./hooks/useDragAndDrop";
 import { useContextMenu } from "./hooks/useContextMenu";
+import { loadUIState } from "./utils/folderHelpers";
 
 
 function RecipeSidebar() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [folders, setFolders] = useState<FolderData[]>([]);
+  const [folders, setFolders] = useState<FolderData[]>([]); // Collection of all FolderData
+
   const [draggedFolder, setDraggedFolder] = useState<FolderData | null>(null);
   const [targetFolderId, setTargetFolderId] = useState<string | null>(null);
   const [settingsMenuOpened, setSettingsMenuOpened] = useState<boolean>(false);
   const [contextMenu, setContextMenu] = useState<{x: number, y: number} | null>(null);
   const [activeFolderId, setActiveFolderId] = useState<string | null>(null);
 
-  const { handleCreateFolderClick, handleUpdateFolderData, handleFolderSelect } = useFolderActions({
+  const { handleCreateFolderClick, handleUpdateFolderData, handleFolderSelect, handleDeleteFolder } = useFolderActions({
     activeFolderId,
     setContextMenu,
     setSettingsMenuOpened,
@@ -38,12 +40,46 @@ function RecipeSidebar() {
   });
   
   const { handleFinalizeFolderDragEnd, handleSidebarDragOver, handleUpdateDraggedFolder } = useDragAndDrop({
+    folders,
     setFolders,
     draggedFolder,
     setDraggedFolder,
     targetFolderId,
     setTargetFolderId
   });
+
+
+
+  // When opening the website first time (loading RecipeSidebar component), load data out of local storage
+  useEffect(() => {
+    async function loadFolders() {
+      const res = await fetch("http://localhost:8080/api/folders");
+      const uiState = loadUIState();
+
+      // In the Backend we use ParentFolder instead of ParentFolderId to have better readibilty
+      // We need to extract parentFolder and set the id instead
+      const dbFoldersRaw = await res.json();
+      const dbFolders: FolderData[] = dbFoldersRaw.map((f: FolderData) => {
+        return {
+          ...f,
+          ...(uiState[f.id] || {
+            isOpen: false,
+            isSelected: false,
+            isLastFolder: false,
+            folderLevel: 0,
+            isVisible: true,
+            isEditing: false,
+          }),
+        };
+      });
+
+      setFolders(dbFolders);
+    }
+
+    loadFolders();
+  }, []);
+
+
  
   useEffect(() => {
     const handleClick = () => {
@@ -54,12 +90,13 @@ function RecipeSidebar() {
 
     window.addEventListener("click", handleClick);
     window.addEventListener("blur", handleClick);
-    
+
     return () => { 
       window.removeEventListener("click", handleClick)
       window.removeEventListener("blur", handleClick);
     };
   }, []);
+  
 
   return (
     <div className="app-container">
@@ -124,6 +161,7 @@ function RecipeSidebar() {
           onFinalizeFolderSettingsClick={handleFinalizeFolderSettingsClick}
           targetFolderId={targetFolderId}
           activeFolderId={activeFolderId}
+          folders={folders}
           />
         ))}
 
@@ -151,6 +189,7 @@ function RecipeSidebar() {
           }}
         >
           <FolderItemSettingsMenu
+            onDeleteFolder={handleDeleteFolder}
             onUpdateFolderData={handleUpdateFolderData}
             activeFolderId={activeFolderId}
           />

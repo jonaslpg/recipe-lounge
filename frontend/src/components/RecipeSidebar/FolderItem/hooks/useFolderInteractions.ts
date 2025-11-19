@@ -156,22 +156,6 @@ export function useFolderInteractions({
         }
     };
 
-    // create folder if user clicks outside of document
-    /*useEffect(() => {
-        if (!folderData.isEditing) return;
-        const handleClickOutside = (e: MouseEvent) => {
-        if (inputRef.current && !inputRef.current.contains(e.target as Node)) saveInput();
-        };
-
-        document.addEventListener("mousedown", handleClickOutside);
-        window.addEventListener("blur", saveInput);
-
-        return () => {
-        document.removeEventListener("mousedown", handleClickOutside);
-        window.removeEventListener("blur", saveInput);
-        };
-    }, [folderData.isEditing]);*/
-
     return {
         folderRef,
         inputRef,

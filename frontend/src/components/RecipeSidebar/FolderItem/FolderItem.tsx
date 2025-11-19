@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 
 // Imports of the custom-hooks- and utils-folder
 import { useFolderInteractions } from "./hooks/useFolderInteractions";
-import { calculateSubfolderCounts } from "./utils/folderCalculations";
+import { calculateAmountAllSubfolders } from "./utils/folderCalculations";
 
 
 function FolderItem(
@@ -15,6 +15,7 @@ function FolderItem(
     onUpdateDraggedFolder: handleUpdateDraggedFolder,
     targetFolderId,
     activeFolderId,
+    folders,
     onFinalizeFolderDragEnd: handleFinalizeFolderDragEnd,
     onFinalizeFolderSettingsClick: handleFinalizeFolderSettingsClick
 }: 
@@ -25,6 +26,7 @@ function FolderItem(
         onUpdateDraggedFolder: (folderData: FolderData) => void,
         targetFolderId: string | null,
         activeFolderId: string | null,
+        folders: FolderData[],
         onFinalizeFolderDragEnd: () => void,
         onFinalizeFolderSettingsClick: (cursor: React.MouseEvent<HTMLDivElement>) => void
     }
@@ -51,7 +53,7 @@ function FolderItem(
         handleFinalizeFolderSettingsClick
     });
 
-    const { amountOfActiveSubfolders, amountOfAllSubfolders } = calculateSubfolderCounts(folderData);
+    const { amountOfActiveSubfolders, amountOfAllSubfolders } = calculateAmountAllSubfolders(folderData, folders);
 
 
     useEffect(() => {
@@ -64,16 +66,16 @@ function FolderItem(
 
     return (
         <>
-        {folderData.isSubfolder && (
+        {folderData.parentFolder?.id && (
             <span 
                 className={`sub-folder-line ${
-                    folderData.isSubfolder ? `sub-folder-line-spacing-${folderData.folderLevel}` : ''
+                    folderData.parentFolder.id ? `sub-folder-line-spacing-${folderData.folderLevel}` : ''
                 }`}
                 style={{ 
                     height: `${
-                        folderData.isLastFolder 
+                        folderData.isLastFolder
                             ? 38 + (44 * amountOfActiveSubfolders)
-                            : 44 + (44 * amountOfActiveSubfolders)
+                            : 44 + (44 * amountOfActiveSubfolders) // 44
                     }px`,
                 }}
             ></span>
@@ -93,7 +95,7 @@ function FolderItem(
 
             <div 
                 className={`recipe-folder-div
-                    ${folderData.isSubfolder ? `sub-folder-spacing-${folderData.folderLevel}` : ''}
+                    ${folderData.parentFolder?.id ? `sub-folder-spacing-${folderData.folderLevel}` : ''}
                     ${folderData.isSelected ? 'recipe-folder-div-selected' : ''}
                 `}
                 draggable={folderData.isEditing ? false : true}
@@ -106,7 +108,7 @@ function FolderItem(
                                 : {}
                         }
                         className={`target-all-folders
-                            ${folderData.isSubfolder ? `sub-folder-spacing-${folderData.folderLevel}` : ''
+                            ${folderData.parentFolder?.id ? `sub-folder-spacing-${folderData.folderLevel}` : ''
                         }`}
                     ></div>
                 )}
@@ -150,7 +152,7 @@ function FolderItem(
             </div>
         </div>
 
-        {folderData.isOpen && 
+        {/*folderData.isOpen && 
             folderData.subfolders.map((subfolder) => (
                 <FolderItem
                     key={subfolder.id}
@@ -163,7 +165,7 @@ function FolderItem(
                     targetFolderId={targetFolderId}
                     activeFolderId={activeFolderId}
                 />
-            ))}
+            ))*/}
         </>
     );
 }
