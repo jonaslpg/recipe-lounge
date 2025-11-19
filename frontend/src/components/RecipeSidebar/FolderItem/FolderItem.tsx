@@ -55,6 +55,7 @@ function FolderItem(
 
     const { amountOfActiveSubfolders, amountOfAllSubfolders } = calculateAmountAllSubfolders(folderData, folders);
 
+    let subfolders: FolderData[] | null = folders.filter(f => folderData.id === f.parentFolder?.id);
 
     useEffect(() => {
         if (folderData.isEditing) {
@@ -62,6 +63,10 @@ function FolderItem(
             inputRef.current?.select();
         }
     }, [folderData.isEditing]);
+
+    useEffect(() => {
+        subfolders = folders.filter(f => folderData.id === f.parentFolder?.id);
+    }, [folders])
 
 
     return (
@@ -152,8 +157,8 @@ function FolderItem(
             </div>
         </div>
 
-        {/*folderData.isOpen && 
-            folderData.subfolders.map((subfolder) => (
+        {folderData.isOpen && subfolders !== null &&
+            subfolders.map((subfolder) => (
                 <FolderItem
                     key={subfolder.id}
                     folderData={subfolder}
@@ -164,8 +169,9 @@ function FolderItem(
                     onFinalizeFolderSettingsClick={handleFinalizeFolderSettingsClick}
                     targetFolderId={targetFolderId}
                     activeFolderId={activeFolderId}
+                    folders={folders}
                 />
-            ))*/}
+            ))}
         </>
     );
 }
