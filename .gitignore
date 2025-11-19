@@ -7,10 +7,17 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependencies
 node_modules
+
+# Builds
 dist
 dist-ssr
 *.local
+
+# Java backend build directories
+backend/target/
+target/
 
 # Editor directories and files
 .vscode/*
