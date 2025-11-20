@@ -1,5 +1,5 @@
 import type { FolderData, FolderEntity, FolderView } from "../../../types/FolderData";
-import { saveUIState } from "../utils/folderHelpers";
+import { getAllSubfolders, saveUIState } from "../utils/folderHelpers";
 
 type FolderActionsParams = {
   activeFolderId: string | null;
@@ -161,7 +161,7 @@ export function useFolderActions({
     console.log("%c📁 Folder selection updated", "color: limegreen", updated);
   }
 
-  async function handleDeleteFolder() {
+  /*async function handleDeleteFolder() {
     if (!activeFolderId) return;
 
     const res = await fetch(`http://localhost:8080/api/folders/${activeFolderId}`, {
@@ -170,6 +170,129 @@ export function useFolderActions({
 
     const updatedFolders: FolderData[] = await res.json();
     setFolders(updatedFolders);
+  }*/
+  async function handleDeleteFolder() {
+    console.clear();
+    if (!activeFolderId) return;
+
+    // SETUP VARIABLES
+    const oldFolders: FolderData[] = folders;
+
+    const activeFolder: FolderData | undefined = folders.find(f => f.id === activeFolderId);
+    const allSubfoldersOfActiveFolder: FolderData[] = getAllSubfolders(folders, activeFolderId);
+    const maxPosInSubfOfActiveFolder: number | undefined =
+    allSubfoldersOfActiveFolder.length > 0
+      ? Math.max(...allSubfoldersOfActiveFolder.map(f => f.position))
+      : activeFolder?.position;
+    const marginRepositioning: number = allSubfoldersOfActiveFolder ? (allSubfoldersOfActiveFolder.length+1) : 1;
+
+    let foldersRepositioning: FolderData[] | undefined = undefined;
+    if(maxPosInSubfOfActiveFolder) foldersRepositioning = folders.filter(f => f.position > maxPosInSubfOfActiveFolder);
+
+    // "DELETE" FOLDER + SUBFOLDERS
+    let updatedFolders: FolderData[] = folders.filter(
+      f => f.id !== activeFolderId && 
+          !allSubfoldersOfActiveFolder.some(sf => sf.id === f.id)
+    );
+
+    let foldersToDelete: FolderData[] | undefined = undefined;
+    if(activeFolder) foldersToDelete = [activeFolder, ...allSubfoldersOfActiveFolder];
+
+    /*console.log("activeFolder: " + activeFolder?.title);
+
+    console.log(
+      "%c📁 allSubfoldersOfActive:",
+      "color: red; font-weight: bold;",
+      JSON.stringify(allSubfoldersOfActiveFolder, null, 2)
+    );
+
+    console.log("maxPosOfSubfolders: " + maxPosInSubfOfActiveFolder);
+
+    console.log("marginRepositioning: " + marginRepositioning);
+
+    console.log(
+      "%c📁 DAVOR Folders:",
+      "color: red; font-weight: bold;",
+      JSON.stringify(updatedFolders, null, 2)
+    );*/
+
+    // REPOSITION FOLDERS
+    updatedFolders = updatedFolders.map((f) => {
+      if (foldersRepositioning?.some(fr => fr.id === f.id)) { // NOTE FOR ME: some = boolean, find = object
+        return {
+          ...f,
+          position: f.position - marginRepositioning
+        };
+      } else {
+        return f;
+      }
+    });
+
+    /*console.log(
+      "%c📁 DANACH Folders:",
+      "color: red; font-weight: bold;",
+      JSON.stringify(updatedFolders, null, 2)
+    );*/
+
+    setFolders(updatedFolders);
+
+    // PERSIST: Delete folders
+    if(foldersToDelete) {
+      try {
+        const response = await fetch("http://localhost:8080/api/folders", {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            folders: foldersToDelete.map(f => ({
+              id: f.id,
+              title: f.title,
+              position: f.position,
+              parentFolderId: f.parentFolder?.id || null,
+              folderLevel: f.folderLevel,
+              isLastFolder: f.isLastFolder,
+              updatedAt: new Date()
+            }))
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`Server responded with status ${response.status}`);
+        }
+      } catch (error) {
+        console.error("Error: Can't delete folder.", error);
+        setFolders(oldFolders);
+        return;
+        // TODO: Error-Notification
+      }
+    } else return;
+
+    // PERSIST: Reposition folders (BULKD PATCH)
+    try {
+      const response = await fetch("http://localhost:8080/api/folders", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          folders: updatedFolders.map(f => ({
+            id: f.id,
+            title: f.title,
+            position: f.position,
+            parentFolderId: f.parentFolder?.id || null,
+            folderLevel: f.folderLevel,
+            isLastFolder: f.isLastFolder,
+            updatedAt: new Date()
+          }))
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Server responded with status ${response.status}`);
+      }
+    } catch (error) {
+      console.error("Error: Can't delete folder.", error);
+      setFolders(oldFolders);
+      return;
+      // TODO: Error-Notification
+    }
   }
 
   return {

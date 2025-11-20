@@ -118,8 +118,8 @@ public class FolderController {
             if (f.getTitle() != null) folder.setTitle(f.getTitle());
             if (f.getPosition() != 0) folder.setPosition(f.getPosition());
             if (f.getUpdatedAt() != null) folder.setUpdatedAt(f.getUpdatedAt());
-            folder.setIsLastFolder(f.getIsLastFolder());
-            if (f.getFolderLevel() != 0) folder.setFolderLevel(f.getFolderLevel());
+            if (f.getFolderLevel() != -1) folder.setFolderLevel(f.getFolderLevel());
+            /*if (f.getIsLastFolder() != null)*/ folder.setIsLastFolder(f.getIsLastFolder());
 
             if (f.getParentFolderId() != null) {
                 FolderEntity parent = folderRepository.findById(f.getParentFolderId())
@@ -141,8 +141,6 @@ public class FolderController {
         FolderEntity toDelete = folderRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Folder not found"));
 
-        //FolderEntity parent = toDelete.getParentFolder();
-
         // delete children of the deleted folder
         List<FolderEntity> children = folderRepository.findByParentFolderId(id);
         for (FolderEntity child : children) {
@@ -154,4 +152,25 @@ public class FolderController {
         return folderRepository.findAll(Sort.by(Sort.Direction.ASC, "position"));
     }
 
+    @DeleteMapping
+    @Transactional
+    public List<FolderEntity> deleteFolder(@RequestBody FolderBatchUpdateDTO dto) {
+
+        for (FolderDTO f : dto.getFolders()) {
+
+            // get folder to delete
+            FolderEntity toDelete = folderRepository.findById(f.getId())
+                .orElseThrow(() -> new RuntimeException("Folder not found"));
+
+            // delete children of the deleted folder
+            /*List<FolderEntity> children = folderRepository.findByParentFolderId(f.getId());
+            for (FolderEntity child : children) {
+                folderRepository.delete(child);
+            }*/
+
+            folderRepository.delete(toDelete);
+        }
+
+        return folderRepository.findAll(Sort.by(Sort.Direction.ASC, "position"));
+    }
 }
