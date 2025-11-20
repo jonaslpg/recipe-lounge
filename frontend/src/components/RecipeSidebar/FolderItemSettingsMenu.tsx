@@ -3,18 +3,22 @@ import type { FolderData } from '../../types/FolderData';
 
 function FolderItemSettingsMenu( 
 {
-    onDeleteFolder: handleDeleteFolder,
     onUpdateFolderData: handleUpdateFolderData,
-    activeFolderId
+    activeFolderId,
+    setDeleteDialogOpened,
 }:
     {
-        onDeleteFolder: () => void,
         onUpdateFolderData: (id: string, updates: Partial<FolderData>, e?: React.MouseEvent<HTMLDivElement>) => void,
-        activeFolderId: string | null
+        activeFolderId: string | null,
+        setDeleteDialogOpened: React.Dispatch<React.SetStateAction<boolean>>;
     }
 ) {
     function onRenameFolderTitle() {
-        if(activeFolderId) handleUpdateFolderData(activeFolderId, { isEditing: true })
+        if(activeFolderId) handleUpdateFolderData(activeFolderId, { isEditing: true });
+    }
+
+    function handleDeleteClick() {
+        setDeleteDialogOpened(true);
     }
 
     return (
@@ -28,7 +32,7 @@ function FolderItemSettingsMenu(
             </div>
             <div 
                 className="settings-menu-item menu-item-delete"
-                onClick={handleDeleteFolder}
+                onClick={handleDeleteClick}
             >
                 <img src='src/assets/trash-icon.svg' alt='trash-icon'/>
                 <p>Delete</p>

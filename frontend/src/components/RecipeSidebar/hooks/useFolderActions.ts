@@ -16,7 +16,7 @@ export function useFolderActions({
   setSettingsMenuOpened,
   setActiveFolderId,
   folders,
-  setFolders
+  setFolders,
 }: FolderActionsParams) {
 
   async function handleCreateFolderClick() {
@@ -161,16 +161,6 @@ export function useFolderActions({
     console.log("%c📁 Folder selection updated", "color: limegreen", updated);
   }
 
-  /*async function handleDeleteFolder() {
-    if (!activeFolderId) return;
-
-    const res = await fetch(`http://localhost:8080/api/folders/${activeFolderId}`, {
-      method: "DELETE",
-    });
-
-    const updatedFolders: FolderData[] = await res.json();
-    setFolders(updatedFolders);
-  }*/
   async function handleDeleteFolder() {
     console.clear();
     if (!activeFolderId) return;
@@ -261,6 +251,7 @@ export function useFolderActions({
       } catch (error) {
         console.error("Error: Can't delete folder.", error);
         setFolders(oldFolders);
+        
         return;
         // TODO: Error-Notification
       }

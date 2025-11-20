@@ -25,7 +25,7 @@ export function useContextMenu({
       // close context menu on a new folder
       if (settingsMenuOpened && activeFolderId === id) {
         setSettingsMenuOpened(false);
-        setActiveFolderId(null);
+        //setActiveFolderId(null);
         setContextMenu(null);
         return;
       }

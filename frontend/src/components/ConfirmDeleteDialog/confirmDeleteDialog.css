@@ -1,0 +1,100 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter+Display:wght@400;500;600;700&display=swap');
+
+* {
+    font-family: 'Inter Display', sans-serif;
+    box-sizing: border-box;
+}
+
+.background-filler {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.16);
+    z-index: 50;
+}
+
+
+.confirm-delete-dialog-div {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    margin: 0;
+    padding: 16px;
+    border-radius: 12px;
+    border: 2px solid #EFEFEF;
+    z-index: 100;
+    min-width: 600px;
+    max-width: 600px;
+    background-color: #FAFAFA;
+}
+
+
+.delete-text-close-icon-div {
+    margin: 0;
+    padding: 0;
+    max-height: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.delete-text-close-icon-div p {
+    font-size: 18px;
+    font-weight: 600; /* Semi Bold */
+    color: #1F1F1F;
+}
+
+.delete-dialog-text {
+    margin-bottom: 32px;
+}
+
+.delete-dialog-btns {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: flex-start; /* later maybe flex-end */
+}
+
+.delete-dialog-btn {
+    all: unset;
+    background-color: #FB464C;
+    font-size: 14px;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+}
+
+.delete-dialog-btn:hover {
+    background-color: #e6373c;
+}
+
+.cancel-dialog-btn {
+    all: unset;
+    background-color: #FFFFFF;
+    font-size: 14px;
+    color: #1F1F1F;
+    padding: 8px 12px;
+    border-radius: 6px;
+
+    box-shadow:
+        0px 0px 0px 1.5px rgba(31, 31, 31, 0.08),
+        0px 1px 1px 0px rgba(31, 31, 31, 0.04),
+        0px 3px 3px 0px rgba(31, 31, 31, 0.03),
+        0px 3px 4px 0px rgba(31, 31, 31, 0.02);
+}
+
+.cancel-dialog-btn:hover {
+    background-color: rgba(31, 31, 31, 0.02);
+}
+
+.delete-dialog-close-icon {
+    padding: 0px;
+    border-radius: 6px;
+    height: 35px;
+    width: 35px;
+}
+
+.delete-dialog-close-icon:hover {
+    background-color: rgba(31, 31, 31, 0.08);
+}

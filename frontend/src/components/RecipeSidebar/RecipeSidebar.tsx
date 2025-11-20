@@ -10,6 +10,7 @@ import { useFolderActions } from "./hooks/useFolderActions";
 import { useDragAndDrop } from "./hooks/useDragAndDrop";
 import { useContextMenu } from "./hooks/useContextMenu";
 import { loadUIState } from "./utils/folderHelpers";
+import ConfirmDeleteDialog from '../ConfirmDeleteDialog/ConfirmDeleteDialog';
 
 
 function RecipeSidebar() {
@@ -21,6 +22,8 @@ function RecipeSidebar() {
   const [settingsMenuOpened, setSettingsMenuOpened] = useState<boolean>(false);
   const [contextMenu, setContextMenu] = useState<{x: number, y: number} | null>(null);
   const [activeFolderId, setActiveFolderId] = useState<string | null>(null);
+
+  const [deleteDialogOpened, setDeleteDialogOpened] = useState<boolean>(false);
 
   const { handleCreateFolderClick, handleUpdateFolderData, handleFolderSelect, handleDeleteFolder } = useFolderActions({
     activeFolderId,
@@ -84,7 +87,7 @@ function RecipeSidebar() {
   useEffect(() => {
     const handleClick = () => {
       setContextMenu(null);
-      setActiveFolderId(null);
+      //setActiveFolderId(null);
       setSettingsMenuOpened(false);
     }
 
@@ -177,6 +180,16 @@ function RecipeSidebar() {
         </button>
       </nav>
 
+      {deleteDialogOpened && (
+        <ConfirmDeleteDialog
+          deleteDialogOpened={deleteDialogOpened}
+          setDeleteDialogOpened={setDeleteDialogOpened}
+          handleDeleteFolder={handleDeleteFolder}
+          activeFolderId={activeFolderId}
+          folders={folders}
+        />
+      )}
+
       <AnimatePresence>
       {settingsMenuOpened && contextMenu && (
         <motion.div
@@ -192,9 +205,9 @@ function RecipeSidebar() {
           }}
         >
           <FolderItemSettingsMenu
-            onDeleteFolder={handleDeleteFolder}
             onUpdateFolderData={handleUpdateFolderData}
             activeFolderId={activeFolderId}
+            setDeleteDialogOpened={setDeleteDialogOpened}
           />
         </motion.div>
       )}
