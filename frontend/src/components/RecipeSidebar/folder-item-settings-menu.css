@@ -1,0 +1,55 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter+Display:wght@400;500;600;700&display=swap');
+
+* {
+    font-family: 'Inter Display', sans-serif;
+    box-sizing: border-box;
+}
+
+/* ============================================
+   FOLDERITEMSETTINGSMENU STYLING
+   ============================================ */
+.settings-menu_container {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    padding: 6px;
+    max-width: 180px;
+    min-width: 180px;
+    background-color: white;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #1F1F1F;
+    cursor: pointer;
+
+    box-shadow:
+    0px 0px 0px 1.5px rgba(31, 31, 31, 0.08),
+    0px 1px 1px 0px rgba(31, 31, 31, 0.04),
+    0px 3px 3px 0px rgba(31, 31, 31, 0.03),
+    0px 3px 4px 0px rgba(31, 31, 31, 0.02);
+}
+.settings-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px;
+    height: 38px;
+    border-radius: 8px;
+}
+.settings-menu-item:hover {
+    background-color: #EFEFEF;
+}
+.menu-item-delete {
+    color: rgb(255, 62, 37);
+}
+.settings-menu {
+  opacity: 0;
+  transform: scale(0.7);
+  transition: all 0.15s ease-out;
+}
+.settings-menu.show {
+  opacity: 1;
+  transform: scale(1);
+}

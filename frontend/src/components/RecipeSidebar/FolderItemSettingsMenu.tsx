@@ -1,4 +1,5 @@
 import './sidebar.css';
+import './/folder-item-settings-menu.css';
 import type { FolderData } from '../../types/FolderData';
 
 function FolderItemSettingsMenu( 

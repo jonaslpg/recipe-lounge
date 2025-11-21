@@ -1,10 +1,11 @@
 import '../sidebar.css';
 import type { FolderData } from '../../../types/FolderData';
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 // Imports of the custom-hooks- and utils-folder
 import { useFolderInteractions } from "./hooks/useFolderInteractions";
 import { calculateAmountAllSubfolders } from "./utils/folderCalculations";
+import Tooltip from '../../tooltips/Tooltip';
 
 
 function FolderItem(
@@ -57,6 +58,23 @@ function FolderItem(
 
     let subfolders: FolderData[] | null = folders.filter(f => folderData.id === f.parentFolder?.id);
 
+    const [showTooltip, setShowTooltip] = useState(false);
+    const hoverTimer = useRef<number | null>(null);
+
+    const handleMouseEnter = () => {
+        hoverTimer.current = window.setTimeout(() => {
+            setShowTooltip(true);
+        }, 800);
+    };
+
+    const handleMouseLeave = () => {
+        if (hoverTimer.current) {
+            clearTimeout(hoverTimer.current);
+        }
+        setShowTooltip(false);
+    };
+
+
     useEffect(() => {
         if (folderData.isEditing) {
             inputRef.current?.focus();
@@ -80,7 +98,7 @@ function FolderItem(
                     height: `${
                         folderData.isLastFolder
                             ? 38 + (44 * amountOfActiveSubfolders)
-                            : 44 + (44 * amountOfActiveSubfolders) // 44
+                            : 44 + (44 * amountOfActiveSubfolders)
                     }px`,
                 }}
             ></span>
@@ -151,8 +169,12 @@ function FolderItem(
                 {!folderData.isEditing && !isDragging && <div
                     className={`settings_container ${isSettingsIconActive ? "settings_container-visibile" : ''}`} 
                     onClick={handleFolderSettingsClick}
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={handleMouseLeave}
                 >
                     <img className='item-settings' alt="item-settings" />
+
+                    {showTooltip && <Tooltip tooltipString="Rename, delete, and more..." />}
                 </div>}
             </div>
         </div>

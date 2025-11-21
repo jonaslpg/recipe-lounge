@@ -1,0 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter+Display:wght@400;500;600;700&display=swap');
+
+* {
+    font-family: 'Inter Display', sans-serif;
+    box-sizing: border-box;
+}
+
+.tooltips-container {
+    position: absolute;
+    top: 36px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 24px;
+    max-height: 24px;
+    padding: 4px 12px;
+    align-items: center;
+    transform: translateX(-50%);
+    color: #1F1F1F;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    z-index: 200;
+    background-color: #FFFFFF;
+
+    box-shadow:
+    0px 0px 0px 1.5px rgba(31, 31, 31, 0.08),
+    0px 1px 1px 0px rgba(31, 31, 31, 0.04),
+    0px 3px 3px 0px rgba(31, 31, 31, 0.03),
+    0px 3px 4px 0px rgba(31, 31, 31, 0.02);
+}
