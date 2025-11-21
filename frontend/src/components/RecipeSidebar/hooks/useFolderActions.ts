@@ -31,6 +31,7 @@ export function useFolderActions({
 
     try {
       const res = await fetch("http://localhost:8080/api/folders", {
+      //const res = await fetch("http://xxx.xxx.x.xxx:8080/api/folders", {
         method: "POST", // POST = CREATE NEW OBJECT
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(
@@ -92,7 +93,8 @@ export function useFolderActions({
 
     // Persist no ui-relevant data in database
     if (updates.title !== undefined || updates.parentFolder?.id !== undefined) {
-      fetch(`http://localhost:8080/api/folders/${id}`, { // ERROR: ID ist noch UUID
+      fetch(`http://localhost:8080/api/folders/${id}`, {
+      //fetch(`http://xxx.xxx.x.xxx:8080/api/folders/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updates),
@@ -230,6 +232,7 @@ export function useFolderActions({
     if(foldersToDelete) {
       try {
         const response = await fetch("http://localhost:8080/api/folders", {
+        //const response = await fetch("http://xxx.xxx.x.xxx:8080/api/folders", {
           method: "DELETE",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -260,6 +263,7 @@ export function useFolderActions({
     // PERSIST: Reposition folders (BULKD PATCH)
     try {
       const response = await fetch("http://localhost:8080/api/folders", {
+      //const response = await fetch("http://xxx.xxx.x.xxx:8080/api/folders", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

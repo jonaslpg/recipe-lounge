@@ -25,6 +25,9 @@ function RecipeSidebar() {
 
   const [deleteDialogOpened, setDeleteDialogOpened] = useState<boolean>(false);
 
+  const [touchPos, setTouchPos] = useState<{ x: number; y: number } | null>(null);
+
+
   const { handleCreateFolderClick, handleUpdateFolderData, handleFolderSelect, handleDeleteFolder } = useFolderActions({
     activeFolderId,
     setContextMenu,
@@ -42,13 +45,14 @@ function RecipeSidebar() {
     setContextMenu
   });
   
-  const { handleFinalizeFolderDragEnd, handleSidebarDragOver, handleUpdateDraggedFolder } = useDragAndDrop({
+  const { handleFinalizeFolderDragEnd, handleSidebarDragOver, handleSidebarDragMove, handleUpdateDraggedFolder } = useDragAndDrop({
     folders,
     setFolders,
     draggedFolder,
     setDraggedFolder,
     targetFolderId,
-    setTargetFolderId
+    setTargetFolderId,
+    setTouchPos
   });
 
 
@@ -57,6 +61,7 @@ function RecipeSidebar() {
   useEffect(() => {
     async function loadFolders() {
       const res = await fetch("http://localhost:8080/api/folders");
+      //const res = await fetch("http://xxx.xxx.x.xxx:8080/api/folders");
       const uiState = loadUIState();
 
       // In the Backend we use ParentFolder instead of ParentFolderId to have better readibilty
@@ -68,9 +73,6 @@ function RecipeSidebar() {
           ...(uiState[f.id] || {
             isOpen: false,
             isSelected: false,
-            isLastFolder: false,
-            folderLevel: 0,
-            isVisible: true,
             isEditing: false,
           }),
         };
@@ -114,7 +116,8 @@ function RecipeSidebar() {
 
       <nav 
         className={`sidebar ${sidebarOpen ? 'open' : ''}`}
-        onDragOver={handleSidebarDragOver}>
+        onDragOver={handleSidebarDragOver}
+        onTouchMove={handleSidebarDragMove}>
         <div className="topbar">
           <img 
             className="recipe-lounge-logo"
@@ -167,6 +170,9 @@ function RecipeSidebar() {
               targetFolderId={targetFolderId}
               activeFolderId={activeFolderId}
               folders={folders}
+              setTouchPos={setTouchPos}
+              touchPos={touchPos}
+              draggedFolder={draggedFolder}
             />
           ))
         }

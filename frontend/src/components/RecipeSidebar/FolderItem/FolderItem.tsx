@@ -18,7 +18,10 @@ function FolderItem(
     activeFolderId,
     folders,
     onFinalizeFolderDragEnd: handleFinalizeFolderDragEnd,
-    onFinalizeFolderSettingsClick: handleFinalizeFolderSettingsClick
+    onFinalizeFolderSettingsClick: handleFinalizeFolderSettingsClick,
+    setTouchPos: setTouchPos,
+    touchPos: touchPos,
+    draggedFolder: draggedFolder
 }: 
     { 
         folderData: FolderData, 
@@ -29,7 +32,10 @@ function FolderItem(
         activeFolderId: string | null,
         folders: FolderData[],
         onFinalizeFolderDragEnd: () => void,
-        onFinalizeFolderSettingsClick: (cursor: React.MouseEvent<HTMLDivElement>) => void
+        onFinalizeFolderSettingsClick: (cursor: React.MouseEvent<HTMLDivElement>) => void,
+        setTouchPos: React.Dispatch<React.SetStateAction<{ x: number; y: number } | null>>,
+        touchPos: { x: number; y: number } | null,
+        draggedFolder: FolderData | null
     }
 ) {
     const { 
@@ -43,7 +49,9 @@ function FolderItem(
         handleFolderSettingsClick,
         handleFolderClick,
         handleFolderDoubleClick,
-        handleFolderTitleEnter
+        handleFolderTitleEnter,
+        handleTouchStart,
+        handleTouchEnd
     } = useFolderInteractions({
         folderData,
         activeFolderId,
@@ -51,7 +59,8 @@ function FolderItem(
         handleFolderSelect,
         handleUpdateDraggedFolder,
         handleFinalizeFolderDragEnd,
-        handleFinalizeFolderSettingsClick
+        handleFinalizeFolderSettingsClick,
+        setTouchPos
     });
 
     const { amountOfActiveSubfolders, amountOfAllSubfolders } = calculateAmountAllSubfolders(folderData, folders);
@@ -89,6 +98,23 @@ function FolderItem(
 
     return (
         <>
+        {isDragging && draggedFolder && touchPos && (
+        <div
+            className="folder-drag-preview"
+            style={{
+            position: 'fixed',
+            top: touchPos.y,
+            left: touchPos.x,
+            pointerEvents: 'none',
+            transform: 'translate(-50%, -50%)',
+            zIndex: 9999,
+            }}
+        >
+            {draggedFolder.title}
+        </div>
+        )}
+
+
         {folderData.parentFolder?.id && (
             <span 
                 className={`sub-folder-line ${
@@ -113,6 +139,9 @@ function FolderItem(
             onDoubleClick={handleFolderDoubleClick}
             onDragStart={handleFolderDragStart}
             onDragEnd={handleFolderDragEnd}
+
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
             ref={folderRef}
         >
 
@@ -192,6 +221,9 @@ function FolderItem(
                     targetFolderId={targetFolderId}
                     activeFolderId={activeFolderId}
                     folders={folders}
+                    setTouchPos={setTouchPos}
+                    touchPos={touchPos}
+                    draggedFolder={draggedFolder}
                 />
             ))}
         </>

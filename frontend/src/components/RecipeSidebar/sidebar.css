@@ -351,6 +351,16 @@ input::selection {
     color: #FF782F !important;
 }
 
+.folder-drag-preview {
+    color: white;
+    background-color: #FF782F;
+    min-width: 254px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    height: 38px;
+    font-weight: 500;
+    font-size: 16px;
+}
 
 /* ---------- Utility Classes ---------- */
 
@@ -406,4 +416,11 @@ input::selection {
         transform: scale(1.1); /* NOTE for myself: instead of only scale, use transform */
         filter: invert(77%) sepia(57%) saturate(5902%) hue-rotate(338deg) brightness(101%) contrast(104%);
     }
+
+    .recipe-folder-container .settings_container {
+        visibility: visible;
+        min-width: 24px;
+        min-height: 24px;
+    }
+
 }

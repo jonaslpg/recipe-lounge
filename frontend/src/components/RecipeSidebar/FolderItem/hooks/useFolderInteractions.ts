@@ -9,6 +9,7 @@ type UseFolderInteractionsParams = {
     handleUpdateDraggedFolder: (folderData: FolderData) => void;
     handleFinalizeFolderDragEnd: () => void;
     handleFinalizeFolderSettingsClick: (cursor: React.MouseEvent<HTMLDivElement>) => void;
+    setTouchPos: React.Dispatch<React.SetStateAction<{ x: number; y: number } | null>>;
 };
 
 export function useFolderInteractions({
@@ -18,7 +19,8 @@ export function useFolderInteractions({
     handleFolderSelect,
     handleUpdateDraggedFolder,
     handleFinalizeFolderDragEnd,
-    handleFinalizeFolderSettingsClick
+    handleFinalizeFolderSettingsClick,
+    setTouchPos
 }: UseFolderInteractionsParams) {
     const folderRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
@@ -30,6 +32,9 @@ export function useFolderInteractions({
     // For the title validation
     const FOLDER_TITLE_MAX_LENGTH = /^.{0,15}$/;
     const FOLDER_TITLE_PATTERN = /^[A-Za-zÄÖÜäöüß0-9 ]+$/;
+
+    // for mobile version
+    let dragTimeout: number | null = null;
 
     useEffect(() => {
         setPreviousTitle(folderData.title);
@@ -119,6 +124,31 @@ export function useFolderInteractions({
         handleFinalizeFolderDragEnd();
     };
 
+    // -- for mobile
+    function handleTouchStart(e: React.TouchEvent<HTMLDivElement>) {
+        if (folderData.isEditing) return;
+        e.stopPropagation();
+
+        dragTimeout = window.setTimeout(() => {
+            setIsDragging(true);
+            folderRef.current?.classList.add("folder-dragged");
+            handleUpdateDraggedFolder(folderData);
+        }, 150);
+    }
+
+    // -- for mobile
+    function handleTouchEnd(e: React.TouchEvent<HTMLDivElement>) {
+        e.stopPropagation();
+        if (dragTimeout) {
+            clearTimeout(dragTimeout);
+            dragTimeout = null;
+        }
+        setIsDragging(false);
+        setTouchPos(null);
+        folderRef.current?.classList.remove("folder-dragged");
+        handleFinalizeFolderDragEnd();
+    }
+
     function handleDropdownClick(e: React.MouseEvent<HTMLDivElement>) {
         e.stopPropagation();
         if (folderData.isEditing) return;
@@ -169,6 +199,8 @@ export function useFolderInteractions({
         handleFolderSettingsClick,
         handleFolderClick,
         handleFolderDoubleClick,
-        handleFolderTitleEnter
+        handleFolderTitleEnter,
+        handleTouchStart,
+        handleTouchEnd
     };
 }

@@ -97,3 +97,10 @@
 .delete-dialog-close-icon:hover {
     background-color: rgba(31, 31, 31, 0.08);
 }
+
+@media (max-width: 768px) {
+    .confirm-delete-dialog-div {
+        min-width: 340px;
+        max-width: 340px;
+    }
+}

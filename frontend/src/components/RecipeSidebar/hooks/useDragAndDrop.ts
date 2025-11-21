@@ -8,6 +8,7 @@ type DragAndDropParams = {
   setDraggedFolder: React.Dispatch<React.SetStateAction<FolderData | null>>;
   targetFolderId: string | null;
   setTargetFolderId: React.Dispatch<React.SetStateAction<string | null>>;
+  setTouchPos: React.Dispatch<React.SetStateAction<{ x: number; y: number } | null>>;
 };
 
 export function useDragAndDrop({
@@ -17,6 +18,7 @@ export function useDragAndDrop({
   setDraggedFolder,
   targetFolderId,
   setTargetFolderId,
+  setTouchPos
 }: DragAndDropParams) {
 
 
@@ -45,6 +47,7 @@ export function useDragAndDrop({
     // PERSIST BULK PATCH
     try {
       const response = await fetch(`http://localhost:8080/api/folders`, {
+      //const response = await fetch(`http://xxx.xxx.x.xxx:8080/api/folders`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -330,6 +333,22 @@ export function useDragAndDrop({
     return false;
   };
 
+  // -- for mobile
+  function handleSidebarDragMove(e: React.TouchEvent<HTMLDivElement>) {
+    e.preventDefault();
+    const touch = e.touches[0];
+    setTouchPos({ x: touch.clientX, y: touch.clientY });
+    
+    const el = document.elementFromPoint(touch.clientX, touch.clientY) as HTMLElement | null;
+    const target = el?.closest(".recipe-folder-container") as HTMLDivElement;
+    const targetId = target?.dataset.id;
+
+    if (target && draggedFolder && targetId && targetId !== draggedFolder.id) {
+        setTargetFolderId(targetId);
+    } else {
+        setTargetFolderId(null);
+    }
+  }
 
   function handleSidebarDragOver(e: React.DragEvent) {
     e.preventDefault();
@@ -352,5 +371,6 @@ export function useDragAndDrop({
     handleFinalizeFolderDragEnd,
     handleSidebarDragOver,
     handleUpdateDraggedFolder,
+    handleSidebarDragMove
   };
 }

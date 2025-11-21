@@ -30,3 +30,9 @@
     0px 3px 3px 0px rgba(31, 31, 31, 0.03),
     0px 3px 4px 0px rgba(31, 31, 31, 0.02);
 }
+
+@media (max-width: 768px) {
+  .tooltips-container {
+    display: none;
+  }
+}
