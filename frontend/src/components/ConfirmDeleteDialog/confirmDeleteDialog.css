@@ -62,6 +62,7 @@
     color: white;
     padding: 8px 12px;
     border-radius: 6px;
+    cursor: pointer;
 }
 
 .delete-dialog-btn:hover {
@@ -75,6 +76,7 @@
     color: #1F1F1F;
     padding: 8px 12px;
     border-radius: 6px;
+    cursor: pointer;
 
     box-shadow:
         0px 0px 0px 1.5px rgba(31, 31, 31, 0.08),
@@ -92,6 +94,7 @@
     border-radius: 6px;
     height: 35px;
     width: 35px;
+    cursor: pointer;
 }
 
 .delete-dialog-close-icon:hover {

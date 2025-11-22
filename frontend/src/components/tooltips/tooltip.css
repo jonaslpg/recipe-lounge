@@ -21,7 +21,7 @@
     font-size: 14px;
     font-weight: 500;
     white-space: nowrap;
-    z-index: 200;
+    z-index: 9999;
     background-color: #FFFFFF;
 
     box-shadow:

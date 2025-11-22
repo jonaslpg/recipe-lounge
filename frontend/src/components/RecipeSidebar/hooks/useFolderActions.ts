@@ -29,6 +29,12 @@ export function useFolderActions({
       return f;
     });
 
+    // Constraint
+    if(updated.length >= 40){
+      alert("You can't hold more than 40 folders.");
+      return;
+    }
+
     try {
       const res = await fetch("http://localhost:8080/api/folders", {
       //const res = await fetch("http://xxx.xxx.x.xxx:8080/api/folders", {
@@ -56,13 +62,13 @@ export function useFolderActions({
 
       const newFolder: FolderData = { ...savedFolder, ...uiState };
 
-      // Optimistic UI: Update frontend and then backend, then eventually rollback on error
+      // Optimistic UI: Update frontend and then backend, then eventually rollback on error (?)
       updated = [...folders, newFolder];
       setFolders(updated);
       persistUIState(updated);
 
     } catch (err) {
-      console.error("❌ Folder creation failed:", err);
+      console.error("Folder creation failed:", err);
     }
 
     console.clear();
@@ -226,6 +232,8 @@ export function useFolderActions({
       JSON.stringify(updatedFolders, null, 2)
     );*/
 
+    updatedFolders = updateIsLastFolderOfFolders(updatedFolders);
+
     setFolders(updatedFolders);
 
     // PERSIST: Delete folders
@@ -260,7 +268,7 @@ export function useFolderActions({
       }
     } else return;
 
-    // PERSIST: Reposition folders (BULKD PATCH)
+    // PERSIST: Reposition folders (BULK PATCH)
     try {
       const response = await fetch("http://localhost:8080/api/folders", {
       //const response = await fetch("http://xxx.xxx.x.xxx:8080/api/folders", {
@@ -288,6 +296,30 @@ export function useFolderActions({
       return;
       // TODO: Error-Notification
     }
+  }
+
+    function updateIsLastFolderOfFolders(folders: FolderData[]): FolderData[] {
+    const updatedFolders = folders.map(folder => ({ ...folder }));
+    
+    const foldersByParent = new Map<string | null, FolderData[]>();
+    
+    updatedFolders.forEach(folder => {
+      const parentId = folder.parentFolder?.id ?? null;
+      if (!foldersByParent.has(parentId)) {
+        foldersByParent.set(parentId, []);
+      }
+      foldersByParent.get(parentId)!.push(folder);
+    });
+    
+    foldersByParent.forEach((group) => {
+      group.sort((a, b) => a.position - b.position);
+      
+      group.forEach((folder, index) => {
+        folder.isLastFolder = index === group.length - 1;
+      });
+    });
+    
+    return updatedFolders;
   }
 
   return {

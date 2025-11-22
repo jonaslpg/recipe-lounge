@@ -1,11 +1,11 @@
 import '../sidebar.css';
 import type { FolderData } from '../../../types/FolderData';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, /*useRef, useState*/ } from 'react';
 
 // Imports of the custom-hooks- and utils-folder
 import { useFolderInteractions } from "./hooks/useFolderInteractions";
 import { calculateAmountAllSubfolders } from "./utils/folderCalculations";
-import Tooltip from '../../tooltips/Tooltip';
+// import Tooltip from '../../tooltips/Tooltip';
 
 
 function FolderItem(
@@ -67,7 +67,7 @@ function FolderItem(
 
     let subfolders: FolderData[] | null = folders.filter(f => folderData.id === f.parentFolder?.id);
 
-    const [showTooltip, setShowTooltip] = useState(false);
+    /*const [showTooltip, setShowTooltip] = useState(false);
     const hoverTimer = useRef<number | null>(null);
 
     const handleMouseEnter = () => {
@@ -81,7 +81,7 @@ function FolderItem(
             clearTimeout(hoverTimer.current);
         }
         setShowTooltip(false);
-    };
+    };*/
 
 
     useEffect(() => {
@@ -114,97 +114,98 @@ function FolderItem(
         </div>
         )}
 
-
-        {folderData.parentFolder?.id && (
-            <span 
-                className={`sub-folder-line ${
-                    folderData.parentFolder.id ? `sub-folder-line-spacing-${folderData.folderLevel}` : ''
-                }`}
-                style={{ 
-                    height: `${
-                        folderData.isLastFolder
-                            ? 38 + (44 * amountOfActiveSubfolders)
-                            : 44 + (44 * amountOfActiveSubfolders)
-                    }px`,
-                }}
-            ></span>
-        )}
-
-        <div
-            className={`recipe-folder-container
-            ${folderData.isEditing ? 'folder-div-editing' : ''}
-                `}
-            data-id={folderData.id}
-            onClick={handleFolderClick}
-            onDoubleClick={handleFolderDoubleClick}
-            onDragStart={handleFolderDragStart}
-            onDragEnd={handleFolderDragEnd}
-
-            onTouchStart={handleTouchStart}
-            onTouchEnd={handleTouchEnd}
-            ref={folderRef}
-        >
-
-            <div 
-                className={`recipe-folder-div
-                    ${folderData.parentFolder?.id ? `sub-folder-spacing-${folderData.folderLevel}` : ''}
-                    ${folderData.isSelected ? 'recipe-folder-div-selected' : ''}
-                `}
-                draggable={folderData.isEditing ? false : true}
-            >
-                {folderData.id === targetFolderId && (
-                    <div 
-                        style={
-                            folderData.isOpen 
-                                ? { "--targeted-folders-height": `${38 + amountOfAllSubfolders * 44}px` } as React.CSSProperties
-                                : {}
-                        }
-                        className={`target-all-folders
-                            ${folderData.parentFolder?.id ? `sub-folder-spacing-${folderData.folderLevel}` : ''
-                        }`}
-                    ></div>
-                )}
-
-                {folderData.folderLevel !== 3 && (
-                    <div className="dropdown_container" onClick={handleDropdownClick}>
-                        <img 
-                            className={`chevron ${folderData.isOpen ? 'chevron-opened' : ''}`} 
-                            alt="chevron" 
-                        />
-                    </div>
-                )}
-                {folderData.isOpen ? (
-                    <img className="folder-icon-opened" alt="folder" /> 
-                ) : ( 
-                    <img className="folder-icon-closed" alt="folder" />
-                )}
-
-                <input
-                    ref={inputRef}
-                    className={`recipe-folder-title ${folderData.isEditing ? '' : 'noedit'}`}
-                    value={folderData.title}
-                    onChange={(e) => {
-                        if(folderData.isEditing){
-                            handleUpdateFolderData(folderData.id, { title: e.target.value });
-                        }
+        <div className="recipe-folder-container-wrapper">
+            {folderData.parentFolder?.id && (
+                <span 
+                    className={`sub-folder-line ${
+                        folderData.parentFolder.id ? `sub-folder-line-spacing-${folderData.folderLevel}` : ''
+                    }`}
+                    style={{ 
+                        height: `${
+                            folderData.isLastFolder
+                                ? 38 + (44 * amountOfActiveSubfolders)
+                                : 44 + (44 * amountOfActiveSubfolders)
+                        }px`,
                     }}
-                    onKeyDown={handleFolderTitleEnter}
-                    readOnly={!folderData.isEditing}
-                    style={folderData.isEditing ? { color: "#1F1F1F" } : {}}
-                    spellCheck={false}
-                    onDragStart={(e) => e.preventDefault()}
-                />
+                ></span>
+            )}
 
-                {!folderData.isEditing && !isDragging && <div
-                    className={`settings_container ${isSettingsIconActive ? "settings_container-visibile" : ''}`} 
-                    onClick={handleFolderSettingsClick}
-                    onMouseEnter={handleMouseEnter}
-                    onMouseLeave={handleMouseLeave}
+            <div
+                className={`recipe-folder-container
+                ${folderData.isEditing ? 'folder-div-editing' : ''}
+                    `}
+                data-id={folderData.id}
+                onClick={handleFolderClick}
+                onDoubleClick={handleFolderDoubleClick}
+                onDragStart={handleFolderDragStart}
+                onDragEnd={handleFolderDragEnd}
+
+                onTouchStart={handleTouchStart}
+                onTouchEnd={handleTouchEnd}
+                ref={folderRef}
+            >
+                <div 
+                    className={`recipe-folder-div
+                        ${folderData.parentFolder?.id ? `sub-folder-spacing-${folderData.folderLevel}` : ''}
+                        ${folderData.isSelected ? 'recipe-folder-div-selected' : ''}
+                    `}
+                    draggable={folderData.isEditing ? false : true}
                 >
-                    <img className='item-settings' alt="item-settings" />
+                    {folderData.id === targetFolderId && (
+                        <div 
+                            style={
+                                folderData.isOpen 
+                                    ? { "--targeted-folders-height": `${38 + amountOfAllSubfolders * 44}px` } as React.CSSProperties
+                                    : {}
+                            }
+                            className={`target-all-folders
+                                ${folderData.parentFolder?.id ? `sub-folder-spacing-${folderData.folderLevel}` : ''
+                            }`}
+                        ></div>
+                    )}
 
-                    {showTooltip && <Tooltip tooltipString="Rename, delete, and more..." />}
-                </div>}
+                    {folderData.folderLevel !== 3 && (
+                        <div className="dropdown_container" onClick={handleDropdownClick}>
+                            <img 
+                                className={`chevron ${folderData.isOpen ? 'chevron-opened' : ''}`} 
+                                alt="chevron" 
+                            />
+                        </div>
+                    )}
+                    {folderData.isOpen ? (
+                        <img className="folder-icon-opened" alt="folder" /> 
+                    ) : ( 
+                        <img className="folder-icon-closed" alt="folder" />
+                    )}
+
+                    <input
+                        ref={inputRef}
+                        className={`recipe-folder-title ${folderData.isEditing ? '' : 'noedit'}`}
+                        value={folderData.title}
+                        onChange={(e) => {
+                            if(folderData.isEditing){
+                                handleUpdateFolderData(folderData.id, { title: e.target.value });
+                            }
+                        }}
+                        onKeyDown={handleFolderTitleEnter}
+                        readOnly={!folderData.isEditing}
+                        style={folderData.isEditing ? { color: "#1F1F1F" } : {}}
+                        spellCheck={false}
+                        onDragStart={(e) => e.preventDefault()}
+                    />
+
+                    {!folderData.isEditing && !isDragging && <div
+                        className={`settings_container ${isSettingsIconActive ? "settings_container-visibile" : ''}`} 
+                        onClick={handleFolderSettingsClick}
+                        /*onMouseEnter={handleMouseEnter}
+                        onMouseLeave={handleMouseLeave}*/
+                    >
+                        <img className='item-settings' alt="item-settings" />
+
+                        {/* {showTooltip && <Tooltip tooltipString="Rename, delete, and more..." />} */} 
+                        {/* NOT USED currently because Scrollbar is always over elements: ChatGPT, Gemini and Claude don't have it either*/}
+                    </div>}
+                </div>
             </div>
         </div>
 

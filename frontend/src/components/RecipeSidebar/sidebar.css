@@ -26,6 +26,9 @@
     left: 0;
     padding: 16px;
 }
+/*.sidebar:hover::-webkit-scrollbar-thumb {
+    background-color: #CFCFCF;
+}*/
 
 
 /* ============================================
@@ -69,6 +72,7 @@
     align-items: center;
     gap: 6px;
     margin-bottom: 4px;
+    scrollbar-width: auto;
 }
 
 .sidebar-item:hover {
@@ -94,6 +98,10 @@
     margin-top: 6px;
     height: 38px;
     border-radius: 10px;
+}
+
+.recipe-folder-container-wrapper {
+    position: relative;
 }
 
 .recipe-folder-container:hover {
@@ -281,7 +289,7 @@ input::selection {
 
 .sub-folder-line {
     position: absolute;
-    margin-top: 6px;
+    /*margin-top: 6px;*/
     width: 2px;
     height: 40px;
     background-color: #d8d8d8;
@@ -310,7 +318,7 @@ input::selection {
 
 /* State when folder is being dragged */
 .recipe-folder-container.folder-dragged {
-    position: relative;
+    /* position: relative; */
     background-color: #FF782F;
     z-index: 100;
 }
@@ -366,6 +374,40 @@ input::selection {
 
 .not-displayed {
     display: none;
+}
+
+
+/* ============================================
+   SCROLLBAR
+   ============================================ */
+
+   
+.all-folders {
+    max-width: auto;
+    min-width: auto;
+    min-height: 600px;
+    max-height: 600px;
+    overflow: auto;
+    overflow-x: hidden;
+    margin-right: -16px;
+    padding: 2px; /* to prevent border bug on folder-item */
+    padding-right: 16px;
+}
+
+
+.all-folders::-webkit-scrollbar {
+    width: 16px;
+}
+
+.all-folders::-webkit-scrollbar-thumb {
+    background-color: #e0e0e0;
+    border-radius: 10px;
+    border: 3px solid transparent;
+        background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #CFCFCF;
 }
 
 

@@ -156,26 +156,28 @@ function RecipeSidebar() {
         </button>
 
         <p className="sidebar-subtitle">FOLDERS</p>
-        {folders
-          .filter(f => !f.parentFolder)
-          .map(f => (
-            <FolderItem
-              key={f.id}
-              folderData={f}
-              onUpdateFolderData={handleUpdateFolderData}
-              onFolderSelect={handleFolderSelect}
-              onUpdateDraggedFolder={handleUpdateDraggedFolder}
-              onFinalizeFolderDragEnd={handleFinalizeFolderDragEnd}
-              onFinalizeFolderSettingsClick={handleFinalizeFolderSettingsClick}
-              targetFolderId={targetFolderId}
-              activeFolderId={activeFolderId}
-              folders={folders}
-              setTouchPos={setTouchPos}
-              touchPos={touchPos}
-              draggedFolder={draggedFolder}
-            />
-          ))
-        }
+        <div className="all-folders">
+          {folders
+            .filter(f => !f.parentFolder)
+            .map(f => (
+              <FolderItem
+                key={f.id}
+                folderData={f}
+                onUpdateFolderData={handleUpdateFolderData}
+                onFolderSelect={handleFolderSelect}
+                onUpdateDraggedFolder={handleUpdateDraggedFolder}
+                onFinalizeFolderDragEnd={handleFinalizeFolderDragEnd}
+                onFinalizeFolderSettingsClick={handleFinalizeFolderSettingsClick}
+                targetFolderId={targetFolderId}
+                activeFolderId={activeFolderId}
+                folders={folders}
+                setTouchPos={setTouchPos}
+                touchPos={touchPos}
+                draggedFolder={draggedFolder}
+              />
+            ))
+          }
+        </div>
 
         <button className="sidebar-item" style={{ marginTop: "4px" }}>
           <img 
