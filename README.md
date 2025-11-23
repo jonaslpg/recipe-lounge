@@ -1,73 +1,84 @@
-# React + TypeScript + Vite
+# Recipe Lounge (Early Version)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the early development version of **Recipe Lounge**.  
+Currently, only the **folder sidebar** is implemented.  
+More features such as recipe pages will be added later.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Tech Stack
 
-## React Compiler
+### **Backend**
+- Java 17
+- Spring Boot 3.5.7
+- Maven 3.9+
+- PostgreSQL
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### **Frontend**
+- React + TypeScript
+- Vite
+- CSS
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Prerequisites
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Before running the project locally, make sure you have the following installed:
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### **General Requirements**
+- **Java 17+**
+- **Maven 3.9.11+**
+- **PostgreSQL (recommended: version 18.x)**
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### **IDE Requirements**
+#### **VS Code**
+You must install:
+- **Java Extension Pack** (Oracle)
+- **Maven for Java**
+
+#### **IntelliJ IDEA**
+- No additional configuration required  
+  (IntelliJ detects Maven + Java automatically)
+
+---
+
+## Check Installed Versions (Windows CMD)
+
+You can verify your installed tools using:
+
+```
+java -version
+mvn -version
+psql --version
+```
+---
+
+## Database Setup (only needed for now)
+```CREATE DATABASE recipelounge;```
+
+Update your application.yml if needed:
+```
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/recipelounge
+    username: your_username
+    password: your_password
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
+    
+## How to run the project
+- you need 2 terminals to start frontend (Vite) and backend (Tomcat) server
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+1)
+```
+cd backend
+mvn spring-boot:run
+```
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+2)
+```
+cd frontend
+npm install
+npm run dev
 ```
