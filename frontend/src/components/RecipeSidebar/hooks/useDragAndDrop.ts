@@ -165,7 +165,7 @@ export function useDragAndDrop({
         : draggedFolder?.position-1;
       //console.log("maxPos: " + maxPos);
 
-      // 4.get folderLevel to subtract with
+      // 4. get folderLevel to subtract with
       const minLevel = Math.min(...allFoldersOfDragged.map(f => f.folderLevel));
 
       // 5. reposition folders of dragged folder container
