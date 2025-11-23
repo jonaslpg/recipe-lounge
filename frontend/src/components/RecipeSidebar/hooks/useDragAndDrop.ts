@@ -9,6 +9,8 @@ type DragAndDropParams = {
   targetFolderId: string | null;
   setTargetFolderId: React.Dispatch<React.SetStateAction<string | null>>;
   setTouchPos: React.Dispatch<React.SetStateAction<{ x: number; y: number } | null>>;
+  targetRootAreaId: string | undefined;
+  setTargetRootAreaId: React.Dispatch<React.SetStateAction<string | undefined>>;
 };
 
 export function useDragAndDrop({
@@ -18,33 +20,51 @@ export function useDragAndDrop({
   setDraggedFolder,
   targetFolderId,
   setTargetFolderId,
-  setTouchPos
+  setTouchPos,
+  targetRootAreaId,
+  setTargetRootAreaId
 }: DragAndDropParams) {
 
 
   async function handleFinalizeFolderDragEnd() {
     console.clear();
 
-    if (!draggedFolder || !targetFolderId) return;
+    if(!draggedFolder || !targetFolderId && !targetRootAreaId) return;
+
+    let updatedFolders: FolderData[] | null = null;
+    const oldFolders: FolderData[] = folders;
+    let alreadyUpdated: boolean = false;
 
     // prevent dragEnd on subfolders of a dragged folder
     // and prevent dragEnd on targetFolder itself
     if(checkIfTargetFolderIsNotValid()) {
       setDraggedFolder(null);
       setTargetFolderId(null);
+      setTargetRootAreaId(undefined);
       return;
     };
 
-    const oldFolders: FolderData[] = folders;
-    // shouldn't avoke if folderLevel > 3
-    const updatedFolders: FolderData[] | null = updateFoldersDragEnd();
+    // Case 1:
+    // Make folder to root folder if dragged inside a certain area
+    if(targetFolderId === null && targetRootAreaId) {
+      updatedFolders = updateRootFoldersDragEnd();
+      alreadyUpdated = true;
+    }
+
+    // Case 2:
+    // Make folder(s) to subfolder
+    if(!alreadyUpdated) updatedFolders = updateFoldersDragEnd()
+
+    // If the updatedFolders are empty, because of null-returns,
+    // then cancel the function
     if (!updatedFolders) {
       setDraggedFolder(null);
       setTargetFolderId(null);
+      setTargetRootAreaId(undefined);
       return;
     };
 
-    // PERSIST BULK PATCH
+    // PERSIST BULK PATCH for Case 1/2
     try {
       const response = await fetch(`http://localhost:8080/api/folders`, {
       //const response = await fetch(`http://xxx.xxx.x.xxx:8080/api/folders`, {
@@ -80,7 +100,105 @@ export function useDragAndDrop({
 
     setDraggedFolder(null);
     setTargetFolderId(null);
+    setTargetRootAreaId(undefined);
   }
+
+  function updateRootFoldersDragEnd(): FolderData[] | null {
+      if (!draggedFolder) return null;
+      if(draggedFolder.folderLevel === 0) return null;
+
+      // 1. setup all variables
+      let updatedFolders: FolderData[] = folders;
+
+      const posOfDraggedFolderOld: number = draggedFolder.position;
+      //console.log("pos of dragged folder: " + posOfDraggedFolderOld);
+      const allSubfoldersOfDraggedFolder: FolderData[] = getAllSubfolders(updatedFolders, draggedFolder.id);
+      
+      /*console.log(
+        "%c📁 Subfolders of dragged folder:",
+        "color: orange; font-weight: bold;",
+        allSubfoldersOfDraggedFolder
+      );*/
+
+      const {
+        maxPosOfSubfolderOfDraggedOld,
+      } = setupVariablesDragEnd(folders, draggedFolder, targetFolderId);
+
+      const foldersRepositioning: FolderData[] = updatedFolders
+          .filter(f => f.position > maxPosOfSubfolderOfDraggedOld)
+          .sort((a, b) => a.position - b.position);
+
+      /*console.log(
+        "%c📁 Folders to reposition:",
+        "color: orange; font-weight: bold;",
+        foldersRepositioning
+      );*/
+
+      const allFoldersOfDragged: FolderData[] = [
+          draggedFolder,
+          ...allSubfoldersOfDraggedFolder
+      ].sort((a, b) => a.position - b.position);
+
+      /*console.log(
+        "%c📁 Dragged Folders:",
+        "color: orange; font-weight: bold;",
+        allFoldersOfDragged
+      );*/
+
+      // 2. reposition folders above dragged folder container
+      if(foldersRepositioning.length !== 0){
+        foldersRepositioning.forEach((f, i) => {
+            const newPos = posOfDraggedFolderOld + i;
+            f.position = newPos;
+
+            updatedFolders = updatedFolders.map(uf =>
+                uf.id === f.id
+                    ? { ...uf, position: newPos }
+                    : uf
+            ).sort((a, b) => a.position - b.position);;
+        });
+      }
+
+      // 3. get max pos of repositioned folders
+      const maxPos: number = foldersRepositioning.length !== 0 
+        ? Math.max(...foldersRepositioning.map(f => f.position))
+        : draggedFolder?.position-1;
+      //console.log("maxPos: " + maxPos);
+
+      // 4.get folderLevel to subtract with
+      const minLevel = Math.min(...allFoldersOfDragged.map(f => f.folderLevel));
+
+      // 5. reposition folders of dragged folder container
+      // + set folderLevel and parentFolder
+      allFoldersOfDragged.forEach((f, i) => {
+          const newPos = maxPos + i + 1;
+
+          updatedFolders = updatedFolders.map(uf =>
+              uf.id === f.id
+                  ? { 
+                    ...uf, 
+                    position: newPos, 
+                    folderLevel: (f.folderLevel-minLevel),
+                    parentFolder: f.id === draggedFolder?.id ? null : f.parentFolder
+                  }
+                  : uf
+          ).sort((a, b) => a.position - b.position);
+      });
+
+      // 6. update isLastFolder
+      updatedFolders = updateIsLastFolderOfFolders(updatedFolders);
+
+      setFolders(updatedFolders);
+
+      /*console.log(
+        "%c📁 Updated Folders:",
+        "color: orange; font-weight: bold;",
+        updatedFolders
+      );*/
+
+      return updatedFolders;
+  }
+
 
   function updateFoldersDragEnd(): FolderData[] | null {
 
@@ -107,17 +225,35 @@ export function useDragAndDrop({
     // 3: set new positions and folderLevel of dragged folder and the subfolders of it
     const newPosDF: number = maxPosOfSubfolderOfTarget + 1;
     const newLevelDF: number = targetFolder.folderLevel+1;
-    if(newLevelDF > 3) return null;
+
+    const folderLevelOfDraggedFolderOld: number = draggedFolder.folderLevel;
+
+    if(newLevelDF > 3) return null; // cancel drag & drop if a folder is having folder level > 3
     draggedFolder.position = newPosDF;
     draggedFolder.folderLevel = newLevelDF;
     updatedFolders = updatePosLevelInFolders(updatedFolders, draggedFolder, newPosDF, newLevelDF);
 
-    allSubfoldersOfDraggedFolder.forEach((sf, i) => {
-      const newLevelSubfolderDF: number = calculateFolderLevel(updatedFolders, sf);
-      sf.position = newPosDF+(i+1);
+    for (let i = 0; i < allSubfoldersOfDraggedFolder.length; i++) { // need for-loop instead of forEach to return null;
+      const sf = allSubfoldersOfDraggedFolder[i];
+
+      const newLevelSubfolderDF = calculateFolderLevel(updatedFolders, sf);
+
+      if (newLevelSubfolderDF > 3) {
+        draggedFolder.position = posOfDraggedFolderOld;
+        draggedFolder.folderLevel = folderLevelOfDraggedFolderOld;
+        return null;
+      }
+
+      sf.position = newPosDF + (i + 1);
       sf.folderLevel = newLevelSubfolderDF;
-      updatedFolders = updatePosLevelInFolders(updatedFolders, sf, (newPosDF+(i+1)), newLevelSubfolderDF);
-    });
+
+      updatedFolders = updatePosLevelInFolders(
+        updatedFolders,
+        sf,
+        newPosDF + (i + 1),
+        newLevelSubfolderDF
+      );
+    }
 
     const maxPosOfSubfolderOfDraggedNew: number = 
       allSubfoldersOfDraggedFolder.length > 0
@@ -254,7 +390,7 @@ export function useDragAndDrop({
 
 
   // helper function for "updateFoldersDragEnd"
-  function setupVariablesDragEnd(folders: FolderData[], draggedFolder: FolderData, targetFolderId: string | null) {
+  function setupVariablesDragEnd(folders: FolderData[], draggedFolder: FolderData, targetFolderId: string | null) {    
     const targetFolder: FolderData = folders.find(f => f.id === targetFolderId)!;
 
     let allSubfoldersOfTargetFolder: FolderData[] | undefined = undefined;
@@ -276,7 +412,7 @@ export function useDragAndDrop({
       ? Math.max(...allSubfoldersOfDraggedFolder.map(f => f.position))
       : draggedFolder?.position; // NOTE: If you copy code and change it, have attention..
 
-    let dragUp: boolean = draggedFolder.position - targetFolder.position < 0 ? false : true;
+    let dragUp: boolean = draggedFolder.position - targetFolder?.position < 0 ? false : true;
 
     return {
       targetFolder,
@@ -335,7 +471,7 @@ export function useDragAndDrop({
 
   // -- for mobile
   function handleSidebarDragMove(e: React.TouchEvent<HTMLDivElement>) {
-    e.preventDefault();
+   // e.preventDefault();
     const touch = e.touches[0];
     setTouchPos({ x: touch.clientX, y: touch.clientY });
     
@@ -343,7 +479,11 @@ export function useDragAndDrop({
     const target = el?.closest(".recipe-folder-container") as HTMLDivElement;
     const targetId = target?.dataset.id;
 
-    if (target && draggedFolder && targetId && targetId !== draggedFolder.id) {
+    const targetRootFoldersArea = el?.closest(".all-folders") as HTMLElement;
+    const targetIdRootFoldersArea: string | undefined = targetRootFoldersArea?.dataset.id;
+    setTargetRootAreaId(targetIdRootFoldersArea);
+
+    if (target && draggedFolder && targetId/* && targetId !== draggedFolder.id*/) {
         setTargetFolderId(targetId);
     } else {
         setTargetFolderId(null);
@@ -355,7 +495,11 @@ export function useDragAndDrop({
     const target = (e.target as HTMLElement).closest(".recipe-folder-container") as HTMLDivElement;
     const targetId = target?.dataset.id;
 
-    if (target && draggedFolder && targetId && targetId !== draggedFolder.id) {
+    const targetRootFoldersArea = (e.target as HTMLElement).closest(".all-folders") as HTMLElement;
+    const targetIdRootFoldersArea: string | undefined = targetRootFoldersArea?.dataset.id;
+    setTargetRootAreaId(targetIdRootFoldersArea);
+
+    if (target && draggedFolder && targetId/* && targetId !== draggedFolder.id*/) {
       setTargetFolderId(targetId);
     } else {
       setTargetFolderId(null);

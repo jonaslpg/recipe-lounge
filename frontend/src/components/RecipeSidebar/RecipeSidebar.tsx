@@ -19,6 +19,7 @@ function RecipeSidebar() {
 
   const [draggedFolder, setDraggedFolder] = useState<FolderData | null>(null);
   const [targetFolderId, setTargetFolderId] = useState<string | null>(null);
+  const [targetRootAreaId, setTargetRootAreaId] = useState<string | undefined>(undefined);
   const [settingsMenuOpened, setSettingsMenuOpened] = useState<boolean>(false);
   const [contextMenu, setContextMenu] = useState<{x: number, y: number} | null>(null);
   const [activeFolderId, setActiveFolderId] = useState<string | null>(null);
@@ -52,7 +53,9 @@ function RecipeSidebar() {
     setDraggedFolder,
     targetFolderId,
     setTargetFolderId,
-    setTouchPos
+    setTouchPos,
+    targetRootAreaId,
+    setTargetRootAreaId
   });
 
 
@@ -117,7 +120,8 @@ function RecipeSidebar() {
       <nav 
         className={`sidebar ${sidebarOpen ? 'open' : ''}`}
         onDragOver={handleSidebarDragOver}
-        onTouchMove={handleSidebarDragMove}>
+        onTouchMove={handleSidebarDragMove}
+        >
         <div className="topbar">
           <img 
             className="recipe-lounge-logo"
@@ -156,7 +160,7 @@ function RecipeSidebar() {
         </button>
 
         <p className="sidebar-subtitle">FOLDERS</p>
-        <div className="all-folders">
+        <div className="all-folders" data-id={123}>
           {folders
             .filter(f => !f.parentFolder)
             .map(f => (

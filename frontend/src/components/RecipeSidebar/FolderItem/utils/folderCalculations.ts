@@ -1,8 +1,14 @@
 import type { FolderData } from "../../../../types/FolderData";
 
-
+/**
+ * Calculates the amount of active subfolders of a folder.
+ * 
+ * @param folderData 
+ * @param allFolders 
+ * @returns 
+ */
 export function calculateAmountAllSubfolders(folderData: FolderData, allFolders: FolderData[]) {
-  let amountOfAllSubfolders = 0;
+  //let amountOfAllSubfolders = 0; // falsch
   let amountOfActiveSubfolders = 0;
 
   function countSubfoldersRecursive(parentId: string, countOnlyOpen: boolean): number {
@@ -19,12 +25,12 @@ export function calculateAmountAllSubfolders(folderData: FolderData, allFolders:
   }
 
   if (!folderData.isOpen) {
-    amountOfAllSubfolders = countSubfoldersRecursive(folderData.id, false);
+    //amountOfAllSubfolders = countSubfoldersRecursive(folderData.id, false);
     amountOfActiveSubfolders = 0;
   } else {
-    amountOfAllSubfolders = countSubfoldersRecursive(folderData.id, false);
+    //amountOfAllSubfolders = countSubfoldersRecursive(folderData.id, false);
     amountOfActiveSubfolders = countSubfoldersRecursive(folderData.id, true);
   }
 
-  return { amountOfActiveSubfolders, amountOfAllSubfolders };
+  return { amountOfActiveSubfolders/*, amountOfAllSubfolders*/ };
 }

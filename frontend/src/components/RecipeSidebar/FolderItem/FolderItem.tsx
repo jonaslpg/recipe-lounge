@@ -63,7 +63,7 @@ function FolderItem(
         setTouchPos
     });
 
-    const { amountOfActiveSubfolders, amountOfAllSubfolders } = calculateAmountAllSubfolders(folderData, folders);
+    const { amountOfActiveSubfolders } = calculateAmountAllSubfolders(folderData, folders);
 
     let subfolders: FolderData[] | null = folders.filter(f => folderData.id === f.parentFolder?.id);
 
@@ -155,7 +155,7 @@ function FolderItem(
                         <div 
                             style={
                                 folderData.isOpen 
-                                    ? { "--targeted-folders-height": `${38 + amountOfAllSubfolders * 44}px` } as React.CSSProperties
+                                    ? { "--targeted-folders-height": `${38 + amountOfActiveSubfolders * 44}px` } as React.CSSProperties
                                     : {}
                             }
                             className={`target-all-folders
