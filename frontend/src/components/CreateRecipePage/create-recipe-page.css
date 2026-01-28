@@ -1,0 +1,324 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter+Display:wght@400;500;600;700&display=swap');
+
+* {
+    font-family: 'Inter Display', sans-serif;
+    box-sizing: border-box;
+}
+
+body {
+    overflow-y: hidden; /* ggf. temporary */
+}
+
+/* ==== GENERAL STYLES ==== */
+.sub-heading-1 {
+    font-weight: 500;
+    color: #757575;
+    font-size: 14px;
+}
+
+.sub-heading-2 {
+    font-weight: 600;
+    color: #1F1F1F;
+}
+
+.secondary-btn {
+    all: unset;
+    background-color: #FFFFFF;
+    font-weight: 600;
+    font-size: 14px;
+    color: #1F1F1F;
+    padding: 8px 12px;
+    border-radius: 6px;
+    box-shadow:
+    0px 0px 0px 1.5px rgba(31, 31, 31, 0.08),
+    0px 1px 1px 0px rgba(31, 31, 31, 0.04),
+    0px 3px 3px 0px rgba(31, 31, 31, 0.03),
+    0px 3px 4px 0px rgba(31, 31, 31, 0.02);
+    cursor: pointer;
+}
+
+.primary-btn {
+    all: unset;
+    background-color: #FF782F;
+    font-weight: 500;
+    font-size: 14px;
+    color: #ffffff;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.generative-ai-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    all: unset;
+    cursor: pointer;
+
+    background: linear-gradient(
+        to bottom,
+        #1f1f1f,   /* heller oben */
+        #494949    /* dunkler unten */
+    );
+
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 0.04ch;
+    color: white;
+
+    padding: 8px 12px;
+    border-radius: 6px;
+
+    min-width: 350px;
+    text-align: center;
+}
+
+
+.primary-input {
+    all: unset;
+    background-color: #FFFFFF;
+    font-size: 12px;
+    color: #1F1F1F;
+    padding: 8px 12px;
+    border-radius: 6px;
+    box-shadow:
+    0px 0px 0px 1.5px rgba(31, 31, 31, 0.08),
+    0px 1px 1px 0px rgba(31, 31, 31, 0.04),
+    0px 3px 3px 0px rgba(31, 31, 31, 0.03),
+    0px 3px 4px 0px rgba(31, 31, 31, 0.02);
+    min-width: 350px;
+}
+
+.input_container {
+    position: relative;
+}
+
+.input-overlay-text {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    font-size: 14px;
+    font-weight: 500;
+    top: 0;
+    left: 0;
+    right: 12px;
+    bottom: 0;
+}
+
+.primary-input:focus {
+    box-shadow:
+    0px 0px 0px 2px rgba(31, 31, 31, 1),
+    0px 1px 1px 0px rgba(31, 31, 31, 0.04),
+    0px 3px 3px 0px rgba(31, 31, 31, 0.03),
+    0px 3px 4px 0px rgba(31, 31, 31, 0.02);
+}
+
+
+/* ==== OTHER STYLES ==== */
+
+.import-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.url-input {
+    min-width: 230px;
+}
+
+.create-recipe-box {
+    border-radius: 12px;
+    max-width: 400px;
+}
+
+.create-recipe-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1F1F1F;
+}
+
+.create-recipe-page_container {
+    /* background-color: red; */
+    padding: 16px;
+    margin-left: 250px;
+
+    /* == prevent selecting texts, maybe keep it? == */
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+.create-recipe-page_container-wrapper {
+    display: flex;
+    gap: 12px;
+}
+
+.create-recipe-top-part {
+    /* background-color: rgb(0, 0, 201); */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.gen-recipe-info_container {
+    margin-bottom: 12px;
+}
+
+.gen-recipe-info_container,
+.general-info_container {
+    padding: 12px;
+    /* background-color: blue; */
+    background-color: #FAFAFA;
+    border: 2px solid #EFEFEF;
+    border-radius: 8px;
+}
+
+.description-input {
+    min-width: 350px;
+}
+
+.drop-area-image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    font-size: 13px;
+    min-height: 100px;
+    color: #757575;
+    background-color: white;
+    border: 2px dashed #EFEFEF;
+    cursor: pointer;
+}
+
+
+/* === DETAIL INFORMATION === */
+.detail-info_container {
+    padding: 12px;
+    border-radius: 8px;
+    width: 1160px;
+    background-color: #FAFAFA;
+    border: 2px solid #EFEFEF;
+}
+
+.nutrition-item_container {
+    background-color: #ffffff;
+    border: 2px solid #EFEFEF;
+    border-radius: 8px;
+}
+
+.nutrition-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 2px solid #EFEFEF;
+    font-weight: 500;
+}
+.calories_unit-input {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.nutrition-item img {
+    margin-right: 12px;
+    cursor: pointer;
+}
+
+
+.unit-input {
+    margin-left: 12px;
+    display: flex;
+    background-color: rgba(0, 0, 0, 0.027);
+    border: 2px solid #e7e7e7;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 8px;
+    max-height: 32px;
+}
+.unit-input:focus-within {
+  border: 2px solid #1F1F1F;
+}
+
+
+.input-div {
+    max-height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: 8px;
+    padding-right: 8px;
+    border-right: 2px solid #e7e7e7;
+}
+.input-div input {
+    max-width: 36px;
+    border: none;
+    background-color: transparent;
+    font-size: 14px;
+}
+
+.input-div input:focus {
+    border: none;
+    outline: none;
+}
+
+.unit-div {
+    max-height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: 8px;
+    padding-right: 8px;
+    cursor: pointer;
+}
+
+/* ADD FIELD */
+.add-field {
+    margin-left: 12px;
+    margin-right: 106px;
+    margin-bottom: 12px;
+    margin-top: 8px;
+    min-height: 32px;
+    max-height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.add-field input {
+    border: none;
+    outline: none;
+    max-height: 32px;
+    min-height: 32px;
+    min-width: 1086px;
+    font-size: 14px;
+}
+.add-field input:focus {
+    border: none;
+    outline: none;
+}
+
+.add-field img {
+    cursor: pointer;
+}
+
+/* Add Directions */
+.direction-texts {
+    margin: 0px 12px 0px 12px;
+}
+
+.direction-texts .direction-step {
+    font-size: 14px;
+}
+
+
+@media (max-width: 768px) {
+    .create-recipe-page_container {
+        /* background-color: red; */
+        padding: 16px;
+        margin-left: 0px;
+    }
+
+
+}
