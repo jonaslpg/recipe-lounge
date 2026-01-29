@@ -13,11 +13,14 @@ function CreateRecipePage(
    
 
     return (
+    <>
+        <div className="create-recipe-top-part">
+            <p className="create-recipe-title">Create new recipe</p>
+            <button className="primary-btn">Save Recipe</button>
+            {/* <img src='/src/assets/search-icon.svg'></img> */}
+        </div>
+
         <div className="create-recipe-page_container">
-            <div className="create-recipe-top-part">
-                <p className="create-recipe-title">Create new recipe</p>
-                <button className="primary-btn">Save Recipe</button>
-            </div>
             <div className="create-recipe-page_container-wrapper">
                 <div className="column-1">
                     {/* ==== GENERATE RECIPE INFORMATION ====*/}
@@ -29,7 +32,7 @@ function CreateRecipePage(
                                 <p className="sub-heading-2">Import a recipe with URL</p>
                                 <div className="import-box">
                                     <input className='primary-input url-input' placeholder="paste an URL link..."></input>
-                                    <button className="secondary-btn">Save Recipe</button>
+                                    <button className="secondary-btn">Import</button>
                                 </div>
                             </div>
                             <div className="sub-heading-input-box">
@@ -131,6 +134,7 @@ function CreateRecipePage(
                 </div>
             </div>
         </div>
+        </>
     )
 }
 

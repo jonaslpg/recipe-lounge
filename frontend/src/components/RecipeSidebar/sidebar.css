@@ -25,6 +25,7 @@
     top: 0;
     left: 0;
     padding: 16px;
+    z-index: 3;
 }
 /*.sidebar:hover::-webkit-scrollbar-thumb {
     background-color: #CFCFCF;
@@ -419,12 +420,24 @@ input::selection {
     display: none;
 }
 
-.hamburger-closed {
+/*.hamburger-closed {
     margin-top: 16px;
     margin-left: 16px;
     transition: transform 0.125s ease-in-out, filter 0.125s ease-in-out;
     cursor: pointer;
+}*/
+
+.hamburger-icon-div {
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    z-index: 2;
 }
+.hamburger-closed {
+  transition: transform 0.125s ease-in-out, filter 0.125s ease-in-out;
+  cursor: pointer;
+}
+
 
 .hamburger-closed:hover {
     transform: scale(1.1);

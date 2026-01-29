@@ -29,6 +29,7 @@
     0px 1px 1px 0px rgba(31, 31, 31, 0.04),
     0px 3px 3px 0px rgba(31, 31, 31, 0.03),
     0px 3px 4px 0px rgba(31, 31, 31, 0.02);
+    z-index: 3;
 }
 .settings-menu-item {
     display: flex;

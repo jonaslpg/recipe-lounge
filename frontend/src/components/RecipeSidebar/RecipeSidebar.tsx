@@ -109,12 +109,14 @@ function RecipeSidebar() {
   return (
     <div className="app-container">
       {!sidebarOpen && (
-        <img 
-          src="src/assets/menu.svg"
-          className="hamburger-closed" 
-          onClick={() => setSidebarOpen(true)}
-          alt="menu"
-        />
+        <div className='hamburger-icon-div'>
+          <img 
+            src="src/assets/menu.svg"
+            className="hamburger-closed" 
+            onClick={() => setSidebarOpen(true)}
+            alt="menu"
+          />
+        </div>
       )}
 
       <nav 
