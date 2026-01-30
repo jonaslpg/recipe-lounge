@@ -3,6 +3,9 @@ import NutritionItem from "./NutritionItem";
 import DirectionItem from "./DirectionItem";
 import AddField from "./AddField";
 import AddDirection from "./AddDirection";
+import { useState } from 'react'
+import type { NutritionData } from "../../types/NutritionData";
+import type { IngredientData } from "../../types/IngredientData";
 
 function CreateRecipePage( 
 {
@@ -10,6 +13,99 @@ function CreateRecipePage(
     {
     }
 ) {
+
+    // NUTRITION //
+    const [nutritionItems, setNutritionItems] = useState<NutritionData[]>([
+        { name: "Calories", amount: "0", unit: "kcal", id: crypto.randomUUID() },
+        { name: "Carbonhydrates", amount: "0", unit: "kcal", id: crypto.randomUUID() }
+    ]);
+
+    function handleAddNutrition(input: string) {
+        const parts: string[] = input
+            .split(",")
+            .map(p => p.trim())
+            .filter(Boolean); // delete all empty strings
+
+        const newItems: NutritionData[] = [];
+
+        for (let i = 0; i < parts.length; i++) {
+            const match = parts[i].match(/^(\d+)\s*(\w+)\s*(.*)$/);
+            if (!match) continue;
+
+            const [, amount, unit, name] = match;
+
+            newItems.push({
+                id: crypto.randomUUID(),
+                name,
+                amount,
+                unit
+            });
+        }
+
+        if (newItems.length > 0) {
+            setNutritionItems(prev => [...prev, ...newItems]);
+        }
+    }
+
+    function handleDeleteNutrition(id: string){
+        setNutritionItems(prev => prev.filter(n => n.id !== id));
+    }
+
+    // INGREDIENTS //
+    const [ingredientItems, setIngredientItems] = useState<IngredientData[]>([
+        { name: "sugar", amount: "200", unit: "g", id: crypto.randomUUID() }
+    ]);
+
+    function handleAddIngredient(input: string) {
+        const parts: string[] = input
+            .split(",")
+            .map(p => p.trim())
+            .filter(Boolean); // delete all empty strings
+
+        const newItems: IngredientData[] = [];
+
+        for (let i = 0; i < parts.length; i++) {
+            const match = parts[i].match(/^(\d+)\s*(\w+)\s*(.*)$/);
+            if (!match) continue;
+
+            const [, amount, unit, name] = match;
+
+            newItems.push({
+                id: crypto.randomUUID(),
+                name,
+                amount,
+                unit
+            });
+        }
+
+        if (newItems.length > 0) {
+            setIngredientItems(prev => [...prev, ...newItems]);
+        }
+    }
+
+    function handleDeleteIngredient(id: string){
+        setIngredientItems(prev => prev.filter(n => n.id !== id));
+    }
+
+    function handleAmountChangeNutrition(id: string, newAmount: string) {
+        setNutritionItems(prev =>
+            prev.map(item =>
+            item.id === id
+                ? { ...item, amount: newAmount }
+                : item
+            )
+        );
+    }
+
+    function handleAmountChangeIngredient(id: string, newAmount: string) {
+        setIngredientItems(prev =>
+            prev.map(item =>
+            item.id === id
+                ? { ...item, amount: newAmount }
+                : item
+            )
+        );
+    }
    
 
     return (
@@ -73,6 +169,9 @@ function CreateRecipePage(
                                     <input
                                         className='primary-input'
                                         placeholder="1"
+                                        type="number"
+                                        min={1}
+                                        max={999}
                                     />
                                     <p className='input-overlay-text'>person</p>
                                 </div>
@@ -84,6 +183,9 @@ function CreateRecipePage(
                                     <input
                                         className='primary-input'
                                         placeholder="30"
+                                        type="number"
+                                        min={1}
+                                        max={999}
                                     />
                                     <p className='input-overlay-text'>minutes</p>
                                 </div>
@@ -102,9 +204,20 @@ function CreateRecipePage(
                             <div className="sub-heading-input-box">
                                 <p className="sub-heading-2">Add nutritions</p>
                                 <div className="nutrition-item_container">
-                                    <NutritionItem nutritionName='Calories' unit='kcal'></NutritionItem>
-                                    <NutritionItem nutritionName='Carbonhydrates' unit='kcal'></NutritionItem>
-                                    <AddField addFieldPlaceholderText='45g protein'></AddField>
+                                    {nutritionItems.map(item => (
+                                        <NutritionItem 
+                                            key={item.id} 
+                                            id={item.id}
+                                            nutritionName={item.name} 
+                                            unit={item.unit} 
+                                            amount={item.amount}
+                                            onDelete={handleDeleteNutrition}
+                                            onAmountChange={handleAmountChangeNutrition}
+                                        />
+                                    ))}
+                                    {/* <NutritionItem nutritionName='Calories' unit='kcal' amount></NutritionItem>
+                                    <NutritionItem nutritionName='Carbonhydrates' unit='kcal'></NutritionItem> */}
+                                    <AddField addFieldPlaceholderText='45g protein' onAdd={handleAddNutrition}></AddField>
                                 </div>
                             </div>
 
@@ -112,9 +225,20 @@ function CreateRecipePage(
                             style={{marginTop: "28px"}}>
                                 <p className="sub-heading-2">Add ingredients</p>
                                 <div className="nutrition-item_container">
-                                    <NutritionItem nutritionName='dark chocolate (at least 60% cocoa)' unit='g'></NutritionItem>
-                                    <NutritionItem nutritionName='baking powder' unit='g'></NutritionItem>
-                                    <AddField addFieldPlaceholderText='200g sugar, 1 tsp salt'></AddField>
+                                    {ingredientItems.map(item => (
+                                        <NutritionItem 
+                                            key={item.id} 
+                                            id={item.id}
+                                            nutritionName={item.name} 
+                                            unit={item.unit} 
+                                            amount={item.amount}
+                                            onDelete={handleDeleteIngredient}
+                                            onAmountChange={handleAmountChangeIngredient}
+                                        />
+                                    ))}
+                                    {/* <NutritionItem nutritionName='dark chocolate (at least 60% cocoa)' unit='g'></NutritionItem>
+                                    <NutritionItem nutritionName='baking powder' unit='g'></NutritionItem> */}
+                                    <AddField addFieldPlaceholderText='200g sugar, 1 tsp salt' onAdd={handleAddIngredient}></AddField>
                                 </div>
                             </div>
 

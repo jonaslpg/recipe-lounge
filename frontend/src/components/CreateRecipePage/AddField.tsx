@@ -1,21 +1,39 @@
-import './create-recipe-page.css'
+import { useState } from "react";
 
-function AddField( 
-{
-    addFieldPlaceholderText
-}:
-    {
-        addFieldPlaceholderText: string
-    }
-) {
-   
+interface AddFieldProps {
+    addFieldPlaceholderText: string;
+    onAdd: (value: string) => void;
+}
+
+function AddField({ addFieldPlaceholderText, onAdd }: AddFieldProps) {
+    const [inputValue, setInputValue] = useState("");
+
+    function handleAddClick() {
+        if (inputValue.trim() === "") return;
+        onAdd(inputValue);
+        setInputValue("");
+    };
 
     return (
         <div className="add-field">
-            <input placeholder={"e.g. ''" + addFieldPlaceholderText + "''"}></input>
-            <img src='src/assets/plus-icon.svg'></img>
+            <input 
+                placeholder={`e.g. '${addFieldPlaceholderText}'`}
+                spellCheck={false}
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                        handleAddClick();
+                    }
+                }}
+            />
+            <img 
+                src='src/assets/plus-icon.svg' 
+                onClick={handleAddClick} 
+                style={{cursor: "pointer"}}
+            />
         </div>
-    )
+    );
 }
 
-export default AddField
+export default AddField;

@@ -101,6 +101,20 @@ body {
     position: relative;
 }
 
+/* prevent 'stepper' from input field type=number */
+.input_container input[type=number],
+.input-div input[type=number] {
+    -moz-appearance: textfield; /* Firefox */
+}
+/* prevent 'stepper' from input field type=number */
+.input_container input[type=number]::-webkit-outer-spin-button,
+.input_container input[type=number]::-webkit-inner-spin-button,
+.input-div input[type=number]::-webkit-outer-spin-button,
+.input-div input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none; /* Chrome, Safari, Edge */
+    margin: 0;
+}
+
 .input-overlay-text {
     position: absolute;
     display: flex;
