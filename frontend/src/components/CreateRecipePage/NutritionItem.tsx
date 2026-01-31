@@ -8,7 +8,9 @@ function NutritionItem(
     amount,
     id,
     onDelete,
-    onAmountChange
+    onAmountChange,
+    withCheckmark,
+    isLastOne
 }:
     {
         nutritionName: string;
@@ -17,6 +19,8 @@ function NutritionItem(
         id: string;
         onDelete: (id: string) => void;
         onAmountChange: (id: string, newAmount: string) => void;
+        withCheckmark: boolean;
+        isLastOne: boolean;
     }
 ) {
 
@@ -25,12 +29,16 @@ function NutritionItem(
     };
 
     return (
-        <div className="nutrition-item">
-            <div className="calories_unit-input">
-                <UnitInput id={id} unit={unit} amount={amount} onAmountChange={onAmountChange}></UnitInput>
-                <p>{nutritionName}</p>
+        <div className={`nutrition-item ${isLastOne ? "last" : ""}`}>
+            <div className="left-side">
+                {withCheckmark && <img src='src/assets/uncheck-square.svg' />}
+                <div className="calories_unit-input">
+                    <UnitInput id={id} unit={unit} amount={amount} onAmountChange={onAmountChange}></UnitInput>
+                    <p>{nutritionName}</p>
+                </div>
             </div>
-            <img 
+            <img
+                className='trash-icon'
                 src='src/assets/trash-icon.svg'
                 onClick={handleDeleteClick}
             />

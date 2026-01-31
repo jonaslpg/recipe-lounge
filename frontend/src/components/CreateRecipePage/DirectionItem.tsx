@@ -5,13 +5,15 @@ function DirectionItem(
     id,
     step,
     descr,
-    onDelete
+    onDelete,
+    isLastOne
 }:
     {
         id: string;
         step: number;
         descr: string;
         onDelete: (id: string) => void;
+        isLastOne: boolean;
     }
 ) {
 
@@ -20,12 +22,13 @@ function DirectionItem(
     };
 
     return (
-        <div className="nutrition-item">
+        <div className={`nutrition-item ${isLastOne ? "last" : ""}`}>
             <div className="direction-texts">
                 <p className='direction-step'>STEP {step}</p>
                 <p>{descr}</p>
             </div>
             <img 
+                className='trash-icon'
                 src='src/assets/trash-icon.svg'
                 onClick={handleDeleteClick}
             />

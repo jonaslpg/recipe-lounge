@@ -151,7 +151,7 @@ function RecipeSidebar() {
             src="src/assets/search-icon.svg"
             alt="search"
           />
-          Search
+          Search for Recipes..
         </button>
         <button className="sidebar-item" onClick={handleCreateFolderClick} style={{ marginBottom: "24px" }}>
           <img 

@@ -104,7 +104,7 @@ body {
 /* prevent 'stepper' from input field type=number */
 .input_container input[type=number],
 .input-div input[type=number] {
-    -moz-appearance: textfield; /* Firefox */
+    appearance: textfield; /* Firefox */
 }
 /* prevent 'stepper' from input field type=number */
 .input_container input[type=number]::-webkit-outer-spin-button,
@@ -145,7 +145,10 @@ body {
     /* background-color: #FAFAFA;
     border-bottom: 2px solid #EFEFEF; */
     padding: 0px 18px;
+    padding-top: 12px;
+    /* background-color: red; */
     margin-left: 288px;
+    /* height: 44px; */
 }
 
 .create-recipe-top-part img {
@@ -245,6 +248,18 @@ body {
     border-bottom: 2px solid #EFEFEF;
     font-weight: 500;
 }
+.nutrition-item.last {
+  border-bottom: 0;
+}
+
+.left-side {
+    display: flex;
+}
+
+.left-side img {
+    margin-left: 12px;
+    cursor: pointer;
+}
 
 .calories_unit-input {
     display: flex;
@@ -252,7 +267,7 @@ body {
     gap: 12px;
 }
 
-.nutrition-item img {
+.nutrition-item .trash-icon {
     margin-right: 12px;
     cursor: pointer;
 }
@@ -362,6 +377,7 @@ body {
         position: fixed;
         padding-right: 18px;
         padding-left: 52px;
+        padding-top: 0px;
         width: 100%;
         z-index: 1;
     }

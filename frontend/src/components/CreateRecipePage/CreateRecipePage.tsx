@@ -17,7 +17,7 @@ function CreateRecipePage(
 
     // DIRECTION //
     const [directionItems, setDirectionItems] = useState<DirectionData[]>([
-        { descr: "Test", step: 1, id: crypto.randomUUID() }
+        // { descr: "Test", step: 1, id: crypto.randomUUID() }
     ]);
 
     function handleDeleteDirection(id: string) {
@@ -44,7 +44,7 @@ function CreateRecipePage(
     // NUTRITION //
     const [nutritionItems, setNutritionItems] = useState<NutritionData[]>([
         { name: "Calories", amount: "0", unit: "kcal", id: crypto.randomUUID() },
-        { name: "Carbonhydrates", amount: "0", unit: "kcal", id: crypto.randomUUID() }
+        // { name: "Carbonhydrates", amount: "0", unit: "kcal", id: crypto.randomUUID() }
     ]);
 
     function handleAddNutrition(input: string) {
@@ -80,7 +80,7 @@ function CreateRecipePage(
 
     // INGREDIENTS //
     const [ingredientItems, setIngredientItems] = useState<IngredientData[]>([
-        { name: "sugar", amount: "200", unit: "g", id: crypto.randomUUID() }
+        // { name: "sugar", amount: "200", unit: "g", id: crypto.randomUUID() }
     ]);
 
     function handleAddIngredient(input: string) {
@@ -229,7 +229,7 @@ function CreateRecipePage(
                             <p className="sub-heading-1">DETAIL INFORMATION</p>
 
                             <div className="sub-heading-input-box">
-                                <p className="sub-heading-2">Add nutritions</p>
+                                <p className="sub-heading-2">Add Nutritions</p>
                                 <div className="nutrition-item_container">
                                     {nutritionItems.map(item => (
                                         <NutritionItem 
@@ -240,6 +240,8 @@ function CreateRecipePage(
                                             amount={item.amount}
                                             onDelete={handleDeleteNutrition}
                                             onAmountChange={handleAmountChangeNutrition}
+                                            withCheckmark={false}
+                                            isLastOne={false}
                                         />
                                     ))}
                                     {/* <NutritionItem nutritionName='Calories' unit='kcal' amount></NutritionItem>
@@ -250,7 +252,7 @@ function CreateRecipePage(
 
                             <div className="sub-heading-input-box"
                             style={{marginTop: "28px"}}>
-                                <p className="sub-heading-2">Add ingredients</p>
+                                <p className="sub-heading-2">Add Ingredients</p>
                                 <div className="nutrition-item_container">
                                     {ingredientItems.map(item => (
                                         <NutritionItem 
@@ -261,6 +263,8 @@ function CreateRecipePage(
                                             amount={item.amount}
                                             onDelete={handleDeleteIngredient}
                                             onAmountChange={handleAmountChangeIngredient}
+                                            withCheckmark={false}
+                                            isLastOne={false}
                                         />
                                     ))}
                                     {/* <NutritionItem nutritionName='dark chocolate (at least 60% cocoa)' unit='g'></NutritionItem>
@@ -280,6 +284,7 @@ function CreateRecipePage(
                                             descr={item.descr}
                                             step={item.step}
                                             onDelete={handleDeleteDirection}
+                                            isLastOne={false}
                                         />
                                     ))}
                                     {/* <DirectionItem step={1} descr='test'></DirectionItem>

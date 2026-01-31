@@ -2,6 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import RecipeSidebar from "./components/RecipeSidebar/RecipeSidebar";
 import CreateRecipePage from "./components/CreateRecipePage/CreateRecipePage";
+import RecipePage from "./components/RecipePage/RecipePage";
 
 document.body.style.margin = '0';
 document.body.style.padding = '0';
@@ -14,8 +15,9 @@ createRoot(document.getElementById('root')!).render(
     <div style={{ display: 'flex', height: '100vh' }}>
       <RecipeSidebar />
       <div style={{ flex: 1 }}>
-        <CreateRecipePage />
+        {/* <CreateRecipePage /> */}
+        <RecipePage />
       </div>
     </div>
-  </StrictMode>,
+  </StrictMode>
 )
