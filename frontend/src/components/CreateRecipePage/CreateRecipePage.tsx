@@ -6,6 +6,7 @@ import AddDirection from "./AddDirection";
 import { useState } from 'react'
 import type { NutritionData } from "../../types/NutritionData";
 import type { IngredientData } from "../../types/IngredientData";
+import type { DirectionData } from "../../types/DirectionData";
 
 function CreateRecipePage( 
 {
@@ -13,6 +14,32 @@ function CreateRecipePage(
     {
     }
 ) {
+
+    // DIRECTION //
+    const [directionItems, setDirectionItems] = useState<DirectionData[]>([
+        { descr: "Test", step: 1, id: crypto.randomUUID() }
+    ]);
+
+    function handleDeleteDirection(id: string) {
+        setDirectionItems(prev =>
+            prev
+                .filter(item => item.id !== id)
+                .map((item, index) => ({
+                    ...item,
+                    step: index + 1
+                }))
+        );
+    }
+
+    function handleAddDirection(input: string){
+        const newItem: DirectionData = ({
+            id: crypto.randomUUID(),
+            step: directionItems.length+1,
+            descr: input
+        });
+
+        setDirectionItems(prev => [...prev, newItem])
+    }
 
     // NUTRITION //
     const [nutritionItems, setNutritionItems] = useState<NutritionData[]>([
@@ -246,9 +273,21 @@ function CreateRecipePage(
                             style={{marginTop: "28px"}}>
                                 <p className="sub-heading-2">Add Directions</p>
                                 <div className="nutrition-item_container">
-                                    <DirectionItem step={1} descr='test'></DirectionItem>
-                                    <DirectionItem step={2} descr='testtesttesttest'></DirectionItem>
-                                    <AddDirection step={3}></AddDirection>
+                                    {directionItems.map(item => (
+                                        <DirectionItem 
+                                            key={item.id}
+                                            id={item.id}
+                                            descr={item.descr}
+                                            step={item.step}
+                                            onDelete={handleDeleteDirection}
+                                        />
+                                    ))}
+                                    {/* <DirectionItem step={1} descr='test'></DirectionItem>
+                                    <DirectionItem step={2} descr='testtesttesttest'></DirectionItem> */}
+                                    <AddDirection 
+                                        step={directionItems.length+1} 
+                                        onAdd={handleAddDirection}
+                                    />
                                 </div>
                             </div>
 
