@@ -1,11 +1,14 @@
 import './recipe-page.css'
 import NutritionItem from "../CreateRecipePage/NutritionItem"
-import DirectionItem from "../CreateRecipePage/DirectionItem";
+import DirectionItem from "../CreateRecipePage/DirectionItem"
+import type { RecipeData } from "../../types/RecipeData";
 
 function RecipePage( 
 {
+    recipe
 }:
     {
+        recipe: RecipeData | null;
     }
 ) {
 
@@ -21,6 +24,9 @@ function RecipePage(
 
     }
    
+    if (!recipe) {
+        return <p>No recipe found</p>;
+    }
 
     return (
     <div className='page-wrapper'>
@@ -29,21 +35,21 @@ function RecipePage(
                 <div className="recipe-header">
                     <img src='src/assets/image-dummy-1.png'></img>
                     <div className="recipe-header-content">
-                        <h3>Chocolate Pie</h3>
-                        <p>Soft, fluffy chocolate cake with a smooth texture and intense chocolate taste
+                        <h3>{recipe.name}</h3>
+                        <p>{recipe.description}
                         <span> More</span></p>
                         <div className="header-settings">
                             <div className="servings">
                                 <img src='src/assets/minus-iconV2.svg'/>
                                 <div className="servings-text">
                                     <p>Servings</p>
-                                    <p className='amount'>1</p>
+                                    <p className='amount'>{recipe.servings}</p>
                                 </div>
                                 <img src='src/assets/plus-iconV2.svg'/>
                             </div>
                             <div className="cook-duration">
                                 <p>Cook Duration</p>
-                                <p className='amount'>20m</p>
+                                <p className='amount'>{recipe.cookDuration}</p>
                             </div>
                             {/* maybe extend this section later? */}
                         </div>
@@ -56,26 +62,19 @@ function RecipePage(
                         <img src='src/assets/plus-icon.svg' />
                     </div>
                     <div className="nutrition-item_container">
-                        <NutritionItem 
-                            id={"1"}
-                            nutritionName={"apples"} 
-                            unit={"kg"} 
-                            amount={"3"}
-                            onDelete={handleDeleteIngredient}
-                            onAmountChange={handleAmountChangeIngredient}
-                            withCheckmark={true}
-                            isLastOne={false}
-                        />
-                        <NutritionItem 
-                            id={"2"}
-                            nutritionName={"bananas"} 
-                            unit={"kg"} 
-                            amount={"2"}
-                            onDelete={handleDeleteIngredient}
-                            onAmountChange={handleAmountChangeIngredient}
-                            withCheckmark={true}
-                            isLastOne={true}
-                        />
+                        {recipe.ingredients.map(item => (
+                            <NutritionItem 
+                                key={item.id} 
+                                id={item.id}
+                                nutritionName={item.name} 
+                                unit={item.unit} 
+                                amount={item.amount}
+                                onDelete={handleDeleteIngredient}
+                                onAmountChange={handleAmountChangeIngredient}
+                                withCheckmark={false}
+                                isLastOne={recipe.ingredients[recipe.ingredients.length-1] === item ? true : false}
+                            />
+                        ))}
                     </div>
                 </div>
             </div>
@@ -87,20 +86,16 @@ function RecipePage(
                         <img src='src/assets/plus-icon.svg' />
                     </div>
                     <div className="nutrition-item_container">
-                        <DirectionItem            
-                            id={"1"}
-                            descr={"teeeest"}
-                            step={1}
-                            onDelete={handleDeleteDirection}
-                            isLastOne={false}
-                        />
-                        <DirectionItem            
-                            id={"2"}
-                            descr={"teeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeest"}
-                            step={2}
-                            onDelete={handleDeleteDirection}
-                            isLastOne={true}
-                        />
+                        {recipe.directions.map(item => (
+                            <DirectionItem 
+                                key={item.id} 
+                                id={item.id}
+                                descr={item.descr}
+                                step={item.step}
+                                onDelete={handleDeleteDirection}
+                                isLastOne={recipe.directions[recipe.directions.length-1] === item ? true : false}
+                            />
+                        ))}
                     </div>
 
                 </div>
@@ -112,26 +107,19 @@ function RecipePage(
                         <img src='src/assets/plus-icon.svg' />
                     </div>
                     <div className="nutrition-item_container">
-                        <NutritionItem 
-                            id={"3"}
-                            nutritionName={"Calories"} 
-                            unit={"kcal"} 
-                            amount={"450"}
-                            onDelete={handleDeleteIngredient}
-                            onAmountChange={handleAmountChangeIngredient}
-                            withCheckmark={false}
-                            isLastOne={false}
-                        />
-                        <NutritionItem 
-                            id={"4"}
-                            nutritionName={"Saturated Fat"} 
-                            unit={"g"} 
-                            amount={"8"}
-                            onDelete={handleDeleteIngredient}
-                            onAmountChange={handleAmountChangeIngredient}
-                            withCheckmark={false}
-                            isLastOne={true}
-                        />
+                        {recipe.nutritions.map(item => (
+                            <NutritionItem 
+                                key={item.id} 
+                                id={item.id}
+                                nutritionName={item.name} 
+                                unit={item.unit} 
+                                amount={item.amount}
+                                onDelete={handleDeleteIngredient}
+                                onAmountChange={handleAmountChangeIngredient}
+                                withCheckmark={false}
+                                isLastOne={recipe.nutritions[recipe.nutritions.length-1] === item ? true : false}
+                            />
+                        ))}
                     </div>
                 </div>
 

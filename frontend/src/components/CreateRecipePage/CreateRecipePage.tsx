@@ -7,19 +7,68 @@ import { useState } from 'react'
 import type { NutritionData } from "../../types/NutritionData";
 import type { IngredientData } from "../../types/IngredientData";
 import type { DirectionData } from "../../types/DirectionData";
+import type { RecipeData } from "../../types/RecipeData";
+import { useNavigate } from "react-router-dom";
+
 
 function CreateRecipePage( 
 {
+    onCreate
 }:
     {
+        onCreate: (r: RecipeData) => void;
     }
 ) {
 
-    // DIRECTION //
+    const navigate = useNavigate();
+    const [nutritionItems, setNutritionItems] = useState<NutritionData[]>([
+        { name: "Calories", amount: "0", unit: "kcal", id: crypto.randomUUID() },
+        // { name: "Carbonhydrates", amount: "0", unit: "kcal", id: crypto.randomUUID() }
+    ]);
+
+    const [ingredientItems, setIngredientItems] = useState<IngredientData[]>([
+        // { name: "sugar", amount: "200", unit: "g", id: crypto.randomUUID() }
+    ]);
+
     const [directionItems, setDirectionItems] = useState<DirectionData[]>([
         // { descr: "Test", step: 1, id: crypto.randomUUID() }
     ]);
 
+    const [recipeName, setRecipeName] = useState<string>("Untitled");
+    const [recipeDescr, setRecipeDescr] = useState<string>("");
+    const [recipeCookDuration, setRecipeCookDuration] = useState<string>("");
+    const [recipeServings, setRecipeServings] = useState<number>(1);
+
+    function handleSaveRecipe() {
+        const recipeData: RecipeData = {
+            name: recipeName,
+            description: recipeDescr,
+            ingredients: ingredientItems.map(item => ({
+                id: item.id,
+                name: item.name,
+                amount: item.amount,
+                unit: item.unit
+            })),
+            nutritions: nutritionItems.map(item => ({
+                id: item.id,
+                name: item.name,
+                amount: item.amount,
+                unit: item.unit
+            })),
+            directions: directionItems.map(item => ({
+                id: item.id,
+                step: item.step,
+                descr: item.descr
+            })),
+            cookDuration: recipeCookDuration,
+            servings: recipeServings,
+        };
+
+        onCreate(recipeData);
+        navigate("/recipe");
+    }
+
+    // DIRECTION //
     function handleDeleteDirection(id: string) {
         setDirectionItems(prev =>
             prev
@@ -42,11 +91,6 @@ function CreateRecipePage(
     }
 
     // NUTRITION //
-    const [nutritionItems, setNutritionItems] = useState<NutritionData[]>([
-        { name: "Calories", amount: "0", unit: "kcal", id: crypto.randomUUID() },
-        // { name: "Carbonhydrates", amount: "0", unit: "kcal", id: crypto.randomUUID() }
-    ]);
-
     function handleAddNutrition(input: string) {
         const parts: string[] = input
             .split(",")
@@ -79,10 +123,6 @@ function CreateRecipePage(
     }
 
     // INGREDIENTS //
-    const [ingredientItems, setIngredientItems] = useState<IngredientData[]>([
-        // { name: "sugar", amount: "200", unit: "g", id: crypto.randomUUID() }
-    ]);
-
     function handleAddIngredient(input: string) {
         const parts: string[] = input
             .split(",")
@@ -139,7 +179,10 @@ function CreateRecipePage(
     <>
         <div className="create-recipe-top-part">
             <p className="create-recipe-title">Create new recipe</p>
-            <button className="primary-btn">Save Recipe</button>
+            <button 
+                className="primary-btn"
+                onClick={handleSaveRecipe}
+            >Save Recipe</button>
             {/* <img src='/src/assets/search-icon.svg'></img> */}
         </div>
 
@@ -173,13 +216,20 @@ function CreateRecipePage(
 
                             <div className="sub-heading-input-box">
                                 <p className="sub-heading-2">Recipe name</p>
-                                <input className='primary-input' placeholder="e.g: Chocolate Pie"></input>
+                                <input 
+                                    className='primary-input' 
+                                    placeholder="e.g: Chocolate Pie"
+                                    value={recipeName}
+                                    onChange={(e) => setRecipeName(e.target.value)}
+                                />
                             </div>
                             <div className="sub-heading-input-box">
                                 <p className="sub-heading-2">Description</p>
                                 <input 
                                     className="description-input primary-input" 
                                     placeholder="e.g: This Chocolate Pie is very delicious."
+                                    value={recipeDescr}
+                                    onChange={(e) => setRecipeDescr(e.target.value)}
                                 />
                             </div>
                             <div className="sub-heading-input-box">
@@ -199,6 +249,8 @@ function CreateRecipePage(
                                         type="number"
                                         min={1}
                                         max={999}
+                                        value={recipeServings}
+                                        onChange={(e) => setRecipeServings(Number(e.target.value))}
                                     />
                                     <p className='input-overlay-text'>person</p>
                                 </div>
@@ -213,6 +265,8 @@ function CreateRecipePage(
                                         type="number"
                                         min={1}
                                         max={999}
+                                        value={recipeCookDuration}
+                                        onChange={(e) => setRecipeCookDuration(e.target.value)}
                                     />
                                     <p className='input-overlay-text'>minutes</p>
                                 </div>

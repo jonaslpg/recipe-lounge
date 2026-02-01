@@ -58,8 +58,6 @@ function RecipeSidebar() {
     setTargetRootAreaId
   });
 
-
-
   // When opening the website first time (loading RecipeSidebar component), load data out of local storage
   useEffect(() => {
     async function loadFolders() {
