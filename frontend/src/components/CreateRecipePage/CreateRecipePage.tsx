@@ -197,7 +197,11 @@ function CreateRecipePage(
                             <div className="sub-heading-input-box">
                                 <p className="sub-heading-2">Import a recipe with URL</p>
                                 <div className="import-box">
-                                    <input className='primary-input url-input' placeholder="paste an URL link..."></input>
+                                    <input 
+                                        className='primary-input url-input' 
+                                        placeholder="paste an URL link..."
+                                        spellCheck={false}
+                                    />
                                     <button className="secondary-btn">Import</button>
                                 </div>
                             </div>
@@ -220,6 +224,7 @@ function CreateRecipePage(
                                     className='primary-input' 
                                     placeholder="e.g: Chocolate Pie"
                                     value={recipeName}
+                                    spellCheck={false}
                                     onChange={(e) => setRecipeName(e.target.value)}
                                 />
                             </div>
@@ -229,6 +234,7 @@ function CreateRecipePage(
                                     className="description-input primary-input" 
                                     placeholder="e.g: This Chocolate Pie is very delicious."
                                     value={recipeDescr}
+                                    spellCheck={false}
                                     onChange={(e) => setRecipeDescr(e.target.value)}
                                 />
                             </div>

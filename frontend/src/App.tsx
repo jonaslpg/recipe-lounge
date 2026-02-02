@@ -2,6 +2,7 @@ import type { RecipeData } from "./types/RecipeData";
 import RecipeSidebar from "./components/RecipeSidebar/RecipeSidebar";
 import CreateRecipePage from "./components/CreateRecipePage/CreateRecipePage";
 import RecipePage from "./components/RecipePage/RecipePage";
+import RecipesPage from "./components/RecipesPage/RecipesPage";
 import { useState } from 'react';
 import { Routes, Route } from "react-router-dom";
 
@@ -11,6 +12,7 @@ function App() {
   return (
     <div style={{ display: 'flex', height: '100vh' }}>
       <RecipeSidebar />
+      <RecipesPage />
 
       <div style={{ flex: 1 }}>
         <Routes>
