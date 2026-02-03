@@ -1,11 +1,35 @@
-import './recipes-page.css'
+import './recipes-page.css';
+import { useNavigate } from "react-router-dom";
+import type { RecipeData } from "../../types/RecipeData";
+import { useState, useEffect } from 'react';
+import RecipePreview from "./RecipePreview";
 
 function RecipesPage( 
 {
+    recipe
 }:
     {
+        recipe: RecipeData | null;
     }
 ) {
+
+    const navigate = useNavigate();
+
+    const [recipeItems, setRecipeItems] = useState<RecipeData[]>([]);
+
+    useEffect(() => {
+        if (recipe) {
+            setRecipeItems(prev => [...prev, recipe]);
+        }
+    }, [recipe]);
+    // useEffect(() => {
+    // if (recipe && !recipeItems.some(r => r.id === recipe.id)) {
+    //     setRecipeItems(prev => [...prev, recipe]);
+    // }}, [recipe]); // Nötig wegen strict mode, sonst doppelter render
+
+    function handleClickCreate(){
+        navigate("/create");
+    }
 
     return (
     <div className='recipes-page_container'>
@@ -13,10 +37,13 @@ function RecipesPage(
             <div className="top-part-left-side">
                 <h3>Home</h3>
                 <p className='line'>|</p>
-                <p>2 Recipes collected</p>
+                <p>{`${recipeItems?.length} Recipes collected`}</p>
             </div>
             <div className="top-part-right-side">
-                <button className='create-btn'>
+                <button 
+                    className='create-btn'
+                    onClick={handleClickCreate}
+                >
                     <img src='src/assets/plus-icon.svg'/>Create Recipe
                 </button>
                 <button className='settings-btn'>
@@ -52,6 +79,10 @@ function RecipesPage(
                 </div>
             </div>
 
+            {/* {recipeItems.map((item, i) => ( */}
+                <RecipePreview recipe={recipeItems[0]}/>
+            {/* // ))} */}
+{/* 
             <div className="single-recipe">
                 <img 
                     src='src/assets/recipe-image-dummy-2.png'
@@ -74,7 +105,7 @@ function RecipesPage(
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> */}
 
         </div>
     </div>

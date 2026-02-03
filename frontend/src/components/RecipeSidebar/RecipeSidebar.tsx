@@ -4,6 +4,7 @@ import FolderItem from './FolderItem/FolderItem';
 import FolderItemSettingsMenu from './FolderItemSettingsMenu';
 import type { FolderData } from "../../types/FolderData";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 // Imports of the custom-hooks- and utils-folder
 import { useFolderActions } from "./hooks/useFolderActions";
@@ -14,6 +15,8 @@ import ConfirmDeleteDialog from '../ConfirmDeleteDialog/ConfirmDeleteDialog';
 
 
 function RecipeSidebar() {
+  const navigate = useNavigate();
+
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [folders, setFolders] = useState<FolderData[]>([]); // Collection of all FolderData
 
@@ -27,6 +30,8 @@ function RecipeSidebar() {
   const [deleteDialogOpened, setDeleteDialogOpened] = useState<boolean>(false);
 
   const [touchPos, setTouchPos] = useState<{ x: number; y: number } | null>(null);
+
+  function handleClickHome(){ navigate("/home") }
 
 
   const { handleCreateFolderClick, handleUpdateFolderData, handleFolderSelect, handleDeleteFolder } = useFolderActions({
@@ -137,7 +142,10 @@ function RecipeSidebar() {
           />
         </div>
 
-        <button className="sidebar-item">
+        <button 
+          className="sidebar-item"
+          onClick={handleClickHome}
+        >
           <img 
             src="src/assets/home-icon.svg"
             alt="home"

@@ -3,6 +3,7 @@ import type { IngredientData } from "./IngredientData";
 import type { DirectionData } from "./DirectionData";
 
 export interface RecipeData {
+  id: number;
   name: string;
   description?: string;
   image?: string;

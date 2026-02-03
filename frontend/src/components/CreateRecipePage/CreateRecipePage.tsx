@@ -1,9 +1,9 @@
-import './create-recipe-page.css'
+import './create-recipe-page.css';
 import NutritionItem from "./NutritionItem";
 import DirectionItem from "./DirectionItem";
 import AddField from "./AddField";
 import AddDirection from "./AddDirection";
-import { useState } from 'react'
+import { useState } from 'react';
 import type { NutritionData } from "../../types/NutritionData";
 import type { IngredientData } from "../../types/IngredientData";
 import type { DirectionData } from "../../types/DirectionData";
@@ -41,6 +41,7 @@ function CreateRecipePage(
 
     function handleSaveRecipe() {
         const recipeData: RecipeData = {
+            id: Date.now(),
             name: recipeName,
             description: recipeDescr,
             ingredients: ingredientItems.map(item => ({

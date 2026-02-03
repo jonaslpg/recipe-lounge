@@ -12,10 +12,14 @@ function App() {
   return (
     <div style={{ display: 'flex', height: '100vh' }}>
       <RecipeSidebar />
-      <RecipesPage />
+      {/* <RecipesPage /> */}
 
       <div style={{ flex: 1 }}>
         <Routes>
+          <Route
+            path="/home"
+            element={<RecipesPage recipe={recipe} />}
+          />
           <Route
             path="/create"
             element={<CreateRecipePage onCreate={setRecipe} />}

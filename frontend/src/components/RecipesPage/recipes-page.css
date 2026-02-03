@@ -52,9 +52,19 @@
     margin: 0;
 }
 
-.all-recipes {
+/* .all-recipes {
     display: flex;
     gap: 12px;
+} */
+.all-recipes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+.single-recipe {
+    flex: 1 1 360px;
+    min-width: 360px;
+    max-width: 360px;
 }
 
 /* /// RECIPE /// */
@@ -72,6 +82,8 @@
     0px 1px 1px 0px rgba(31, 31, 31, 0.04),
     0px 3px 3px 0px rgba(31, 31, 31, 0.03),
     0px 3px 4px 0px rgba(31, 31, 31, 0.02);
+
+    min-width: max-content;
 }
 .thumb {
     height: 100px;
@@ -99,6 +111,7 @@
     gap: 12px;
     padding: 0px 12px;
     border-radius: 100px;
+
 }
 
 .info-1, .info-2, .info-3 {
@@ -108,17 +121,28 @@
     letter-spacing: -2%;
     color: #757575;
     gap: 2px;
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+.info-1 img {
+    width: 18px;
+}
+.info-2 img {
+    width: 14px;
+}
+.info-3 img {
+    width: 14px;
 }
 
 /* /// BUTTONS /// */
 .create-btn {
-    padding: 8px 16px;
+    padding: 8px 14px;
     color: white;
     background-color: #FF782F;
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 16px;
+    gap: 6px;
+    font-size: 15px;
     border: none;
     border-radius: 8px;
     cursor: pointer;
@@ -144,10 +168,10 @@
     height: 40px;
 }
 .settings-btn img {
-    height: 22px;
+    height: 20px;
 }
 .filter-btn {
-    padding: 8px 16px;
+    padding: 8px 14px;
     box-shadow:
     0px 0px 0px 1.5px rgba(31, 31, 31, 0.08),
     0px 1px 1px 0px rgba(31, 31, 31, 0.04),
@@ -155,9 +179,9 @@
     0px 3px 4px 0px rgba(31, 31, 31, 0.02);
     background-color: white;
     color: #757575;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 500;
-    gap: 8px;
+    gap: 6px;
     display: flex;
     align-items: center;
     border: none;
@@ -167,4 +191,31 @@
 }
 .filter-btn img {
     height: 16px;
+}
+
+@media (max-width: 1080px) {
+    .single-recipe {
+        max-width: 768px;
+    }
+    .top-part-left-side {
+        gap: 4px;
+    }
+    .top-part-left-side h3 {
+        font-size: 18px;
+    }
+    .top-part-left-side p {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 768px) {
+    .recipes-page_container {
+        padding-left: 16px;
+    }
+    .recipes-top-part {
+        margin-top: 32px;
+    }
+    .single-recipe {
+        max-width: 768px;
+    }
 }

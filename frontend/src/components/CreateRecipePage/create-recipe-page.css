@@ -369,15 +369,16 @@ body {
         margin-left: 0;
     }
 
-    .create-recipe-page_container {
-        margin-top: 57px;
-    }
+    /*.create-recipe-page_container {*/
+        /* margin-top: 96px; */
+    /*}*/
 
     .create-recipe-top-part {
-        position: fixed;
+        /* position: fixed; */
         padding-right: 18px;
-        padding-left: 52px;
-        padding-top: 0px;
+        /* padding-left: 52px; */
+        padding-top: 32px;
+        /* margin-top: 32px; */
         width: 100%;
         z-index: 1;
     }
