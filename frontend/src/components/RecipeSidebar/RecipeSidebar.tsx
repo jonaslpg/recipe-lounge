@@ -191,7 +191,7 @@ function RecipeSidebar() {
           }
         </div>
 
-        <button className="sidebar-item" style={{ marginTop: "4px" }}>
+        <button className="sidebar-item" style={{ marginTop: "40px" }}>
           <img 
             src="src/assets/settings-icon.svg"
             alt="settings"

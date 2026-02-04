@@ -1,7 +1,9 @@
-import './recipe-page.css'
-import NutritionItem from "../CreateRecipePage/NutritionItem"
-import DirectionItem from "../CreateRecipePage/DirectionItem"
+import './recipe-page.css';
+import MeasuredItem from "../CreateRecipePage/MeasuredItem";
+import DirectionItem from "../CreateRecipePage/DirectionItem";
 import type { RecipeData } from "../../types/RecipeData";
+
+import { useItemActions } from "./hooks/useItemActions";
 
 function RecipePage( 
 {
@@ -12,20 +14,10 @@ function RecipePage(
     }
 ) {
 
-    function handleDeleteIngredient(id: string){
-        
-    }
-
-    function handleAmountChangeIngredient(id: string, newAmount: string) {
-
-    }
-
-    function handleDeleteDirection(id: string){
-
-    }
+    const { handleDeleteIngredient, handleAmountChangeIngredient, handleDeleteDirection } = useItemActions();
    
     if (!recipe) {
-        return <p>No recipe found</p>;
+        return <p>No recipe found</p>; /* TODO (?) */
     }
 
     return (
@@ -51,19 +43,19 @@ function RecipePage(
                                 <p>Cook Duration</p>
                                 <p className='amount'>{recipe.cookDuration}</p>
                             </div>
-                            {/* maybe extend this section later? */}
+                            {/* TODO: maybe extend this section later? */}
                         </div>
                     </div>
                 </div>
 
-                <div className="recipe-ingredients" style={{marginTop: 16}}>
-                    <div className="ingredients-header">
+                <div className="recipe-items" style={{marginTop: 16}}>
+                    <div className="recipe-items-header">
                         <h4>Ingredients</h4>
                         <img src='src/assets/plus-icon.svg' />
                     </div>
-                    <div className="nutrition-item_container">
+                    <div className="item_container">
                         {recipe.ingredients.map(item => (
-                            <NutritionItem 
+                            <MeasuredItem 
                                 key={item.id} 
                                 id={item.id}
                                 nutritionName={item.name} 
@@ -80,12 +72,12 @@ function RecipePage(
             </div>
 
             <div className="column-2">
-                <div className="recipe-ingredients">
-                    <div className="ingredients-header">
+                <div className="recipe-items">
+                    <div className="recipe-items-header">
                         <h4>Directions</h4>
                         <img src='src/assets/plus-icon.svg' />
                     </div>
-                    <div className="nutrition-item_container">
+                    <div className="item_container">
                         {recipe.directions.map(item => (
                             <DirectionItem 
                                 key={item.id} 
@@ -97,18 +89,16 @@ function RecipePage(
                             />
                         ))}
                     </div>
-
                 </div>
 
-
-                <div className="recipe-ingredients" style={{marginTop: 16}}>
-                    <div className="ingredients-header">
+                <div className="recipe-items" style={{marginTop: 16}}>
+                    <div className="recipe-items-header">
                         <h4>Nutritions</h4>
                         <img src='src/assets/plus-icon.svg' />
                     </div>
-                    <div className="nutrition-item_container">
+                    <div className="item_container">
                         {recipe.nutritions.map(item => (
-                            <NutritionItem 
+                            <MeasuredItem 
                                 key={item.id} 
                                 id={item.id}
                                 nutritionName={item.name} 
@@ -122,7 +112,6 @@ function RecipePage(
                         ))}
                     </div>
                 </div>
-
             </div>
         </div>
     </div>

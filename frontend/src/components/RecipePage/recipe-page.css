@@ -6,13 +6,8 @@
 }
 
 .page-wrapper {
-  display: grid;
-
+    display: grid;
 }
-/* .page-wrapper {
-    display: flex;
-    justify-content: center;
-} */
 
 .recipe-page_container {
     display: flex;
@@ -124,15 +119,15 @@
     color: #1F1F1F;
 }
 
-/* INGREDIENTS */
 
-.nutrition-item_container {
+
+.item_container {
     background-color: #ffffff;
     border: 2px solid #EFEFEF;
     border-radius: 8px;
 }
 
-.recipe-ingredients {
+.recipe-items {
     width: 100%;
     max-width: 536px;
     background-color: #FAFAFA;
@@ -141,21 +136,21 @@
     border: 2px solid #EFEFEF;
 }
 
-.recipe-ingredients h4 {
+.recipe-items h4 {
     font-weight: 600;
     color: #1F1F1F;
     font-size: 18px;
     margin: 0;
 }
 
-.ingredients-header {
+.recipe-items-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 12px;
 }
 
-.ingredients-header img {
+.recipe-items-header img {
     padding: 5px;
     background-color: rgb(255, 255, 255);
     border: 2px solid #9fa1a23f;
@@ -184,7 +179,7 @@
         max-width: 536px;
     }
 
-    .recipe-ingredients {
+    .recipe-items {
         max-width: 536px;
     }
 
@@ -202,7 +197,7 @@
         max-width: 436px;
     }
 
-    .recipe-ingredients {
+    .recipe-items {
         max-width: 436px;
     }
 }

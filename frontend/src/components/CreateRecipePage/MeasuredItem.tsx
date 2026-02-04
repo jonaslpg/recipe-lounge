@@ -1,7 +1,7 @@
-import './create-recipe-page.css'
+import './create-recipe-page.css';
 import UnitInput from "./UnitInput";
 
-function NutritionItem( 
+function MeasuredItem( 
 {
     nutritionName,
     unit,
@@ -29,7 +29,7 @@ function NutritionItem(
     };
 
     return (
-        <div className={`nutrition-item ${isLastOne ? "last" : ""}`}>
+        <div className={`single-item ${isLastOne ? "last" : ""}`}>
             <div className="left-side">
                 {withCheckmark && <img src='src/assets/uncheck-square.svg' />}
                 <div className="calories_unit-input">
@@ -46,4 +46,4 @@ function NutritionItem(
     )
 }
 
-export default NutritionItem
+export default MeasuredItem

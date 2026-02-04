@@ -1,4 +1,4 @@
-import './create-recipe-page.css'
+import './create-recipe-page.css';
 
 function UnitInput( 
 {

@@ -192,10 +192,6 @@ body {
     border-radius: 8px;
 }
 
-.gen-recipe-info_container {
-    margin-bottom: 12px;
-}
-
 .import-box {
     display: flex;
     align-items: center;
@@ -235,20 +231,20 @@ body {
     border: 2px solid #EFEFEF;
 }
 
-.nutrition-item_container {
+/* .item_container {
     background-color: #ffffff;
     border: 2px solid #EFEFEF;
     border-radius: 8px;
-}
+} */
 
-.nutrition-item {
+.single-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
     border-bottom: 2px solid #EFEFEF;
     font-weight: 500;
 }
-.nutrition-item.last {
+.single-item.last {
   border-bottom: 0;
 }
 
@@ -267,7 +263,7 @@ body {
     gap: 12px;
 }
 
-.nutrition-item .trash-icon {
+.single-item .trash-icon {
     margin-right: 12px;
     cursor: pointer;
 }

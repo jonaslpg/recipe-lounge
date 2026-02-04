@@ -1,4 +1,4 @@
-import './create-recipe-page.css'
+import './create-recipe-page.css';
 
 function DirectionItem( 
 {
@@ -22,7 +22,7 @@ function DirectionItem(
     };
 
     return (
-        <div className={`nutrition-item ${isLastOne ? "last" : ""}`}>
+        <div className={`single-item ${isLastOne ? "last" : ""}`}>
             <div className="direction-texts">
                 <p className='direction-step'>STEP {step}</p>
                 <p>{descr}</p>
