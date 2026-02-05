@@ -29,11 +29,15 @@
     border-radius: 12px;
     border: 2px solid #EFEFEF;
     display: block;
+    max-width: 540px;
 }
 
 .recipe-header img {
     border-top-right-radius: 12px;
     border-top-left-radius: 12px;
+    max-width: 540px;
+    max-height: 300px;
+    object-fit: cover;
 }
 
 .recipe-header-content {

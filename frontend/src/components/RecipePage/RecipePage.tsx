@@ -25,7 +25,7 @@ function RecipePage(
         <div className="recipe-page_container">
             <div className="column-1">
                 <div className="recipe-header">
-                    <img src='src/assets/image-dummy-1.png'></img>
+                    <img src={recipe.image ?? "src/assets/image-dummy-1.png"}></img>
                     <div className="recipe-header-content">
                         <h3>{recipe.name}</h3>
                         <p>{recipe.description}

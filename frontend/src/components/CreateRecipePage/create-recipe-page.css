@@ -204,21 +204,64 @@ body {
 
 .description-input {
     width: 100%;
-    min-width: 0;
+    max-width: 100%;
+    resize: none;
+    overflow: hidden;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    line-height: 1.4;
+    overflow-y: auto;
+    max-height: 140px;
 }
 
+/* IMAGE */
 .drop-area-image {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     border-radius: 8px;
     font-size: 13px;
-    min-height: 100px;
+    min-height: 140px;
     color: #757575;
     background-color: white;
     border: 2px dashed #EFEFEF;
     cursor: pointer;
 }
+
+.drop-area-image p {
+    text-align: center;
+    width: 200px;
+    margin: 0;
+    margin-top: 8px;
+}
+
+.drop-area-image .image-icon {
+    height: 28px;
+}
+
+.drop-area-image p span {
+    font-weight: 600;
+    color: #1F1F1F;
+}
+
+.image-preview {
+    max-height: 140px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.image-overlay {
+    width: 100%;
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.5);
+    color: #1F1F1F;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 8px;
+}
+
 
 /* ==== DETAIL INFORMATION ==== */
 

@@ -86,6 +86,8 @@
     min-width: max-content;
 }
 .thumb {
+    max-width: 100px;
+    object-fit: cover;
     height: 100px;
     border-bottom-left-radius: 12px;
     border-top-left-radius: 12px;

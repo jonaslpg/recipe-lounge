@@ -14,7 +14,7 @@ function RecipePreview(
     return (
         <div className="single-recipe">
             <img 
-                src='src/assets/recipe-image-dummy-2.png'
+                src={recipe?.image ?? "src/assets/recipe-image-dummy-2.png"}
                 className='thumb'
             />
             <div className="single-recipe-content">

@@ -26,6 +26,7 @@ function CreateRecipePage(
     const [recipeDescr, setRecipeDescr] = useState<string>("");
     const [recipeCookDuration, setRecipeCookDuration] = useState<string>("");
     const [recipeServings, setRecipeServings] = useState<number>(1);
+    const [recipeImage, setRecipeImage] = useState<string | undefined>();
 
     const { 
         handleAddNutrition,
@@ -45,6 +46,7 @@ function CreateRecipePage(
             id: Date.now(),
             name: recipeName,
             description: recipeDescr,
+            image: recipeImage,
             ingredients: ingredientItems.map(item => ({
                 id: item.id,
                 name: item.name,
@@ -69,6 +71,37 @@ function CreateRecipePage(
         onCreate(recipeData);
         navigate("/recipe");
     }
+
+
+    /* NOTE: only temporary */
+    function handleImageFile(file: File) {
+        if (!file.type.match(/image\/(png|jpeg)/)) {
+            alert("Nur PNG oder JPG erlaubt");
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setRecipeImage(reader.result as string);
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function handleDrop(e: React.DragEvent<HTMLDivElement>) {
+        e.preventDefault();
+        const file = e.dataTransfer.files[0];
+        if (file) handleImageFile(file);
+    }
+
+    function handleDragOver(e: React.DragEvent<HTMLDivElement>) {
+        e.preventDefault();
+    }
+
+    function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
+        const file = e.target.files?.[0];
+        if (file) handleImageFile(file);
+    }
+
 
     return (
         <>
@@ -125,19 +158,65 @@ function CreateRecipePage(
                                 </div>
                                 <div className="sub-heading-input-box">
                                     <p className="sub-heading-2">Description</p>
-                                    <input 
+                                    {/* <input 
                                         className="description-input primary-input" 
                                         placeholder="e.g: This Chocolate Pie is very delicious."
                                         value={recipeDescr}
                                         spellCheck={false}
                                         onChange={(e) => setRecipeDescr(e.target.value)}
+                                    /> */}
+                                    <textarea
+                                    rows={1}
+                                    className="description-input primary-input"
+                                    placeholder="e.g: This Chocolate Pie is very delicious."
+                                    value={recipeDescr}
+                                    spellCheck={false}
+                                    onChange={(e) => setRecipeDescr(e.target.value)}
+                                    onInput={(e) => {
+                                        const el = e.currentTarget;
+                                        el.style.height = "auto";
+                                        el.style.height = el.scrollHeight + "px";
+                                    }}
+                                    maxLength={300}
                                     />
                                 </div>
-                                <div className="sub-heading-input-box">
+                                {/* <div className="sub-heading-input-box">
                                     <p className="sub-heading-2">Image</p>
                                     <div className="drop-area-image">
-                                        <img></img>
-                                        <p>Drop your image here, or select Click to browse</p>
+                                        <img src='/src/assets/image-icon.svg'></img>
+                                        <p>Drop your image here, or select <span>Click to browse</span></p>
+                                    </div>
+                                </div> */}
+                                <div className="sub-heading-input-box">
+                                    <p className="sub-heading-2">Image</p>
+
+                                    <div
+                                    className="drop-area-image"
+                                    onDrop={handleDrop}
+                                    onDragOver={handleDragOver}
+                                    onClick={() => document.getElementById("imageInput")?.click()}
+                                    >
+                                        {recipeImage ? (
+                                            // <>
+                                            <img src={recipeImage} alt="Recipe" className="image-preview" />
+                                            /* <div className="image-overlay">Click to change</div>
+                                            </> */
+                                        ) : (
+                                            <>
+                                                <img className='image-icon' src="/src/assets/image-icon.svg" />
+                                                <p>
+                                                    Drop your image here, or select <span>Click to browse</span>
+                                                </p>
+                                            </>
+                                        )}
+
+                                        <input
+                                            id="imageInput"
+                                            type="file"
+                                            accept="image/png, image/jpeg"
+                                            hidden
+                                            onChange={handleFileSelect}
+                                        />
                                     </div>
                                 </div>
 
