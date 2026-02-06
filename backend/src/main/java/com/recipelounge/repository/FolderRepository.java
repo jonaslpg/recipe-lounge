@@ -20,6 +20,4 @@ public interface FolderRepository extends JpaRepository<FolderEntity, String> {
 
     List<FolderEntity> findByPositionBetweenOrderByPositionAsc(int start, int end);
 
-
-
 }

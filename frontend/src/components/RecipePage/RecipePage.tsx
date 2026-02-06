@@ -28,8 +28,8 @@ function RecipePage(
                     <img src={recipe.image ?? "src/assets/image-dummy-1.png"}></img>
                     <div className="recipe-header-content">
                         <h3>{recipe.name}</h3>
-                        <p>{recipe.description}
-                        <span> More</span></p>
+                        {recipe.description && <p>{recipe.description}
+                        <span> More</span></p>}
                         <div className="header-settings">
                             <div className="servings">
                                 <img src='src/assets/minus-iconV2.svg'/>
@@ -39,10 +39,11 @@ function RecipePage(
                                 </div>
                                 <img src='src/assets/plus-iconV2.svg'/>
                             </div>
+                            {recipe.cookDuration &&
                             <div className="cook-duration">
                                 <p>Cook Duration</p>
                                 <p className='amount'>{recipe.cookDuration}</p>
-                            </div>
+                            </div>}
                             {/* TODO: maybe extend this section later? */}
                         </div>
                     </div>
@@ -53,7 +54,7 @@ function RecipePage(
                         <h4>Ingredients</h4>
                         <img src='src/assets/plus-icon.svg' />
                     </div>
-                    <div className="item_container">
+                    {recipe.ingredients.length !== 0 && <div className="item_container">
                         {recipe.ingredients.map(item => (
                             <MeasuredItem 
                                 key={item.id} 
@@ -67,7 +68,7 @@ function RecipePage(
                                 isLastOne={recipe.ingredients[recipe.ingredients.length-1] === item ? true : false}
                             />
                         ))}
-                    </div>
+                    </div>}
                 </div>
             </div>
 
@@ -77,7 +78,7 @@ function RecipePage(
                         <h4>Directions</h4>
                         <img src='src/assets/plus-icon.svg' />
                     </div>
-                    <div className="item_container">
+                    {recipe.directions.length !== 0 && <div className="item_container">
                         {recipe.directions.map(item => (
                             <DirectionItem 
                                 key={item.id} 
@@ -88,7 +89,7 @@ function RecipePage(
                                 isLastOne={recipe.directions[recipe.directions.length-1] === item ? true : false}
                             />
                         ))}
-                    </div>
+                    </div>}
                 </div>
 
                 <div className="recipe-items" style={{marginTop: 16}}>
@@ -96,7 +97,7 @@ function RecipePage(
                         <h4>Nutritions</h4>
                         <img src='src/assets/plus-icon.svg' />
                     </div>
-                    <div className="item_container">
+                    {recipe.nutritions.length !== 0 && <div className="item_container">
                         {recipe.nutritions.map(item => (
                             <MeasuredItem 
                                 key={item.id} 
@@ -110,7 +111,7 @@ function RecipePage(
                                 isLastOne={recipe.nutritions[recipe.nutritions.length-1] === item ? true : false}
                             />
                         ))}
-                    </div>
+                    </div>}
                 </div>
             </div>
         </div>
