@@ -38,7 +38,7 @@ export function useFolderActions({
     try {
       const res = await fetch("http://localhost:8080/api/folders", {
       //const res = await fetch("http://xxx.xxx.x.xxx:8080/api/folders", {
-        method: "POST", // POST = CREATE NEW OBJECT
+        method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(
           {

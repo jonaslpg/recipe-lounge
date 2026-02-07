@@ -1,5 +1,6 @@
 import './recipes-page.css';
 import type { RecipeData } from "../../types/RecipeData";
+import { useNavigate } from 'react-router-dom';
 
 function RecipePreview( 
 {
@@ -10,13 +11,17 @@ function RecipePreview(
     }
 ) {
 
+    const navigate = useNavigate();
 
     return (
-        <div className="single-recipe">
-            <img 
-                src={recipe?.image ?? "src/assets/recipe-image-dummy-2.png"}
+        <div 
+        onClick={(e) => navigate(`/recipe/${recipe?.id}`)}
+        className="single-recipe"
+        >
+            {recipe?.image && <img 
+                src={`http://localhost:8080${recipe.image}`}
                 className='thumb'
-            />
+            />}
             <div className="single-recipe-content">
                 <p className='recipe-name'>{recipe?.name}</p>
                 <div className="recipe-info">
@@ -24,10 +29,10 @@ function RecipePreview(
                         <img src='src/assets/fire.svg'/>
                         <p>259kcal</p>
                     </div>
-                    <div className="info-2">
+                    {recipe?.cookDuration && <div className="info-2">
                         <img src='src/assets/alarm-clock.svg'/>
-                        <p>{recipe?.cookDuration ? recipe?.cookDuration : "NULL"}</p>
-                    </div>
+                        <p>{recipe?.cookDuration}</p>
+                    </div>}
                     <div className="info-3">
                         <img src='src/assets/blossom.svg'/>
                         <p>{

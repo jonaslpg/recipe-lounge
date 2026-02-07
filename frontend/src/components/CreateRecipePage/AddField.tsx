@@ -28,7 +28,7 @@ function AddField({ addFieldPlaceholderText, onAdd }: AddFieldProps) {
                 }}
             />
             <img 
-                src='src/assets/plus-icon.svg' 
+                src='/src/assets/plus-icon.svg' 
                 onClick={handleAddClick} 
                 style={{cursor: "pointer"}}
             />

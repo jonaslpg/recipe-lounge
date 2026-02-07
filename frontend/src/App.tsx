@@ -1,32 +1,28 @@
-import type { RecipeData } from "./types/RecipeData";
 import RecipeSidebar from "./components/RecipeSidebar/RecipeSidebar";
 import CreateRecipePage from "./components/CreateRecipePage/CreateRecipePage";
 import RecipePage from "./components/RecipePage/RecipePage";
 import RecipesPage from "./components/RecipesPage/RecipesPage";
-import { useState } from 'react';
 import { Routes, Route } from "react-router-dom";
 
 function App() {
-  const [recipe, setRecipe] = useState<RecipeData | null>(null);
 
   return (
     <div style={{ display: 'flex', height: '100vh' }}>
       <RecipeSidebar />
-      {/* <RecipesPage /> */}
 
       <div style={{ flex: 1 }}>
         <Routes>
           <Route
             path="/home"
-            element={<RecipesPage recipe={recipe} />}
+            element={<RecipesPage />}
           />
           <Route
             path="/create"
-            element={<CreateRecipePage onCreate={setRecipe} />}
+            element={<CreateRecipePage />}
           />
           <Route
-            path="/recipe"
-            element={<RecipePage recipe={recipe} />}
+            path="/recipe/:id"
+            element={<RecipePage />}
           />
         </Routes>
       </div>

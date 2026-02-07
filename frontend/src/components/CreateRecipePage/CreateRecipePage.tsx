@@ -4,21 +4,13 @@ import DirectionItem from "./DirectionItem";
 import AddField from "./AddField";
 import AddDirection from "./AddDirection";
 import { useState } from 'react';
-import type { RecipeData } from "../../types/RecipeData";
 import { useNavigate } from "react-router-dom";
 
 import { useMeasuredItems } from "./hooks/useMeasuredItems";
 import { useDirectionItems } from "./hooks/useDirectionItems";
 
 
-function CreateRecipePage( 
-{
-    onCreate
-}:
-    {
-        onCreate: (r: RecipeData) => void;
-    }
-) {
+function CreateRecipePage() {
 
     const navigate = useNavigate();
 
@@ -26,7 +18,8 @@ function CreateRecipePage(
     const [recipeDescr, setRecipeDescr] = useState<string>("");
     const [recipeCookDuration, setRecipeCookDuration] = useState<string>("");
     const [recipeServings, setRecipeServings] = useState<number>(1);
-    const [recipeImage, setRecipeImage] = useState<string | undefined>();
+    const [imageFile, setImageFile] = useState<File | null>(null);
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
 
     const { 
         handleAddNutrition,
@@ -41,50 +34,60 @@ function CreateRecipePage(
 
     const { handleDeleteDirection, handleAddDirection, directionItems } = useDirectionItems();
 
-    function handleSaveRecipe() {
-        const recipeData: RecipeData = {
-            id: Date.now(),
+    async function handleSaveRecipe() {
+        const recipe = {
             name: recipeName,
             description: recipeDescr,
-            image: recipeImage,
-            ingredients: ingredientItems.map(item => ({
-                id: item.id,
-                name: item.name,
-                amount: item.amount,
-                unit: item.unit
-            })),
-            nutritions: nutritionItems.map(item => ({
-                id: item.id,
-                name: item.name,
-                amount: item.amount,
-                unit: item.unit
-            })),
-            directions: directionItems.map(item => ({
-                id: item.id,
-                step: item.step,
-                descr: item.descr
-            })),
-            cookDuration: recipeCookDuration,
             servings: recipeServings,
+            cookDuration: recipeCookDuration,
+            ingredients: ingredientItems.map(({ name, amount, unit }) => ({
+                name,
+                amount,
+                unit
+            })),
+            nutritions: nutritionItems.map(({ name, amount, unit }) => ({
+                name,
+                amount,
+                unit
+            })),
+            directions: directionItems.map(({ step, descr }) => ({
+                step,
+                descr
+            }))
         };
 
-        onCreate(recipeData);
-        navigate("/recipe");
+        const formData = new FormData();
+
+        formData.append(
+            "recipe",
+            new Blob([JSON.stringify(recipe)], { type: "application/json" })
+        );
+
+        if (imageFile) {
+            formData.append("image", imageFile);
+        }
+
+        const res = await fetch("http://localhost:8080/api/recipes", {
+            method: "POST",
+            body: formData
+        });
+
+        if (!res.ok) {
+            throw new Error("Failed to save recipe");
+        }
+
+        const savedRecipe = await res.json();
+        navigate(`/recipe/${savedRecipe.id}`);
     }
 
-
-    /* NOTE: only temporary */
     function handleImageFile(file: File) {
         if (!file.type.match(/image\/(png|jpeg)/)) {
             alert("Nur PNG oder JPG erlaubt");
             return;
         }
 
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            setRecipeImage(reader.result as string);
-        };
-        reader.readAsDataURL(file);
+        setImageFile(file);
+        setImagePreview(URL.createObjectURL(file));
     }
 
     function handleDrop(e: React.DragEvent<HTMLDivElement>) {
@@ -101,7 +104,6 @@ function CreateRecipePage(
         const file = e.target.files?.[0];
         if (file) handleImageFile(file);
     }
-
 
     return (
         <>
@@ -196,19 +198,16 @@ function CreateRecipePage(
                                     onDragOver={handleDragOver}
                                     onClick={() => document.getElementById("imageInput")?.click()}
                                     >
-                                        {recipeImage ? (
-                                            // <>
-                                            <img src={recipeImage} alt="Recipe" className="image-preview" />
-                                            /* <div className="image-overlay">Click to change</div>
-                                            </> */
-                                        ) : (
-                                            <>
-                                                <img className='image-icon' src="/src/assets/image-icon.svg" />
-                                                <p>
-                                                    Drop your image here, or select <span>Click to browse</span>
-                                                </p>
-                                            </>
-                                        )}
+                                    {imagePreview ? (
+                                        <img src={imagePreview} alt="Recipe" className="image-preview" />
+                                    ) : (
+                                        <>
+                                            <img className='image-icon' src="/src/assets/image-icon.svg" />
+                                            <p>
+                                                Drop your image here, or select <span>Click to browse</span>
+                                            </p>
+                                        </>
+                                    )}
 
                                         <input
                                             id="imageInput"

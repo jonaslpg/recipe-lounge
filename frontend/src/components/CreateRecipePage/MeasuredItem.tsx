@@ -31,7 +31,7 @@ function MeasuredItem(
     return (
         <div className={`single-item ${isLastOne ? "last" : ""}`}>
             <div className="left-side">
-                {withCheckmark && <img src='src/assets/uncheck-square.svg' />}
+                {withCheckmark && <img src='/src/assets/uncheck-square.svg' />}
                 <div className="calories_unit-input">
                     <UnitInput id={id} unit={unit} amount={amount} onAmountChange={onAmountChange}></UnitInput>
                     <p>{nutritionName}</p>
@@ -39,7 +39,7 @@ function MeasuredItem(
             </div>
             <img
                 className='trash-icon'
-                src='src/assets/trash-icon.svg'
+                src='/src/assets/trash-icon.svg'
                 onClick={handleDeleteClick}
             />
         </div>

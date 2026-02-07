@@ -1,8 +1,15 @@
 package com.recipelounge.controller;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,8 +19,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.recipelounge.entity.RecipeEntity;
 import com.recipelounge.repository.RecipeRepository;
@@ -43,11 +52,34 @@ public class RecipeController {
             .orElseThrow(() -> new RuntimeException("Recipe with id " + id + " not found"));
     }
 
-    @PostMapping
+    // @PostMapping
+    // @ResponseStatus(HttpStatus.CREATED)
+    // @Transactional
+    // public RecipeEntity createRecipe(@RequestBody @Valid RecipeEntity recipe) {
+    //     return recipeRepository.save(recipe);
+    // }
+
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     @Transactional
-    public RecipeEntity createRecipe(@RequestBody @Valid RecipeEntity recipe) {
-        return recipeRepository.save(recipe);
+    public RecipeEntity createRecipeWithImage(
+            @RequestPart("recipe") RecipeEntity recipe,
+            @RequestPart(value = "image", required = false) MultipartFile image
+    ) {
+        // if (image != null && !image.isEmpty()) {
+        //     String imagePath = saveImage(image, recipe.getId());
+        //     recipe.setImage(imagePath);
+        // }
+
+        // return recipeRepository.save(recipe);
+        RecipeEntity saved = recipeRepository.save(recipe);
+
+        if (image != null && !image.isEmpty()) {
+            String imagePath = saveImage(image, saved.getId());
+            saved.setImage(imagePath);
+        }
+
+        return recipeRepository.save(saved);
     }
 
     @PutMapping("/{id}")
@@ -108,4 +140,23 @@ public class RecipeController {
         recipeRepository.deleteById(id);
     }
 
+    // helper method
+    private String saveImage(MultipartFile file, String recipeId) {
+        try {
+            String uploadDir = "uploads/recipes";
+            Files.createDirectories(Paths.get(uploadDir));
+
+            String extension = Objects.requireNonNull(file.getOriginalFilename())
+                    .substring(file.getOriginalFilename().lastIndexOf("."));
+
+            String filename = recipeId + extension;
+            Path path = Paths.get(uploadDir, filename);
+
+            Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+
+            return "/uploads/recipes/" + filename;
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to store image", e);
+        }
+    }
 }

@@ -29,7 +29,7 @@ function DirectionItem(
             </div>
             <img 
                 className='trash-icon'
-                src='src/assets/trash-icon.svg'
+                src='/src/assets/trash-icon.svg'
                 onClick={handleDeleteClick}
             />
         </div>

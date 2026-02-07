@@ -4,28 +4,17 @@ import type { RecipeData } from "../../types/RecipeData";
 import { useState, useEffect } from 'react';
 import RecipePreview from "./RecipePreview";
 
-function RecipesPage( 
-{
-    recipe
-}:
-    {
-        recipe: RecipeData | null;
-    }
-) {
+function RecipesPage() {
 
     const navigate = useNavigate();
 
     const [recipeItems, setRecipeItems] = useState<RecipeData[]>([]);
 
     useEffect(() => {
-        if (recipe) {
-            setRecipeItems(prev => [...prev, recipe]);
-        }
-    }, [recipe]);
-    // useEffect(() => {
-    // if (recipe && !recipeItems.some(r => r.id === recipe.id)) {
-    //     setRecipeItems(prev => [...prev, recipe]);
-    // }}, [recipe]); // Nötig wegen strict mode, sonst doppelter render
+        fetch("/api/recipes")
+            .then(res => res.json())
+            .then(setRecipeItems);
+    }, []);
 
     function handleClickCreate(){
         navigate("/create");
@@ -55,7 +44,7 @@ function RecipesPage(
             </div>
         </div>
         <div className="all-recipes">
-            <div className="single-recipe">
+            {/* <div className="single-recipe">
                 <img 
                     src='src/assets/recipe-image-dummy-1.png'
                     className='thumb'
@@ -77,36 +66,11 @@ function RecipesPage(
                         </div>
                     </div>
                 </div>
-            </div>
-
-            {/* {recipeItems.map((item, i) => ( */}
-                <RecipePreview recipe={recipeItems[0]}/>
-            {/* // ))} */}
-{/* 
-            <div className="single-recipe">
-                <img 
-                    src='src/assets/recipe-image-dummy-2.png'
-                    className='thumb'
-                />
-                <div className="single-recipe-content">
-                    <p className='recipe-name'>Quick Breakfast</p>
-                    <div className="recipe-info">
-                        <div className="info-1">
-                            <img src='src/assets/fire.svg'/>
-                            <p>259kcal</p>
-                        </div>
-                        <div className="info-2">
-                            <img src='src/assets/alarm-clock.svg'/>
-                            <p>5m</p>
-                        </div>
-                        <div className="info-3">
-                            <img src='src/assets/blossom.svg'/>
-                            <p>10g protein</p>
-                        </div>
-                    </div>
-                </div>
             </div> */}
 
+            {recipeItems.map((item, i) => (
+                <RecipePreview key={i} recipe={item}/>
+            ))}
         </div>
     </div>
     )
