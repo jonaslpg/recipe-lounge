@@ -24,7 +24,7 @@ function AddDirection(
     return (
         <div className="add-field">
             <input 
-                placeholder={`Add Step ${step}`}
+                placeholder={`What happens in step ${step}?`}
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={(e) => {

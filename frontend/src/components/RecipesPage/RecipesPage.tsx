@@ -26,7 +26,7 @@ function RecipesPage() {
             <div className="top-part-left-side">
                 <h3>Home</h3>
                 <p className='line'>|</p>
-                <p>{`${recipeItems?.length} Recipes collected`}</p>
+                <p>{`${recipeItems?.length} Recipe${recipeItems?.length !== 1 ? "s" : ""} collected`}</p>
             </div>
             <div className="top-part-right-side">
                 <button 

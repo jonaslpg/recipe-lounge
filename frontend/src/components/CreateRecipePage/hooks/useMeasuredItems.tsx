@@ -6,7 +6,7 @@ import { useState } from 'react';
 export function useMeasuredItems() {
     
     const [nutritionItems, setNutritionItems] = useState<NutritionData[]>([
-        { name: "Calories", amount: "0", unit: "kcal", id: crypto.randomUUID() },
+        // { name: "Calories", amount: "0", unit: "kcal", id: crypto.randomUUID() },
         // { name: "Carbonhydrates", amount: "0", unit: "kcal", id: crypto.randomUUID() }
     ]);
 

@@ -16,8 +16,10 @@ function CreateRecipePage() {
 
     const [recipeName, setRecipeName] = useState<string>("Untitled");
     const [recipeDescr, setRecipeDescr] = useState<string>("");
+    // const [recipePrompt, setRecipePrompt] = useState<string>("");
     const [recipeCookDuration, setRecipeCookDuration] = useState<string>("");
     const [recipeServings, setRecipeServings] = useState<number>(1);
+    const [recipeCalories, setRecipeCalories] = useState<number | null>(null);
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
 
@@ -129,15 +131,30 @@ function CreateRecipePage() {
                                     <div className="import-box">
                                         <input 
                                             className='primary-input url-input' 
-                                            placeholder="paste an URL link..."
+                                            placeholder="Paste a recipe URL"
                                             spellCheck={false}
                                         />
                                         <button className="secondary-btn">Import</button>
                                     </div>
                                 </div>
                                 <div className="sub-heading-input-box">
-                                    <p className="sub-heading-2">Generate information with AI</p>
-                                    <button className="generative-ai-btn">Generate Recipe</button>
+                                    <p className="sub-heading-2">Generate or refine a recipe with AI</p>
+                                    {/* <textarea
+                                    rows={1}
+                                    className="description-input primary-input"
+                                    placeholder="Write a prompt..."
+                                    value={recipePrompt}
+                                    spellCheck={false}
+                                    onChange={(e) => setRecipePrompt(e.target.value)}
+                                    onInput={(e) => {
+                                        const el = e.currentTarget;
+                                        el.style.height = "auto";
+                                        el.style.height = el.scrollHeight + "px";
+                                    }}
+                                    maxLength={300}
+                                    /> */}
+                                    <button className="generative-ai-btn">
+                                        <img src='/src/assets/stars-icon.svg'/>Generate Recipe</button>
                                 </div>
                             </div>
                         </div>
@@ -152,14 +169,14 @@ function CreateRecipePage() {
                                     <p className="sub-heading-2">Recipe name</p>
                                     <input 
                                         className='primary-input' 
-                                        placeholder="e.g: Chocolate Pie"
+                                        // placeholder="e.g: Chocolate Pie"
                                         value={recipeName}
                                         spellCheck={false}
                                         onChange={(e) => setRecipeName(e.target.value)}
                                     />
                                 </div>
                                 <div className="sub-heading-input-box">
-                                    <p className="sub-heading-2">Description</p>
+                                    <p className="sub-heading-2">Description / Notes</p>
                                     {/* <input 
                                         className="description-input primary-input" 
                                         placeholder="e.g: This Chocolate Pie is very delicious."
@@ -170,7 +187,7 @@ function CreateRecipePage() {
                                     <textarea
                                     rows={1}
                                     className="description-input primary-input"
-                                    placeholder="e.g: This Chocolate Pie is very delicious."
+                                    placeholder="Short description, tips, or personal notes"
                                     value={recipeDescr}
                                     spellCheck={false}
                                     onChange={(e) => setRecipeDescr(e.target.value)}
@@ -262,6 +279,25 @@ function CreateRecipePage() {
                                 <p className="sub-heading-1">DETAIL INFORMATION</p>
 
                                 <div className="sub-heading-input-box">
+                                    <p className="sub-heading-2">Add Calories</p>
+                                    <div className="input_container">
+                                        <input
+                                            className='primary-input'
+                                            placeholder="400"
+                                            type="number"
+                                            min={0}
+                                            max={99999}
+                                            value={recipeCalories ?? ''}
+                                            onChange={(e) => {
+                                                const value = e.target.value;
+                                                setRecipeCalories(value === '' ? null : Number(value));
+                                            }}
+                                        />
+                                        <p className='input-overlay-text'>kcal</p>
+                                    </div>
+                                </div>
+
+                                <div className="sub-heading-input-box">
                                     <p className="sub-heading-2">Add Nutritions</p>
                                     <div className="item_container">
                                         {nutritionItems.map(item => (
@@ -277,7 +313,7 @@ function CreateRecipePage() {
                                                 isLastOne={false}
                                             />
                                         ))}
-                                        <AddField addFieldPlaceholderText='45g protein' onAdd={handleAddNutrition}></AddField>
+                                        <AddField addFieldPlaceholderText='45g protein, 10g carbs' onAdd={handleAddNutrition}></AddField>
                                     </div>
                                 </div>
 

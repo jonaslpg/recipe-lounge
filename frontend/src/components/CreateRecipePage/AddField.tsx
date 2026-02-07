@@ -17,7 +17,7 @@ function AddField({ addFieldPlaceholderText, onAdd }: AddFieldProps) {
     return (
         <div className="add-field">
             <input 
-                placeholder={`e.g. '${addFieldPlaceholderText}'`}
+                placeholder={`${addFieldPlaceholderText}`}
                 spellCheck={false}
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
