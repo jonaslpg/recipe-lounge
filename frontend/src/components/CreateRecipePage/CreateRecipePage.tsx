@@ -109,6 +109,7 @@ function CreateRecipePage() {
 
     return (
         <>
+        <div className="create-recipe-page_container">
             <div className="create-recipe-top-part">
                 <p className="create-recipe-title">Create new recipe</p>
                 <button 
@@ -117,6 +118,7 @@ function CreateRecipePage() {
                 >Save Recipe</button>
                 {/* <img src='/src/assets/search-icon.svg'></img> */}
             </div>
+        </div>
 
             <div className="create-recipe-page_container">
                 <div className="create-recipe-page_container-wrapper">

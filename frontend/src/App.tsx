@@ -7,10 +7,10 @@ import { Routes, Route } from "react-router-dom";
 function App() {
 
   return (
-    <div style={{ display: 'flex', height: '100vh' }}>
+    <div style={{ height: '100vh' }}>
       <RecipeSidebar />
 
-      <div style={{ flex: 1 }}>
+      <div>
         <Routes>
           <Route
             path="/home"
@@ -18,7 +18,7 @@ function App() {
           />
           <Route
             path="/create"
-            element={<CreateRecipePage />}
+            element={<CreateRecipePage/>}
           />
           <Route
             path="/recipe/:id"
