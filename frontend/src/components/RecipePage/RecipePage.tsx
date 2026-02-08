@@ -34,7 +34,12 @@ function RecipePage() {
         <div className="recipe-page_container">
             <div className="column-1">
                 <div className="recipe-header">
-                    <img src={`http://localhost:8080${recipe.image}`}></img> 
+                    <button 
+                        className="primary-btn"
+                    >Edit Recipe</button>
+                    {recipe.image && (
+                        <img src={`http://localhost:8080${recipe.image}`} alt="" />
+                    )}
                     {/* NOTE: only temporary with localhost*/}
                     <div className="recipe-header-content">
                         <h3>{recipe.name}</h3>
@@ -54,10 +59,37 @@ function RecipePage() {
                                 <p>Cook Duration</p>
                                 <p className='amount'>{recipe.cookDuration}</p>
                             </div>}
+                            {recipe.calories &&
+                            <div className="cook-duration">
+                                <p>Calories</p>
+                                <p className='amount'>{recipe.calories} kcal</p>
+                            </div>}
                             {/* TODO: maybe extend this section later? */}
                         </div>
                     </div>
                 </div>
+
+                {/* <div className="recipe-items" style={{marginTop: 16}}>
+                    <div className="recipe-items-header">
+                        <h4>Calories</h4>
+                        <img src='/src/assets/plus-icon.svg' />
+                    </div>
+                    {recipe.ingredients.length !== 0 && <div className="item_container">
+                        {recipe.calories && (
+                            <MeasuredItem 
+                                key={recipe.id} 
+                                id={recipe.id.toString()}
+                                nutritionName={""} 
+                                unit={"kcal"} 
+                                amount={recipe.calories ? recipe.calories.toString() : ""}
+                                onDelete={handleDeleteIngredient}
+                                onAmountChange={handleAmountChangeIngredient}
+                                withCheckmark={false}
+                                isLastOne={true}
+                            />
+                        )}
+                    </div>}
+                </div> */}
 
                 <div className="recipe-items" style={{marginTop: 16}}>
                     <div className="recipe-items-header">

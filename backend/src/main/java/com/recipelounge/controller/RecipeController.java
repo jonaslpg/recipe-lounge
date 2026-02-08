@@ -52,13 +52,6 @@ public class RecipeController {
             .orElseThrow(() -> new RuntimeException("Recipe with id " + id + " not found"));
     }
 
-    // @PostMapping
-    // @ResponseStatus(HttpStatus.CREATED)
-    // @Transactional
-    // public RecipeEntity createRecipe(@RequestBody @Valid RecipeEntity recipe) {
-    //     return recipeRepository.save(recipe);
-    // }
-
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     @Transactional
@@ -66,12 +59,7 @@ public class RecipeController {
             @RequestPart("recipe") RecipeEntity recipe,
             @RequestPart(value = "image", required = false) MultipartFile image
     ) {
-        // if (image != null && !image.isEmpty()) {
-        //     String imagePath = saveImage(image, recipe.getId());
-        //     recipe.setImage(imagePath);
-        // }
 
-        // return recipeRepository.save(recipe);
         RecipeEntity saved = recipeRepository.save(recipe);
 
         if (image != null && !image.isEmpty()) {
@@ -103,6 +91,7 @@ public class RecipeController {
                     if (updates.getImage() != null) recipe.setImage(updates.getImage());
                     if (updates.getServings() != null) recipe.setServings(updates.getServings());
                     if (updates.getCookDuration() != null) recipe.setCookDuration(updates.getCookDuration());
+                    if (updates.getCalories() != null) recipe.setCalories(updates.getCalories());
                     
                     if (updates.getIngredients() != null) {
                         recipe.getIngredients().clear();

@@ -42,6 +42,7 @@ function CreateRecipePage() {
             description: recipeDescr,
             servings: recipeServings,
             cookDuration: recipeCookDuration,
+            calories: recipeCalories,
             ingredients: ingredientItems.map(({ name, amount, unit }) => ({
                 name,
                 amount,
@@ -109,16 +110,16 @@ function CreateRecipePage() {
 
     return (
         <>
-        <div className="create-recipe-page_container">
-            <div className="create-recipe-top-part">
-                <p className="create-recipe-title">Create new recipe</p>
-                <button 
-                    className="primary-btn"
-                    onClick={handleSaveRecipe}
-                >Save Recipe</button>
-                {/* <img src='/src/assets/search-icon.svg'></img> */}
+            <div className="create-recipe-page_container">
+                <div className="create-recipe-top-part">
+                    <p className="create-recipe-title">Create new recipe</p>
+                    <button 
+                        className="primary-btn"
+                        onClick={handleSaveRecipe}
+                    >Save Recipe</button>
+                    {/* <img src='/src/assets/search-icon.svg'></img> */}
+                </div>
             </div>
-        </div>
 
             <div className="create-recipe-page_container">
                 <div className="create-recipe-page_container-wrapper">
@@ -280,7 +281,7 @@ function CreateRecipePage() {
 
                                 <p className="sub-heading-1">DETAIL INFORMATION</p>
 
-                                <div className="sub-heading-input-box">
+                                <div className="sub-heading-input-box" style={{marginBottom: "28px"}}>
                                     <p className="sub-heading-2">Add Calories</p>
                                     <div className="input_container">
                                         <input

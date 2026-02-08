@@ -9,6 +9,7 @@ export interface RecipeData {
   image?: string;
   servings?: number;
   cookDuration?: string;
+  calories: number;
   ingredients: IngredientData[];
   nutritions: NutritionData[];
   directions: DirectionData[];

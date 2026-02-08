@@ -1,5 +1,6 @@
 package com.recipelounge.entity;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -28,6 +29,8 @@ public class RecipeEntity {
     private Integer servings;
 
     private String cookDuration;
+
+    private BigDecimal calories;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "recipe_id", nullable = false)
@@ -113,5 +116,13 @@ public class RecipeEntity {
 
     public void setDirections(List<DirectionEntity> directions) {
         this.directions = directions;
+    }
+
+    public BigDecimal getCalories() {
+        return calories;
+    }
+
+    public void setCalories(BigDecimal calories) {
+        this.calories = calories;
     }
 }
